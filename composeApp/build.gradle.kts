@@ -31,10 +31,24 @@ kotlin {
     sourceSets {
         
         androidMain.dependencies {
+            //OkHttp
+            implementation(libs.ktor.client.okhttp)
+
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }
+        iosMain.dependencies {
+            //Darwin
+            implementation(libs.ktor.client.darwin)
+        }
         commonMain.dependencies {
+            //Coil
+            implementation(libs.coil.compose)
+            implementation(libs.coil.svg)
+            //Ktor//Ktor+OkHttp/Darwin
+            implementation(libs.coil.network.ktor3)
+            implementation(libs.ktor.client.core)
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
@@ -72,9 +86,20 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
+    }
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    val composeBom = platform("androidx.compose:compose-bom:2023.10.00")
+    implementation(composeBom)
+    // Android Studio Preview support
+    implementation(libs.androidx.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
 }
 
