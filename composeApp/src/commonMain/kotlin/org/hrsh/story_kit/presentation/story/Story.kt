@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.hrsh.story_kit.presentation.page.PageError
 import org.hrsh.story_kit.presentation.page.PageImage
 import org.hrsh.story_kit.presentation.page.PageItem
 import org.hrsh.story_kit.presentation.page.PageQuestion
@@ -64,11 +65,12 @@ fun Story(
                 .background(Color.LightGray),
         ) {
             when (currentPage) {
-                is PageItem.PageItemImage -> PageImage()
+                is PageItem.PageItemImage -> PageImage((currentPage as PageItem.PageItemImage).image,
+                    (currentPage as PageItem.PageItemImage).text)
                 is PageItem.PageItemVideo -> PageVideo()
                 is PageItem.PageItemQuestion -> PageQuestion()
                 is PageItem.PageItemGame -> TODO()
-                is PageItem.PageItemError -> TODO()
+                is PageItem.PageItemError -> PageError()
             }
         }
         //LikeAndFavorite
