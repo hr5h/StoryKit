@@ -1,10 +1,11 @@
 package org.hrsh.story_kit.presentation.story
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
@@ -22,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -47,30 +50,50 @@ fun Story(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.LightGray)
-            .clickable { onClose() }
     ) {
         //TimeLine
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .background(Color.Black)
                 .padding(5.dp),
-        ) { }
+        ) {}
         //Content
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(17f)
                 .background(Color.LightGray),
         ) {
             when (currentPage) {
-                is PageItem.PageItemImage -> PageImage((currentPage as PageItem.PageItemImage).image,
-                    (currentPage as PageItem.PageItemImage).text)
+                is PageItem.PageItemImage -> PageImage(
+                    (currentPage as PageItem.PageItemImage).image,
+                    (currentPage as PageItem.PageItemImage).text
+                )
                 is PageItem.PageItemVideo -> PageVideo()
                 is PageItem.PageItemQuestion -> PageQuestion()
                 is PageItem.PageItemGame -> TODO()
                 is PageItem.PageItemError -> PageError()
+            }
+            val gradient = Brush.verticalGradient(
+                0.05f to Color(0f, 0f, 0f ,0.5f),
+                1.0f to Color.Transparent,
+                startY = 0.0f,
+                endY = 600.0f
+            )
+            Box(
+                modifier = Modifier.fillMaxWidth().fillMaxHeight(5f).background(gradient).align(Alignment.TopEnd),
+            ) {
+                IconButton(modifier = Modifier.padding(top = 10.dp).align(Alignment.TopEnd), onClick = {
+                    onClose()
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "close",
+                        tint = Color.White
+                    )
+                }
             }
         }
         //LikeAndFavorite
