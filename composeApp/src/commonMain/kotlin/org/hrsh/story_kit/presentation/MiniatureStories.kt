@@ -24,7 +24,7 @@ import org.hrsh.story_kit.presentation.story.StoryViewModel
 fun MiniatureStories(url: String, content: Color = Color.Black, storyViewModel: StoryViewModel) {
     val stories = storyViewModel.storyList.collectAsState().value
     val isShow = storyViewModel.isShowStory.value
-    val selectStoryItem = storyViewModel.selectStory.value
+    val storyState = storyViewModel.storyState.collectAsState().value
     LazyRow(
         modifier = Modifier
             .background(content)
@@ -43,20 +43,38 @@ fun MiniatureStories(url: String, content: Color = Color.Black, storyViewModel: 
                         .clip(RoundedCornerShape(20.dp))
                         .size(100.dp)
                         .clickable {
-                            storyViewModel.showStory()
                             storyViewModel.selectStory(story)
+                            storyViewModel.showStory()
                         },
                     contentScale = ContentScale.Crop
                 )
             }
         }
     }
-
-    if (isShow && selectStoryItem != null) {
-        Story(selectStoryItem = selectStoryItem, onClose = {
-            storyViewModel.unSelectStory()
-            storyViewModel.showStory()
-        }
+    if (isShow && storyState.currentStory != null) {
+        Story(
+            stories = stories,
+            storyState = storyState,
+            nextPage = storyViewModel::nextPage,
+            prevPage = storyViewModel::prevPage,
+            nextStory = storyViewModel::nextStory,
+            prevStory = storyViewModel::prevStory,
+            onClose = {
+                storyViewModel.showStory()
+                storyViewModel.unSelectStory()
+            }
         )
+    }
+    //ShowFirstStory
+    val firstStoryState = storyViewModel.firstStoryState.collectAsState().value
+    if(firstStoryState.currentStory != null) {
+        Story(
+            stories = stories,
+            storyState = firstStoryState,
+            nextPage = storyViewModel::nextPageFirstStory,
+            prevPage = storyViewModel::prevPageFirstStory,
+            nextStory = {},
+            prevStory = {},
+            onClose = storyViewModel::firstStoryClose)
     }
 }

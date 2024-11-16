@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 
 @Composable
-fun PageImage(image: String, text: String) {
+fun PageImage(pageItemImage: PageItem.PageItemImage) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -28,7 +28,7 @@ fun PageImage(image: String, text: String) {
             .padding(5.dp)
     ) {
         AsyncImage(
-            model = image,
+            model = pageItemImage.image,
             contentDescription = "Image",
             modifier = Modifier
                 .fillMaxSize()
@@ -44,7 +44,7 @@ fun PageImage(image: String, text: String) {
                 .wrapContentHeight(Alignment.CenterVertically)
         ) {
             Text(
-                text = text,
+                text = pageItemImage.text,
                 color = Color.White,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
