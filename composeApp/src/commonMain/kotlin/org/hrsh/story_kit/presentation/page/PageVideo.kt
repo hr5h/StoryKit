@@ -5,6 +5,7 @@ import org.hrsh.story_kit.domain.PageItem
 
 @Composable
 fun PageVideo(
-    pageItemVideo: PageItem.PageItemVideo
+    pageItemVideo: PageItem.PageItemVideo,
+    pageSize: Float
 ) {
 }

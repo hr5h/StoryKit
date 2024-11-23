@@ -83,7 +83,7 @@ class StoryViewModel : ViewModel() {
         }
     }
 
-    fun prevStory() {
+    private fun prevStory() {
         if(_storyState.value.currentStory == -1) return
 
         if (_storyState.value.currentStory > 0) {
@@ -91,12 +91,16 @@ class StoryViewModel : ViewModel() {
         }
     }
 
-    fun nextStory() {
+    private fun nextStory() {
         if(_storyState.value.currentStory == -1) return
 
         if (_storyState.value.currentStory < _storyList.value.size - 1) {
             _storyState.update { it.copy(currentStory = it.currentStory + 1) }
         }
+    }
+
+    fun setStory(ind: Int) {
+        _storyState.update { it.copy(currentStory = ind) }
     }
 
     private fun initFirstStory() {

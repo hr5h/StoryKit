@@ -3,9 +3,9 @@ package org.hrsh.story_kit
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import org.hrsh.story_kit.presentation.MiniatureStories
 import org.hrsh.story_kit.domain.PageItem
 import org.hrsh.story_kit.domain.StoryItem
+import org.hrsh.story_kit.presentation.MiniatureStories
 import org.hrsh.story_kit.presentation.story.StoryViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -35,7 +35,24 @@ fun App() {
                 showOnStart = false
             )
         )
+        storyViewModel.addStory(
+            StoryItem(
+                imagePreview = "https://i01.fotocdn.net/s215/23442118aa73147b/public_pin_l/2920842511.jpg",
+                listPages = listOf(
+                    PageItem.PageItemImage(
+                        image = "https://avatars.mds.yandex.net/i?id=325bcdf905e6685f354011427095fa3f_l-5233671-images-thumbs&n=13",
+                        text = "Страница 1"
+                    ),
+                    PageItem.PageItemImage(
+                        image = "https://avatars.mds.yandex.net/i?id=325bcdf905e6685f354011427095fa3f_l-5233671-images-thumbs&n=13",
+                        text = "Страница 2"
+                    ),
+                ),
+                showOnStart = false
+            )
+        )
         //PageItemVideo
+        /*
         storyViewModel.addStory(
             StoryItem(
                 imagePreview = "https://vels76.ru/sites/default/files/znachok-videozapisi.jpg",
@@ -47,6 +64,7 @@ fun App() {
                 showOnStart = false
             )
         )
+        */
         //PageItemError
         storyViewModel.addStory(
             StoryItem(
@@ -57,6 +75,6 @@ fun App() {
                 showOnStart = false
             )
         )
-        MiniatureStories("", Color(red = 11, green = 172, blue = 65), storyViewModel)
+        MiniatureStories(Color(red = 11, green = 172, blue = 65), storyViewModel)
     }
 }

@@ -1,5 +1,7 @@
 package org.hrsh.story_kit.presentation.story
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -12,25 +14,43 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import kotlinx.coroutines.flow.collectLatest
 import org.hrsh.story_kit.presentation.page.PageError
 import org.hrsh.story_kit.presentation.page.PageImage
 import org.hrsh.story_kit.domain.PageItem
@@ -45,15 +65,16 @@ fun Story(
     storyState: StoryState,
     prevPage: () -> Unit,
     nextPage: () -> Unit,
-    prevStory: () -> Unit,
-    nextStory: () -> Unit,
+    setStory: (Int) -> Unit,
     onClose: () -> Unit
 ) {
     val text = remember {
         mutableIntStateOf(0)
     }
-    val selectStoryItem = storyState.currentStory!!.let { stories[it] }
-    val currentPage = selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]]
+    val selectStoryItem = storyState.currentStory.let { stories[it] }
+    val pages = stories.mapIndexed { index, storyItem ->
+        storyItem.listPages[storyState.currentPage[index]]
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -86,20 +107,6 @@ fun Story(
                 .weight(17f)
                 .background(Color.Black)
                 .pointerInput(Unit) {
-                    //Переход между историми по свайпу
-                    detectHorizontalDragGestures { change, dragAmount ->
-                        if (abs(dragAmount) > 40) {
-                            if (dragAmount > 0) {
-                                prevStory()
-                            } else if (dragAmount < 0) {
-                                nextStory()
-                            }
-                        }
-                        change.consume()
-                    }
-                }
-                .pointerInput(Unit) {
-                    //Переход между страницами по тапу
                     detectTapGestures(
                         onTap = { offset ->
                             if (offset.x < size.width / 2) {
@@ -111,13 +118,51 @@ fun Story(
                     )
                 }
         ) {
-            when (currentPage) {
-                is PageItem.PageItemImage -> PageImage(currentPage)
-                is PageItem.PageItemVideo -> PageVideo(currentPage)
-                is PageItem.PageItemQuestion -> PageQuestion()
-                is PageItem.PageItemGame -> TODO()
-                is PageItem.PageItemError -> PageError()
+            var lastPage by remember { mutableStateOf(-1) }
+            val pagerState = rememberPagerState(
+                initialPage = storyState.currentStory,
+                pageCount = { pages.size })
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+            ) { index ->
+                val pageOffset =
+                    (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
+                val pageSize = animateFloatAsState(
+                    targetValue = if (pageOffset != 0.0f) 0.95f else 1f,
+                    animationSpec = tween(
+                        durationMillis = 50
+                    ), label = ""
+                ).value
+                LaunchedEffect(pagerState) {
+                    snapshotFlow { pagerState.currentPage }
+                        .collectLatest { newPage ->
+                            if (newPage != lastPage) {
+                                lastPage = newPage
+                                setStory(lastPage)
+                            }
+                        }
+                }
+                LaunchedEffect(storyState.currentStory) {
+                    pagerState.animateScrollToPage(storyState.currentStory)
+                }
+                when (pages[index]) {
+                    is PageItem.PageItemImage -> PageImage(
+                        pages[index] as PageItem.PageItemImage,
+                        pageSize
+                    )
+
+                    is PageItem.PageItemVideo -> PageVideo(
+                        pages[index] as PageItem.PageItemVideo,
+                        pageSize
+                    )
+
+                    is PageItem.PageItemQuestion -> PageQuestion()
+                    is PageItem.PageItemGame -> TODO()
+                    is PageItem.PageItemError -> PageError(pageSize)
+                }
             }
+            //Cross
             val gradient = Brush.verticalGradient(
                 0.05f to Color(0f, 0f, 0f, 0.5f),
                 1.0f to Color.Transparent,

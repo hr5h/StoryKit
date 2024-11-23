@@ -15,18 +15,26 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun PageError() {
+fun PageError(pageSize: Float) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .graphicsLayer {
+                scaleX = pageSize
+                scaleY = pageSize
+            }
+            .clip(RoundedCornerShape(16.dp))
             .background(Color.Gray)
+            .padding(5.dp),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -46,7 +54,7 @@ fun PageError() {
             )
 
             Button(
-                onClick = { /* Действие при нажатии */ },
+                onClick = { TODO() },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.White,
                     contentColor = Color.Black

@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -21,10 +22,14 @@ import coil3.compose.AsyncImage
 import org.hrsh.story_kit.domain.PageItem
 
 @Composable
-fun PageImage(pageItemImage: PageItem.PageItemImage) {
+fun PageImage(pageItemImage: PageItem.PageItemImage, imageSize: Float) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .graphicsLayer {
+                scaleX = imageSize
+                scaleY = imageSize
+            }
             .background(Color.Black)
             .padding(5.dp)
     ) {
@@ -33,7 +38,7 @@ fun PageImage(pageItemImage: PageItem.PageItemImage) {
             contentDescription = "Image",
             modifier = Modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(10.dp)),
+                .clip(RoundedCornerShape(16.dp)),
             contentScale = ContentScale.Crop
         )
         Box(

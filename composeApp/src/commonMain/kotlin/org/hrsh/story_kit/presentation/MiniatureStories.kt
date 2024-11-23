@@ -21,7 +21,7 @@ import org.hrsh.story_kit.presentation.story.Story
 import org.hrsh.story_kit.presentation.story.StoryViewModel
 
 @Composable
-fun MiniatureStories(url: String, content: Color = Color.Black, storyViewModel: StoryViewModel) {
+fun MiniatureStories(content: Color = Color.Black, storyViewModel: StoryViewModel) {
     val stories = storyViewModel.storyList.collectAsState().value
     val storyState = storyViewModel.storyState.collectAsState().value
     LazyRow(
@@ -56,8 +56,7 @@ fun MiniatureStories(url: String, content: Color = Color.Black, storyViewModel: 
             storyState = storyState,
             prevPage = storyViewModel::prevPage,
             nextPage = storyViewModel::nextPage,
-            prevStory = storyViewModel::prevStory,
-            nextStory = storyViewModel::nextStory,
+            setStory = storyViewModel::setStory,
             onClose = {
                 if(storyState.isShowStory)
                     storyViewModel.closeStory()
