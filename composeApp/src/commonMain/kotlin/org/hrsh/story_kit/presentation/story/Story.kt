@@ -157,7 +157,10 @@ fun Story(
                         pageSize
                     )
 
-                    is PageItem.PageItemQuestion -> PageQuestion()
+                    is PageItem.PageItemQuestion -> PageQuestion(
+                        pages[index] as PageItem.PageItemQuestion,
+                        pageSize
+                    )
                     is PageItem.PageItemGame -> TODO()
                     is PageItem.PageItemError -> PageError(pageSize)
                 }
