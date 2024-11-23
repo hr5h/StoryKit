@@ -47,6 +47,16 @@ fun App() {
                 showOnStart = false
             )
         )
+        //PageItemError
+        storyViewModel.addStory(
+            StoryItem(
+                imagePreview = "https://rst-motors.ru/upload/iblock/e59/e59e1123414ef4f6203e1dad18c43618.jpg",
+                listPages = listOf(
+                    PageItem.PageItemError
+                ),
+                showOnStart = false
+            )
+        )
         MiniatureStories("", Color(red = 11, green = 172, blue = 65), storyViewModel)
     }
 }

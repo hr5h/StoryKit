@@ -23,7 +23,6 @@ import org.hrsh.story_kit.presentation.story.StoryViewModel
 @Composable
 fun MiniatureStories(url: String, content: Color = Color.Black, storyViewModel: StoryViewModel) {
     val stories = storyViewModel.storyList.collectAsState().value
-    val isShow = storyViewModel.isShowStory.value
     val storyState = storyViewModel.storyState.collectAsState().value
     LazyRow(
         modifier = Modifier
@@ -51,30 +50,21 @@ fun MiniatureStories(url: String, content: Color = Color.Black, storyViewModel: 
             }
         }
     }
-    if (isShow && storyState.currentStory != null) {
+    if ((storyState.hasFirstStory || storyState.isShowStory) && storyState.currentStory != -1) {
         Story(
             stories = stories,
             storyState = storyState,
-            nextPage = storyViewModel::nextPage,
             prevPage = storyViewModel::prevPage,
-            nextStory = storyViewModel::nextStory,
+            nextPage = storyViewModel::nextPage,
             prevStory = storyViewModel::prevStory,
+            nextStory = storyViewModel::nextStory,
             onClose = {
-                storyViewModel.showStory()
+                if(storyState.isShowStory)
+                    storyViewModel.closeStory()
+                else if(storyState.hasFirstStory)
+                    storyViewModel.closeFirstStory()
                 storyViewModel.unSelectStory()
             }
         )
-    }
-    //ShowFirstStory
-    val firstStoryState = storyViewModel.firstStoryState.collectAsState().value
-    if(firstStoryState.currentStory != null && firstStoryState.currentStory != -1) {
-        Story(
-            stories = stories,
-            storyState = firstStoryState,
-            nextPage = storyViewModel::nextPageFirstStory,
-            prevPage = storyViewModel::prevPageFirstStory,
-            nextStory = {},
-            prevStory = {},
-            onClose = storyViewModel::firstStoryClose)
     }
 }

@@ -43,10 +43,10 @@ import kotlin.math.abs
 fun Story(
     stories: List<StoryItem>,
     storyState: StoryState,
-    nextPage: () -> Unit,
     prevPage: () -> Unit,
-    nextStory: () -> Unit,
+    nextPage: () -> Unit,
     prevStory: () -> Unit,
+    nextStory: () -> Unit,
     onClose: () -> Unit
 ) {
     val text = remember {
@@ -84,7 +84,7 @@ fun Story(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(17f)
-                .background(Color.LightGray)
+                .background(Color.Black)
                 .pointerInput(Unit) {
                     //Переход между историми по свайпу
                     detectHorizontalDragGestures { change, dragAmount ->
