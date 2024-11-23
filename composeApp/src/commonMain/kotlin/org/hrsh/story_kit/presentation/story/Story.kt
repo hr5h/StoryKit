@@ -33,7 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.hrsh.story_kit.presentation.page.PageError
 import org.hrsh.story_kit.presentation.page.PageImage
-import org.hrsh.story_kit.presentation.page.PageItem
+import org.hrsh.story_kit.domain.PageItem
+import org.hrsh.story_kit.domain.StoryItem
 import org.hrsh.story_kit.presentation.page.PageQuestion
 import org.hrsh.story_kit.presentation.page.PageVideo
 import kotlin.math.abs
@@ -111,8 +112,8 @@ fun Story(
                 }
         ) {
             when (currentPage) {
-                is PageItem.PageItemImage -> PageImage((currentPage as PageItem.PageItemImage))
-                is PageItem.PageItemVideo -> PageVideo()
+                is PageItem.PageItemImage -> PageImage(currentPage)
+                is PageItem.PageItemVideo -> PageVideo(currentPage)
                 is PageItem.PageItemQuestion -> PageQuestion()
                 is PageItem.PageItemGame -> TODO()
                 is PageItem.PageItemError -> PageError()

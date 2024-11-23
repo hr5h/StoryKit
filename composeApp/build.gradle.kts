@@ -33,6 +33,11 @@ kotlin {
             //OkHttp
             implementation(libs.ktor.client.okhttp)
 
+            //ExoPlayer
+            implementation(libs.androidx.media3.exoplayer)
+            implementation(libs.androidx.media3.exoplayer.dash)
+            implementation(libs.androidx.media3.ui)
+
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }

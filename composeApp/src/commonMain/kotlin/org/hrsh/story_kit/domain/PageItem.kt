@@ -1,4 +1,4 @@
-package org.hrsh.story_kit.presentation.page
+package org.hrsh.story_kit.domain
 
 sealed class PageItem {
     data class PageItemImage(

@@ -1,6 +1,4 @@
-package org.hrsh.story_kit.presentation.story
-
-import org.hrsh.story_kit.presentation.page.PageItem
+package org.hrsh.story_kit.domain
 
 data class StoryItem(
     val imagePreview: String,

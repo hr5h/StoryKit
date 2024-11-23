@@ -67,7 +67,7 @@ fun MiniatureStories(url: String, content: Color = Color.Black, storyViewModel: 
     }
     //ShowFirstStory
     val firstStoryState = storyViewModel.firstStoryState.collectAsState().value
-    if(firstStoryState.currentStory != null) {
+    if(firstStoryState.currentStory != null && firstStoryState.currentStory != -1) {
         Story(
             stories = stories,
             storyState = firstStoryState,

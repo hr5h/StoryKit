@@ -4,8 +4,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import org.hrsh.story_kit.presentation.MiniatureStories
-import org.hrsh.story_kit.presentation.page.PageItem
-import org.hrsh.story_kit.presentation.story.StoryItem
+import org.hrsh.story_kit.domain.PageItem
+import org.hrsh.story_kit.domain.StoryItem
 import org.hrsh.story_kit.presentation.story.StoryViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -32,15 +32,17 @@ fun App() {
                         text = "Страница 3"
                     )
                 ),
-                showOnStart = true
+                showOnStart = false
             )
         )
-        //PageItemError
+        //PageItemVideo
         storyViewModel.addStory(
             StoryItem(
-                imagePreview = "https://rst-motors.ru/upload/iblock/e59/e59e1123414ef4f6203e1dad18c43618.jpg",
+                imagePreview = "https://vels76.ru/sites/default/files/znachok-videozapisi.jpg",
                 listPages = listOf(
-                    PageItem.PageItemError
+                    PageItem.PageItemVideo(
+                        video = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                    )
                 ),
                 showOnStart = false
             )

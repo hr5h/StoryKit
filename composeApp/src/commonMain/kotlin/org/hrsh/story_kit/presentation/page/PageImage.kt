@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import org.hrsh.story_kit.domain.PageItem
 
 @Composable
 fun PageImage(pageItemImage: PageItem.PageItemImage) {
