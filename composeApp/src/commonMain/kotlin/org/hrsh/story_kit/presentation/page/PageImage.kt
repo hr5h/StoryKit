@@ -34,7 +34,7 @@ fun PageImage(pageItemImage: PageItem.PageItemImage, imageSize: Float) {
             .padding(5.dp)
     ) {
         AsyncImage(
-            model = pageItemImage.image,
+            model = pageItemImage.imageUrl,
             contentDescription = "Image",
             modifier = Modifier
                 .fillMaxSize()
