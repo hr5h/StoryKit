@@ -22,7 +22,7 @@ import coil3.compose.AsyncImage
 import org.hrsh.story_kit.domain.PageItem
 
 @Composable
-fun PageQuestion(pageItemImage: PageItem.PageItemQuestion, imageSize: Float) {
+fun PageQuestion(itemQuestion: PageItem.Question, imageSize: Float) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -34,7 +34,7 @@ fun PageQuestion(pageItemImage: PageItem.PageItemQuestion, imageSize: Float) {
             .padding(5.dp)
     ) {
         AsyncImage(
-            model = pageItemImage.imageUrl,
+            model = itemQuestion.imageUrl,
             contentDescription = "Image",
             modifier = Modifier
                 .fillMaxSize()
@@ -47,7 +47,7 @@ fun PageQuestion(pageItemImage: PageItem.PageItemQuestion, imageSize: Float) {
                 .align(Alignment.TopCenter)
                 .clip(RoundedCornerShape(10.dp))
                 .background(Color.White),
-            text = pageItemImage.question,
+            text = itemQuestion.question,
             textAlign = TextAlign.Center,
             fontSize = 28.sp
         )
@@ -55,7 +55,7 @@ fun PageQuestion(pageItemImage: PageItem.PageItemQuestion, imageSize: Float) {
             modifier = Modifier
                 .align(Alignment.BottomCenter)
         ) {
-            for (i in pageItemImage.listAnswers) {
+            for (i in itemQuestion.listAnswers) {
 //                Button(
 //                    modifier = Modifier
 //                    .padding(vertical = 5.dp)

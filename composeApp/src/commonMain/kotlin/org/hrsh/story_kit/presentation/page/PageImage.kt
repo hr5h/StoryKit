@@ -22,7 +22,7 @@ import coil3.compose.AsyncImage
 import org.hrsh.story_kit.domain.PageItem
 
 @Composable
-fun PageImage(pageItemImage: PageItem.PageItemImage, imageSize: Float) {
+fun PageImage(itemImage: PageItem.Image, imageSize: Float) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -34,7 +34,7 @@ fun PageImage(pageItemImage: PageItem.PageItemImage, imageSize: Float) {
             .padding(5.dp)
     ) {
         AsyncImage(
-            model = pageItemImage.imageUrl,
+            model = itemImage.imageUrl,
             contentDescription = "Image",
             modifier = Modifier
                 .fillMaxSize()
@@ -50,7 +50,7 @@ fun PageImage(pageItemImage: PageItem.PageItemImage, imageSize: Float) {
                 .wrapContentHeight(Alignment.CenterVertically)
         ) {
             Text(
-                text = pageItemImage.text,
+                text = itemImage.text,
                 color = Color.White,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,

@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -30,11 +31,17 @@ actual fun VideoPlayer(modifier: Modifier, url: String) {
         }
     }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            player.release()
+        }
+    }
+
     AndroidView(
         factory = { PlayerView(context).apply {
             setUseController(false)
         } },
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         update = { playerView ->
             playerView.player = player
         }

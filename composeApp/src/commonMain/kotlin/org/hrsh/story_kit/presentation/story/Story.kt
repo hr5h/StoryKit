@@ -3,7 +3,6 @@ package org.hrsh.story_kit.presentation.story
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,14 +13,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -37,19 +32,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrix
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import kotlinx.coroutines.flow.collectLatest
 import org.hrsh.story_kit.presentation.page.PageError
 import org.hrsh.story_kit.presentation.page.PageImage
@@ -57,7 +46,6 @@ import org.hrsh.story_kit.domain.PageItem
 import org.hrsh.story_kit.domain.StoryItem
 import org.hrsh.story_kit.presentation.page.PageQuestion
 import org.hrsh.story_kit.presentation.page.PageVideo
-import kotlin.math.abs
 
 @Composable
 fun Story(
@@ -72,9 +60,11 @@ fun Story(
         mutableIntStateOf(0)
     }
     val selectStoryItem = storyState.currentStory.let { stories[it] }
-    val pages = stories.mapIndexed { index, storyItem ->
-        storyItem.listPages[storyState.currentPage[index]]
-    }
+    val pages =
+        if (storyState.hasFirstStory) listOf(selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]])
+        else stories.mapIndexed { index, storyItem ->
+            storyItem.listPages[storyState.currentPage[index]]
+        }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -139,7 +129,7 @@ fun Story(
                         .collectLatest { newPage ->
                             if (newPage != lastPage) {
                                 lastPage = newPage
-                                setStory(lastPage)
+                                if (!storyState.hasFirstStory) setStory(lastPage)
                             }
                         }
                 }
@@ -147,21 +137,22 @@ fun Story(
                     pagerState.animateScrollToPage(storyState.currentStory)
                 }
                 when (pages[index]) {
-                    is PageItem.PageItemImage -> PageImage(
-                        pages[index] as PageItem.PageItemImage,
+                    is PageItem.Image -> PageImage(
+                        pages[index] as PageItem.Image,
                         pageSize
                     )
 
-                    is PageItem.PageItemVideo -> PageVideo(
-                        pages[index] as PageItem.PageItemVideo,
+                    is PageItem.Video -> PageVideo(
+                        pages[index] as PageItem.Video,
                         pageSize
                     )
 
-                    is PageItem.PageItemQuestion -> PageQuestion(
-                        pages[index] as PageItem.PageItemQuestion,
+                    is PageItem.Question -> PageQuestion(
+                        pages[index] as PageItem.Question,
                         pageSize
                     )
-                    is PageItem.PageItemGame -> TODO()
+
+                    is PageItem.Game -> TODO()
                     is PageItem.PageItemError -> PageError(pageSize)
                 }
             }
