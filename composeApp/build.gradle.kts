@@ -6,6 +6,9 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.room)
+
+    id("com.google.devtools.ksp")
 }
 
 kotlin {
@@ -52,6 +55,10 @@ kotlin {
             //Ktor//Ktor+OkHttp/Darwin
             implementation(libs.coil.network.ktor3)
             implementation(libs.ktor.client.core)
+            //Room+SQLite
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.sqlite.bundled)
+            implementation(libs.sqlite)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -105,5 +112,13 @@ dependencies {
     // Android Studio Preview support
     implementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.tooling)
+    //KSP
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
 }
 
+room {
+    schemaDirectory("$projectDir/schemas")
+}
