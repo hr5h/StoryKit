@@ -37,7 +37,10 @@ fun App() {
                         listAnswers = listOf("1", "2", "3", "4", "5+")
                     )
                 ),
-                showOnStart = false
+                showOnStart = true,
+                isLike = false,
+                countLike = 0,
+                isFavorite = false
             )
         )
         storyViewModel.addStory(
@@ -53,7 +56,10 @@ fun App() {
                         text = "Страница 2"
                     ),
                 ),
-                showOnStart = false
+                showOnStart = false,
+                isLike = false,
+                countLike = 0,
+                isFavorite = false
             )
         )
         //PageItemVideo
@@ -65,7 +71,10 @@ fun App() {
                         videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
                     )
                 ),
-                showOnStart = true
+                showOnStart = false,
+                isLike = false,
+                countLike = 0,
+                isFavorite = false
             )
         )
         //PageItemError
@@ -73,9 +82,12 @@ fun App() {
             StoryItem(
                 imagePreview = "https://rst-motors.ru/upload/iblock/e59/e59e1123414ef4f6203e1dad18c43618.jpg",
                 listPages = listOf(
-                    PageItem.PageItemError
+                    PageItem.Error
                 ),
-                showOnStart = false
+                showOnStart = false,
+                isLike = false,
+                countLike = 0,
+                isFavorite = false
             )
         )
         MiniatureStories(Color(red = 11, green = 172, blue = 65), storyViewModel)

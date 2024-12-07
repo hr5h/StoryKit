@@ -153,7 +153,7 @@ fun Story(
                     )
 
                     is PageItem.Game -> TODO()
-                    is PageItem.PageItemError -> PageError(pageSize)
+                    is PageItem.Error -> PageError(pageSize)
                 }
             }
             //Cross

@@ -35,11 +35,12 @@ kotlin {
         androidMain.dependencies {
             //OkHttp
             implementation(libs.ktor.client.okhttp)
-
             //ExoPlayer
             implementation(libs.androidx.media3.exoplayer)
             implementation(libs.androidx.media3.exoplayer.dash)
             implementation(libs.androidx.media3.ui)
+            //Koin
+            implementation(libs.koin.android)
 
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -59,6 +60,8 @@ kotlin {
             implementation(libs.androidx.room.runtime)
             implementation(libs.sqlite.bundled)
             implementation(libs.sqlite)
+            //Koin
+            implementation(libs.koin.core)
 
             implementation(compose.runtime)
             implementation(compose.foundation)

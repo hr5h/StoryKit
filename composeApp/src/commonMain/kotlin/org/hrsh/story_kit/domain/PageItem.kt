@@ -21,5 +21,5 @@ sealed class PageItem {
         val name: String,
     ) : PageItem()
 
-    data object PageItemError : PageItem()
+    data object Error : PageItem()
 }
