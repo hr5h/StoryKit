@@ -42,8 +42,8 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.collectLatest
 import org.hrsh.story_kit.presentation.page.PageError
 import org.hrsh.story_kit.presentation.page.PageImage
-import org.hrsh.story_kit.domain.PageItem
-import org.hrsh.story_kit.domain.StoryItem
+import org.hrsh.story_kit.domain.entities.PageItem
+import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.presentation.page.PageQuestion
 import org.hrsh.story_kit.presentation.page.PageVideo
 

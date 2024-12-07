@@ -7,9 +7,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.hrsh.story_kit.domain.StoryItem
+import org.hrsh.story_kit.domain.entities.StoryItem
+import org.hrsh.story_kit.domain.usecases.DeleteStoryUseCase
+import org.hrsh.story_kit.domain.usecases.InsertStoryUseCase
+import org.hrsh.story_kit.domain.usecases.SubscribeStoryUseCase
 
-class StoryViewModel : ViewModel() {
+class StoryViewModel(
+    private val subscribeStoryUseCase: SubscribeStoryUseCase,
+    private val insertStoryUseCase: InsertStoryUseCase,
+    private val deleteStoryUseCase: DeleteStoryUseCase
+) : ViewModel() {
 
     private val _storyList: MutableStateFlow<List<StoryItem>> = MutableStateFlow(emptyList())
     val storyList: StateFlow<List<StoryItem>> = _storyList.asStateFlow()

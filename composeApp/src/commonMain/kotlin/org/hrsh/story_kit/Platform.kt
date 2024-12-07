@@ -8,6 +8,3 @@ interface Platform {
 }
 
 expect fun getPlatform(): Platform
-
-@Composable
-expect fun VideoPlayer(modifier: Modifier, url: String)

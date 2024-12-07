@@ -1,4 +1,4 @@
-package org.hrsh.story_kit.domain
+package org.hrsh.story_kit.domain.entities
 
 data class StoryItem(
     val imagePreview: String,

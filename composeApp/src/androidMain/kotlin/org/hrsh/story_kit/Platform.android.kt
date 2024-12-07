@@ -18,32 +18,3 @@ class AndroidPlatform : Platform {
 }
 
 actual fun getPlatform(): Platform = AndroidPlatform()
-
-@Composable
-actual fun VideoPlayer(modifier: Modifier, url: String) {
-    val context = LocalContext.current
-    val player = remember {
-        ExoPlayer.Builder(context).build().apply {
-            val mediaItem = MediaItem.fromUri(Uri.parse(url))
-            setMediaItem(mediaItem)
-            prepare()
-            playWhenReady = true
-        }
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            player.release()
-        }
-    }
-
-    AndroidView(
-        factory = { PlayerView(context).apply {
-            setUseController(false)
-        } },
-        modifier = modifier,
-        update = { playerView ->
-            playerView.player = player
-        }
-    )
-}

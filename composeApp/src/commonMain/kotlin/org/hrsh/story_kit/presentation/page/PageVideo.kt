@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import org.hrsh.story_kit.VideoPlayer
-import org.hrsh.story_kit.domain.PageItem
+import org.hrsh.story_kit.di.VideoPlayer
+import org.hrsh.story_kit.domain.entities.PageItem
 
 @Composable
 fun PageVideo(

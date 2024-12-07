@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import org.hrsh.story_kit.domain.PageItem
+import org.hrsh.story_kit.domain.entities.PageItem
 
 @Composable
 fun PageQuestion(itemQuestion: PageItem.Question, imageSize: Float) {

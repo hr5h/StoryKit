@@ -3,8 +3,9 @@ package org.hrsh.story_kit
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import org.hrsh.story_kit.domain.PageItem
-import org.hrsh.story_kit.domain.StoryItem
+import org.hrsh.story_kit.di.Koin
+import org.hrsh.story_kit.domain.entities.PageItem
+import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.presentation.MiniatureStories
 import org.hrsh.story_kit.presentation.story.StoryViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -13,7 +14,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun App() {
     MaterialTheme {
-        val storyViewModel = StoryViewModel()
+        Koin.setupKoin()
+        val storyViewModel = Koin.di?.koin?.get<StoryViewModel>()!!
         //PageItemImage
         storyViewModel.addStory(
             StoryItem(
