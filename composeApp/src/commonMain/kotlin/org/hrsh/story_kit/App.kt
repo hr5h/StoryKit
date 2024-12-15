@@ -3,9 +3,15 @@ package org.hrsh.story_kit
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.hrsh.story_kit.di.Koin
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
+import org.hrsh.story_kit.domain.interfaces.StoryManager
 import org.hrsh.story_kit.presentation.MiniatureStories
 import org.hrsh.story_kit.presentation.story.StoryViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -13,11 +19,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 @Preview
 fun App() {
+    val storyManager = (Koin.di?.koin?.get<StoryViewModel>()!!) as StoryManager
     MaterialTheme {
         Koin.setupKoin()
-        val storyViewModel = Koin.di?.koin?.get<StoryViewModel>()!!
         //PageItemImage
-        storyViewModel.addStory(
+        storyManager.addStory(
             StoryItem(
                 id = 100,
                 imagePreview = "https://i01.fotocdn.net/s215/23442118aa73147b/public_pin_l/2920842511.jpg",
@@ -42,7 +48,7 @@ fun App() {
                 ),
             )
         )
-        storyViewModel.addStory(
+        storyManager.addStory(
             StoryItem(
                 id = 200,
                 imagePreview = "https://i01.fotocdn.net/s215/23442118aa73147b/public_pin_l/2920842511.jpg",
@@ -59,7 +65,7 @@ fun App() {
             )
         )
         //PageItemVideo
-        storyViewModel.addStory(
+        storyManager.addStory(
             StoryItem(
                 id = 301,
                 imagePreview = "https://vels76.ru/sites/default/files/znachok-videozapisi.jpg",
@@ -80,5 +86,18 @@ fun App() {
 //            )
 //        )
         MiniatureStories(Color(red = 11, green = 172, blue = 65))
+    }
+
+    CoroutineScope(Dispatchers.IO).launch {
+        delay(2000)
+        storyManager.subscribeStoryLike(100).collect { like ->
+            println("Story with id = 100, isLike: $like")
+        }
+    }
+    CoroutineScope(Dispatchers.IO).launch {
+        delay(2000)
+        storyManager.subscribeStoryView(100).collect { like ->
+            println("Story with id = 100, isView: $like")
+        }
     }
 }

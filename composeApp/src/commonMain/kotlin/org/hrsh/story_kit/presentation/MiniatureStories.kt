@@ -65,7 +65,9 @@ fun MiniatureStories(content: Color = Color.Black, storyViewModel: StoryViewMode
                     storyViewModel.closeFirstStory()
                 storyViewModel.unSelectStory()
             },
-            updateStory = storyViewModel::updateStory
+            storyViewed = storyViewModel::storyViewed,
+            storyLiked = storyViewModel::storyLiked,
+            storyFavorited = storyViewModel::storyFavorited,
         )
     }
 }

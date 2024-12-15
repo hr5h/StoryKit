@@ -58,7 +58,9 @@ fun Story(
     nextPage: () -> Unit,
     setStory: (Int) -> Unit,
     onClose: () -> Unit,
-    updateStory: (StoryItem) -> Unit,
+    storyViewed: (StoryItem) -> Unit,
+    storyLiked: (StoryItem) -> Unit,
+    storyFavorited: (StoryItem) -> Unit,
 ) {
     val selectStoryItem = storyState.currentStory.let { stories[it] }
     val pages =
@@ -74,9 +76,9 @@ fun Story(
         //TimeLine
         TimeLine(storyState, stories, selectStoryItem)
         //Content
-        Content(prevPage, nextPage, storyState, pages, setStory, onClose, selectStoryItem, updateStory)
+        Content(prevPage, nextPage, storyState, pages, setStory, onClose, selectStoryItem, storyViewed)
         //LikeAndFavorite
-        LikeAndFavorite(selectStoryItem, updateStory)
+        LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited)
     }
 }
 
@@ -116,7 +118,7 @@ private fun ColumnScope.Content(
     setStory: (Int) -> Unit,
     onClose: () -> Unit,
     selectStoryItem: StoryItem,
-    updateStory: (StoryItem) -> Unit
+    storyViewed: (StoryItem) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -161,7 +163,7 @@ private fun ColumnScope.Content(
                     }
             }
             LaunchedEffect(storyState.currentStory) {
-                updateStory(selectStoryItem.copy(isViewed = true))
+                storyViewed(selectStoryItem)
                 pagerState.animateScrollToPage(storyState.currentStory)
             }
             when (pages[index]) {
@@ -218,7 +220,8 @@ private fun BoxScope.Cross(onClose: () -> Unit) {
 @Composable
 private fun ColumnScope.LikeAndFavorite(
     selectStoryItem: StoryItem,
-    updateStory: (StoryItem) -> Unit,
+    storyLiked: (StoryItem) -> Unit,
+    storyFavorited: (StoryItem) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -231,12 +234,7 @@ private fun ColumnScope.LikeAndFavorite(
         IconButton(modifier = Modifier
             .padding(10.dp),
             onClick = {
-                updateStory(
-                    selectStoryItem.copy(
-                        isLike = !selectStoryItem.isLike,
-                        countLike = if(selectStoryItem.isLike) selectStoryItem.countLike - 1 else selectStoryItem.countLike + 1
-                    )
-                )
+                storyLiked(selectStoryItem)
             }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -245,7 +243,7 @@ private fun ColumnScope.LikeAndFavorite(
                     modifier = Modifier.size(40.dp),
                     imageVector = Icons.Default.Favorite,
                     contentDescription = "like",
-                    tint = Color.White
+                    tint = if(selectStoryItem.isLike) Color.Red else Color.White
                 )
                 Text(
                     modifier = Modifier
@@ -259,17 +257,13 @@ private fun ColumnScope.LikeAndFavorite(
         }
         IconButton(modifier = Modifier
             .padding(10.dp), onClick = {
-                updateStory(
-                    selectStoryItem.copy(
-                        isFavorite = !selectStoryItem.isFavorite
-                    )
-                )
+                storyFavorited(selectStoryItem)
         }) {
             Icon(
                 modifier = Modifier.size(40.dp),
                 imageVector = Icons.Default.Star,
                 contentDescription = "star",
-                tint = Color.White
+                tint = if(selectStoryItem.isFavorite) Color.Yellow else Color.White
             )
         }
     }
