@@ -17,11 +17,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import org.hrsh.story_kit.di.Koin
 import org.hrsh.story_kit.presentation.story.Story
 import org.hrsh.story_kit.presentation.story.StoryViewModel
 
 @Composable
-fun MiniatureStories(content: Color = Color.Black, storyViewModel: StoryViewModel) {
+fun MiniatureStories(content: Color = Color.Black, storyViewModel: StoryViewModel = Koin.di?.koin?.get<StoryViewModel>()!!) {
     val stories = storyViewModel.storyList.collectAsState().value
     val storyState = storyViewModel.storyState.collectAsState().value
     LazyRow(

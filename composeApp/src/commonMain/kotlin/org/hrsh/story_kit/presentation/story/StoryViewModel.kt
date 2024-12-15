@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.hrsh.story_kit.data.entities.StoryItemDb
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.usecases.DeleteStoryUseCase
 import org.hrsh.story_kit.domain.usecases.InsertStoryUseCase
@@ -30,13 +31,16 @@ class StoryViewModel(
 
     private fun getStories() {
         viewModelScope.launch {
-            // TODO(get stories from ROOM DB)
+            println(subscribeStoryUseCase())
             initFirstStory()
         }
     }
 
     fun addStory(story: StoryItem) {
         _storyList.update { it + story }
+        viewModelScope.launch {
+            insertStoryUseCase(story)
+        }
         initFirstStory()
     }
 
@@ -114,7 +118,7 @@ class StoryViewModel(
         if (_storyState.value.currentStory == -1) {
             _storyState.update {
                 it.copy(
-                    currentStory = _storyList.value.indexOf(_storyList.value.firstOrNull { first -> first.showOnStart }),
+                    currentStory = _storyList.value.indexOf(_storyList.value.firstOrNull { first -> first.isStartStory }),
                     currentPage = it.currentPage + 0
                 )
             }

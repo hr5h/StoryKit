@@ -6,7 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +26,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -71,154 +74,185 @@ fun Story(
             .background(Color.LightGray)
     ) {
         //TimeLine
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .background(Color.Black)
-                .padding(5.dp),
-        ) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                text = "Текущая история: ${storyState.currentStory + 1}/${stories.size}\n"
-                        + "Текущая страница: ${storyState.currentPage[storyState.currentStory] + 1}/${selectStoryItem.listPages.size}",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                fontSize = 13.sp,
-                lineHeight = 14.sp
-            )
-        }
+        TimeLine(storyState, stories, selectStoryItem)
         //Content
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(17f)
-                .background(Color.Black)
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = { offset ->
-                            if (offset.x < size.width / 2) {
-                                prevPage()
-                            } else {
-                                nextPage()
-                            }
-                        }
-                    )
-                }
-        ) {
-            var lastPage by remember { mutableStateOf(-1) }
-            val pagerState = rememberPagerState(
-                initialPage = storyState.currentStory,
-                pageCount = { pages.size })
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier
-            ) { index ->
-                val pageOffset =
-                    (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
-                val pageSize = animateFloatAsState(
-                    targetValue = if (pageOffset != 0.0f) 0.95f else 1f,
-                    animationSpec = tween(
-                        durationMillis = 50
-                    ), label = ""
-                ).value
-                LaunchedEffect(pagerState) {
-                    snapshotFlow { pagerState.currentPage }
-                        .collectLatest { newPage ->
-                            if (newPage != lastPage) {
-                                lastPage = newPage
-                                if (!storyState.hasFirstStory) setStory(lastPage)
-                            }
-                        }
-                }
-                LaunchedEffect(storyState.currentStory) {
-                    pagerState.animateScrollToPage(storyState.currentStory)
-                }
-                when (pages[index]) {
-                    is PageItem.Image -> PageImage(
-                        pages[index] as PageItem.Image,
-                        pageSize
-                    )
-
-                    is PageItem.Video -> PageVideo(
-                        pages[index] as PageItem.Video,
-                        pageSize
-                    )
-
-                    is PageItem.Question -> PageQuestion(
-                        pages[index] as PageItem.Question,
-                        pageSize
-                    )
-
-                    is PageItem.Game -> TODO()
-                    is PageItem.Error -> PageError(pageSize)
-                }
-            }
-            //Cross
-            val gradient = Brush.verticalGradient(
-                0.05f to Color(0f, 0f, 0f, 0.5f),
-                1.0f to Color.Transparent,
-                startY = 0.0f,
-                endY = 600.0f
-            )
-            Box(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(5f).background(gradient)
-                    .align(Alignment.TopEnd),
-            ) {
-                IconButton(
-                    modifier = Modifier.padding(top = 10.dp).align(Alignment.TopEnd),
-                    onClick = {
-                        onClose()
-                    }) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "close",
-                        tint = Color.White
-                    )
-                }
-            }
-        }
+        Content(prevPage, nextPage, storyState, pages, setStory, onClose)
         //LikeAndFavorite
-        Row(
+        LikeAndFavorite(text)
+    }
+}
+
+@Composable
+private fun ColumnScope.TimeLine(
+    storyState: StoryState,
+    stories: List<StoryItem>,
+    selectStoryItem: StoryItem
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f)
+            .background(Color.Black)
+            .padding(5.dp),
+    ) {
+        Text(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(2f)
-                .background(Color.Black)
-                .padding(5.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            IconButton(modifier = Modifier
-                .padding(10.dp), onClick = { text.value += 1 }) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        modifier = Modifier.size(40.dp),
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = "like",
-                        tint = Color.White
-                    )
-                    Text(
-                        modifier = Modifier
-                            .padding(start = 5.dp, top = 5.dp, end = 10.dp),
-                        text = "${text.value}",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
-            }
-            IconButton(modifier = Modifier
-                .padding(10.dp), onClick = {}) {
-                Icon(
-                    modifier = Modifier.size(40.dp),
-                    imageVector = Icons.Default.Star,
-                    contentDescription = "star",
-                    tint = Color.White
+                .fillMaxWidth(),
+            text = "Текущая история: ${storyState.currentStory + 1}/${stories.size}\n"
+                    + "Текущая страница: ${storyState.currentPage[storyState.currentStory] + 1}/${selectStoryItem.listPages.size}",
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            fontSize = 13.sp,
+            lineHeight = 14.sp
+        )
+    }
+}
+
+@Composable
+private fun ColumnScope.Content(
+    prevPage: () -> Unit,
+    nextPage: () -> Unit,
+    storyState: StoryState,
+    pages: List<PageItem>,
+    setStory: (Int) -> Unit,
+    onClose: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(17f)
+            .background(Color.Black)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = { offset ->
+                        if (offset.x < size.width / 2) {
+                            prevPage()
+                        } else {
+                            nextPage()
+                        }
+                    }
                 )
             }
+    ) {
+        var lastPage by remember { mutableStateOf(-1) }
+        val pagerState = rememberPagerState(
+            initialPage = storyState.currentStory,
+            pageCount = { pages.size })
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+        ) { index ->
+            val pageOffset =
+                (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
+            val pageSize = animateFloatAsState(
+                targetValue = if (pageOffset != 0.0f) 0.95f else 1f,
+                animationSpec = tween(
+                    durationMillis = 50
+                ), label = ""
+            ).value
+            LaunchedEffect(pagerState) {
+                snapshotFlow { pagerState.currentPage }
+                    .collectLatest { newPage ->
+                        if (newPage != lastPage) {
+                            lastPage = newPage
+                            if (!storyState.hasFirstStory) setStory(lastPage)
+                        }
+                    }
+            }
+            LaunchedEffect(storyState.currentStory) {
+                pagerState.animateScrollToPage(storyState.currentStory)
+            }
+            when (pages[index]) {
+                is PageItem.Image -> PageImage(
+                    pages[index] as PageItem.Image,
+                    pageSize
+                )
+
+                is PageItem.Video -> PageVideo(
+                    pages[index] as PageItem.Video,
+                    pageSize
+                )
+
+                is PageItem.Question -> PageQuestion(
+                    pages[index] as PageItem.Question,
+                    pageSize
+                )
+
+                is PageItem.Game -> TODO()
+                is PageItem.Error -> PageError(pageSize)
+            }
+        }
+        //Cross
+        Cross(onClose)
+    }
+}
+
+@Composable
+private fun BoxScope.Cross(onClose: () -> Unit) {
+    val gradient = Brush.verticalGradient(
+        0.05f to Color(0f, 0f, 0f, 0.5f),
+        1.0f to Color.Transparent,
+        startY = 0.0f,
+        endY = 600.0f
+    )
+    Box(
+        modifier = Modifier.fillMaxWidth().fillMaxHeight(5f).background(gradient)
+            .align(Alignment.TopEnd),
+    ) {
+        IconButton(
+            modifier = Modifier.padding(top = 10.dp).align(Alignment.TopEnd),
+            onClick = {
+                onClose()
+            }) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "close",
+                tint = Color.White
+            )
+        }
+    }
+}
+
+@Composable
+private fun ColumnScope.LikeAndFavorite(text: MutableIntState) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(2f)
+            .background(Color.Black)
+            .padding(5.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        IconButton(modifier = Modifier
+            .padding(10.dp), onClick = { text.value += 1 }) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    modifier = Modifier.size(40.dp),
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "like",
+                    tint = Color.White
+                )
+                Text(
+                    modifier = Modifier
+                        .padding(start = 5.dp, top = 5.dp, end = 10.dp),
+                    text = "${text.value}",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+        }
+        IconButton(modifier = Modifier
+            .padding(10.dp), onClick = {}) {
+            Icon(
+                modifier = Modifier.size(40.dp),
+                imageVector = Icons.Default.Star,
+                contentDescription = "star",
+                tint = Color.White
+            )
         }
     }
 }

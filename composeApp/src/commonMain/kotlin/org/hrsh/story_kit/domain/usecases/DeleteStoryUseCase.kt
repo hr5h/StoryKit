@@ -1,17 +1,18 @@
 package org.hrsh.story_kit.domain.usecases
 
-import org.hrsh.story_kit.data.StoryItemDb
+import org.hrsh.story_kit.data.entities.StoryItemDb
+import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.interfaces.StoryRepository
 
 interface DeleteStoryUseCase {
-    suspend fun invoke(storyItemDb: StoryItemDb)
+    suspend operator fun invoke(storyItem: StoryItem)
 }
 
 class DeleteStoryUseCaseImpl(
     private val storyRepository: StoryRepository
 ): DeleteStoryUseCase {
 
-    override suspend fun invoke(storyItemDb: StoryItemDb) {
-        storyRepository.deleteStory(storyItemDb)
+    override suspend fun invoke(storyItem: StoryItem) {
+        storyRepository.deleteStory(storyItem)
     }
 }

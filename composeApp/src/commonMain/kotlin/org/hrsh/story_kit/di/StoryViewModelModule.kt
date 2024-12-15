@@ -6,6 +6,6 @@ import org.koin.dsl.module
 
 fun storyViewModelModule(): Module {
     return module {
-        factory { StoryViewModel(get(), get(), get()) }
+        single { StoryViewModel(get(), get(), get()) }
     }
 }

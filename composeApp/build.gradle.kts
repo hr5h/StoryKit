@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.room)
 
     id("com.google.devtools.ksp")
+    kotlin("plugin.serialization")
 }
 
 kotlin {
@@ -62,6 +63,9 @@ kotlin {
             implementation(libs.sqlite)
             //Koin
             implementation(libs.koin.core)
+            //Kotlin Serialization
+            implementation(libs.kotlinx.serialization.core)
+            implementation(libs.kotlinx.serialization.json)
 
             implementation(compose.runtime)
             implementation(compose.foundation)

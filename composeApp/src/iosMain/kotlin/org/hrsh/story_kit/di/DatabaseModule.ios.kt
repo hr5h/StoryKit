@@ -4,8 +4,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.Dispatchers
-import org.hrsh.story_kit.data.StoryDatabase
-import org.koin.core.module.Module
+import org.hrsh.story_kit.data.database.StoryDatabase
 import org.koin.dsl.module
 
 fun getDatabaseBuilder(): RoomDatabase.Builder<StoryDatabase> {

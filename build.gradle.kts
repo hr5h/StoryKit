@@ -8,4 +8,5 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.room) apply false
     alias(libs.plugins.ksp) apply false
+    kotlin("plugin.serialization") version "1.5.0" apply false
 }
