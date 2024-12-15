@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.hrsh.story_kit.data.entities.StoryItemDb
@@ -12,10 +13,12 @@ import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.usecases.DeleteStoryUseCase
 import org.hrsh.story_kit.domain.usecases.InsertStoryUseCase
 import org.hrsh.story_kit.domain.usecases.SubscribeStoryUseCase
+import org.hrsh.story_kit.domain.usecases.UpdateStoryUseCase
 
 class StoryViewModel(
     private val subscribeStoryUseCase: SubscribeStoryUseCase,
     private val insertStoryUseCase: InsertStoryUseCase,
+    private val updateStoryUseCase: UpdateStoryUseCase,
     private val deleteStoryUseCase: DeleteStoryUseCase
 ) : ViewModel() {
 
@@ -31,17 +34,27 @@ class StoryViewModel(
 
     private fun getStories() {
         viewModelScope.launch {
-            println(subscribeStoryUseCase())
+            _storyList.update { subscribeStoryUseCase() }
             initFirstStory()
+            _storyList.value.forEach {
+                println(it)
+            }
         }
     }
 
     fun addStory(story: StoryItem) {
-        _storyList.update { it + story }
         viewModelScope.launch {
             insertStoryUseCase(story)
         }
         initFirstStory()
+        getStories()
+    }
+
+    fun updateStory(story: StoryItem) {
+        viewModelScope.launch {
+            updateStoryUseCase(story)
+            getStories()
+        }
     }
 
     fun showStory() {

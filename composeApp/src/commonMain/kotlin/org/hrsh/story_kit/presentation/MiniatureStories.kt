@@ -64,7 +64,8 @@ fun MiniatureStories(content: Color = Color.Black, storyViewModel: StoryViewMode
                 else if(storyState.hasFirstStory)
                     storyViewModel.closeFirstStory()
                 storyViewModel.unSelectStory()
-            }
+            },
+            updateStory = storyViewModel::updateStory
         )
     }
 }

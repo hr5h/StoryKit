@@ -57,11 +57,9 @@ fun Story(
     prevPage: () -> Unit,
     nextPage: () -> Unit,
     setStory: (Int) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    updateStory: (StoryItem) -> Unit,
 ) {
-    val text = remember {
-        mutableIntStateOf(0)
-    }
     val selectStoryItem = storyState.currentStory.let { stories[it] }
     val pages =
         if (storyState.hasFirstStory) listOf(selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]])
@@ -76,9 +74,9 @@ fun Story(
         //TimeLine
         TimeLine(storyState, stories, selectStoryItem)
         //Content
-        Content(prevPage, nextPage, storyState, pages, setStory, onClose)
+        Content(prevPage, nextPage, storyState, pages, setStory, onClose, selectStoryItem, updateStory)
         //LikeAndFavorite
-        LikeAndFavorite(text)
+        LikeAndFavorite(selectStoryItem, updateStory)
     }
 }
 
@@ -116,7 +114,9 @@ private fun ColumnScope.Content(
     storyState: StoryState,
     pages: List<PageItem>,
     setStory: (Int) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    selectStoryItem: StoryItem,
+    updateStory: (StoryItem) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -161,6 +161,7 @@ private fun ColumnScope.Content(
                     }
             }
             LaunchedEffect(storyState.currentStory) {
+                updateStory(selectStoryItem.copy(isViewed = true))
                 pagerState.animateScrollToPage(storyState.currentStory)
             }
             when (pages[index]) {
@@ -215,7 +216,10 @@ private fun BoxScope.Cross(onClose: () -> Unit) {
 }
 
 @Composable
-private fun ColumnScope.LikeAndFavorite(text: MutableIntState) {
+private fun ColumnScope.LikeAndFavorite(
+    selectStoryItem: StoryItem,
+    updateStory: (StoryItem) -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -225,7 +229,15 @@ private fun ColumnScope.LikeAndFavorite(text: MutableIntState) {
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         IconButton(modifier = Modifier
-            .padding(10.dp), onClick = { text.value += 1 }) {
+            .padding(10.dp),
+            onClick = {
+                updateStory(
+                    selectStoryItem.copy(
+                        isLike = !selectStoryItem.isLike,
+                        countLike = if(selectStoryItem.isLike) selectStoryItem.countLike - 1 else selectStoryItem.countLike + 1
+                    )
+                )
+            }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -238,7 +250,7 @@ private fun ColumnScope.LikeAndFavorite(text: MutableIntState) {
                 Text(
                     modifier = Modifier
                         .padding(start = 5.dp, top = 5.dp, end = 10.dp),
-                    text = "${text.value}",
+                    text = "${selectStoryItem.countLike}",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -246,7 +258,13 @@ private fun ColumnScope.LikeAndFavorite(text: MutableIntState) {
             }
         }
         IconButton(modifier = Modifier
-            .padding(10.dp), onClick = {}) {
+            .padding(10.dp), onClick = {
+                updateStory(
+                    selectStoryItem.copy(
+                        isFavorite = !selectStoryItem.isFavorite
+                    )
+                )
+        }) {
             Icon(
                 modifier = Modifier.size(40.dp),
                 imageVector = Icons.Default.Star,

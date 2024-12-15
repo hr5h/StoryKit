@@ -8,6 +8,7 @@ class StoryItemDbToDomainMapper(
 ) : (StoryItemDb) -> StoryItem {
     override fun invoke(storyItemDb: StoryItemDb): StoryItem {
         return StoryItem(
+            id = storyItemDb.id,
             imagePreview = storyItemDb.imagePreview,
             listPages = storyItemDb.listPages.mapNotNull(pageItemDbToDomainMapper),
             isStartStory = storyItemDb.isStartStory,

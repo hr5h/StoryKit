@@ -19,6 +19,7 @@ fun App() {
         //PageItemImage
         storyViewModel.addStory(
             StoryItem(
+                id = 100,
                 imagePreview = "https://i01.fotocdn.net/s215/23442118aa73147b/public_pin_l/2920842511.jpg",
                 listPages = listOf(
                     PageItem.Image(
@@ -43,6 +44,7 @@ fun App() {
         )
         storyViewModel.addStory(
             StoryItem(
+                id = 200,
                 imagePreview = "https://i01.fotocdn.net/s215/23442118aa73147b/public_pin_l/2920842511.jpg",
                 listPages = listOf(
                     PageItem.Image(
@@ -59,6 +61,7 @@ fun App() {
         //PageItemVideo
         storyViewModel.addStory(
             StoryItem(
+                id = 301,
                 imagePreview = "https://vels76.ru/sites/default/files/znachok-videozapisi.jpg",
                 listPages = listOf(
                     PageItem.Video(

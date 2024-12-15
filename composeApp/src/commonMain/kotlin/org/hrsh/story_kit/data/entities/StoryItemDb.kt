@@ -7,8 +7,8 @@ import org.hrsh.story_kit.data.entities.StoryItemDb.Companion.STORY_TABLE_NAME
 
 @Entity(tableName = STORY_TABLE_NAME)
 data class StoryItemDb(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int? = null,
+    @PrimaryKey
+    val id: Long,
     val imagePreview: String,
     val listPages: List<PageItemDb>,
     val isStartStory: Boolean,

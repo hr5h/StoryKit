@@ -1,6 +1,7 @@
 package org.hrsh.story_kit.domain.entities
 
 data class StoryItem(
+    val id: Long,
     val imagePreview: String,
     val listPages: List<PageItem>,
     val isStartStory: Boolean = false,

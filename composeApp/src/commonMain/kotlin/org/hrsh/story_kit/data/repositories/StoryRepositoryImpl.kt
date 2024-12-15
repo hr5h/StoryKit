@@ -26,6 +26,11 @@ class StoryRepositoryImpl(
         storyDao.insert(storyItemDb)
     }
 
+    override suspend fun updateStory(storyItem: StoryItem) {
+        val storyItemDb = storyItemDomainToDbMapper(storyItem)
+        storyDao.update(storyItemDb)
+    }
+
     override suspend fun deleteStory(storyItem: StoryItem) {
         val storyItemDb = storyItemDomainToDbMapper(storyItem)
         storyDao.delete(storyItemDb)
