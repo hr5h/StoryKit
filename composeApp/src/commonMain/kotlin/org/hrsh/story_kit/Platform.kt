@@ -1,8 +1,5 @@
 package org.hrsh.story_kit
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-
 interface Platform {
     val name: String
 }

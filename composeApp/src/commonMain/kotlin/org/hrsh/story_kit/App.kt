@@ -90,14 +90,48 @@ fun App() {
 
     CoroutineScope(Dispatchers.IO).launch {
         delay(2000)
-        storyManager.subscribeStoryLike(100).collect { like ->
-            println("Story with id = 100, isLike: $like")
+        launch {
+            storyManager.subscribeStoryLike(100).collect { like ->
+                println("Story with id = 100, isLike: $like")
+            }
+        }
+        delay(100)
+        launch {
+            storyManager.subscribeStoryLike(200).collect { like ->
+                println("Story with id = 200, isLike: $like")
+            }
+        }
+        delay(100)
+        launch {
+            storyManager.subscribeStoryLike(301).collect { like ->
+                println("Story with id = 301, isLike: $like")
+            }
         }
     }
+
     CoroutineScope(Dispatchers.IO).launch {
         delay(2000)
-        storyManager.subscribeStoryView(100).collect { like ->
-            println("Story with id = 100, isView: $like")
+        launch {
+            storyManager.subscribeStoryView(100).collect { like ->
+                println("Story with id = 100, isView: $like")
+            }
+        }
+        delay(100)
+        launch {
+            storyManager.subscribeStoryView(200).collect { like ->
+                println("Story with id = 200, isView: $like")
+            }
+        }
+        delay(100)
+        launch {
+            storyManager.subscribeStoryView(301).collect { like ->
+                println("Story with id = 301, isView: $like")
+            }
         }
     }
+
+}
+
+object storyManager {
+
 }

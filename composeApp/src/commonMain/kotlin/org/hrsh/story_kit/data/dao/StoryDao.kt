@@ -6,13 +6,13 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 import org.hrsh.story_kit.data.entities.StoryItemDb
-import org.hrsh.story_kit.domain.entities.StoryItem
 
 @Dao
 interface StoryDao {
     @Query("SELECT * FROM ${StoryItemDb.STORY_TABLE_NAME}")
-    suspend fun getAll(): List<StoryItemDb>
+    fun getAll(): Flow<List<StoryItemDb>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(storyItemDb: StoryItemDb)

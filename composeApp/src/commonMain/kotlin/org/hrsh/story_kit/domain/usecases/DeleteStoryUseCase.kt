@@ -1,6 +1,5 @@
 package org.hrsh.story_kit.domain.usecases
 
-import org.hrsh.story_kit.data.entities.StoryItemDb
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.interfaces.StoryRepository
 

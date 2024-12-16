@@ -1,8 +1,9 @@
 package org.hrsh.story_kit.data.repositories
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.hrsh.story_kit.data.dao.StoryDao
 import org.hrsh.story_kit.data.database.StoryDatabase
-import org.hrsh.story_kit.data.entities.StoryItemDb
 import org.hrsh.story_kit.data.mappers.StoryItemDbToDomainMapper
 import org.hrsh.story_kit.data.mappers.StoryItemDomainToDbMapper
 import org.hrsh.story_kit.domain.entities.StoryItem
@@ -17,8 +18,8 @@ class StoryRepositoryImpl(
         database.storyDao()
     }
 
-    override suspend fun getStories(): List<StoryItem> {
-        return storyDao.getAll().map(storyItemDbToDomainMapper)
+    override suspend fun getStories(): Flow<List<StoryItem>> {
+        return storyDao.getAll().map { it.map(storyItemDbToDomainMapper) }
     }
 
     override suspend fun postStory(storyItem: StoryItem) {

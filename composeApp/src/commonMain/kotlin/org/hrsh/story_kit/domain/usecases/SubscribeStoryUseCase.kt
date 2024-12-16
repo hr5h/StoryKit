@@ -1,18 +1,18 @@
 package org.hrsh.story_kit.domain.usecases
 
-import org.hrsh.story_kit.data.entities.StoryItemDb
+import kotlinx.coroutines.flow.Flow
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.interfaces.StoryRepository
 
 interface SubscribeStoryUseCase {
-    suspend operator fun invoke(): List<StoryItem>
+    suspend operator fun invoke(): Flow<List<StoryItem>>
 }
 
 class SubscribeStoryUseCaseImpl(
     private val storyRepository: StoryRepository
 ): SubscribeStoryUseCase {
 
-    override suspend fun invoke(): List<StoryItem> {
+    override suspend fun invoke(): Flow<List<StoryItem>> {
         return storyRepository.getStories()
     }
 }

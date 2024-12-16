@@ -1,6 +1,5 @@
 package org.hrsh.story_kit.presentation.story
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,41 +32,40 @@ class StoryViewModel(
     private val _storySkip: MutableMap<Long, MutableStateFlow<Boolean>> = mutableMapOf()
 
     init {
-        getStories()
+        subscribeStories()
     }
 
-    private fun getStories() {
+    //<БД
+    private fun subscribeStories() {
         viewModelScope.launch {
-            _storyList.update { subscribeStoryUseCase() }
-            initFirstStory()
-            _storyList.value.forEach {
-                //println(it)
+            subscribeStoryUseCase().collect { result ->
+                _storyList.update { result }
+                //println(result.joinToString("\n"))
             }
+            initFirstStory()
         }
     }
 
     override fun addStory(storyItem: StoryItem) {
         viewModelScope.launch {
             insertStoryUseCase(storyItem)
-            initFirstStory()
-            getStories()
         }
     }
 
     override fun updateStory(storyItem: StoryItem) {
         viewModelScope.launch {
             updateStoryUseCase(storyItem)
-            getStories()
         }
     }
 
     override fun deleteStory(storyItem: StoryItem) {
         viewModelScope.launch {
             deleteStoryUseCase(storyItem)
-            getStories()
         }
     }
+    //БД>
 
+    //<subscribeStory
     override fun subscribeStoryView(id: Long): StateFlow<Boolean> {
         return _storyView.getOrPut(id) {
             MutableStateFlow(
@@ -87,7 +85,9 @@ class StoryViewModel(
     override fun subscribeStorySkip(id: Long): StateFlow<Boolean> {
         return _storySkip.getOrPut(id) { MutableStateFlow(false) }
     }
+    //subscribeStory>
 
+    //<storyEvent
     internal fun storyViewed(storyItem: StoryItem) {
         updateStory(storyItem.copy(isViewed = true))
 
@@ -112,6 +112,7 @@ class StoryViewModel(
             )
         )
     }
+    //storyEvent>
 
     internal fun showStory() {
         _storyState.update { it.copy(isShowStory = true) }

@@ -22,7 +22,10 @@ import org.hrsh.story_kit.presentation.story.Story
 import org.hrsh.story_kit.presentation.story.StoryViewModel
 
 @Composable
-fun MiniatureStories(content: Color = Color.Black, storyViewModel: StoryViewModel = Koin.di?.koin?.get<StoryViewModel>()!!) {
+fun MiniatureStories(
+    content: Color = Color.Black,
+    storyViewModel: StoryViewModel = Koin.di?.koin?.get<StoryViewModel>()!!
+) {
     val stories = storyViewModel.storyList.collectAsState().value
     val storyState = storyViewModel.storyState.collectAsState().value
     LazyRow(
@@ -34,14 +37,15 @@ fun MiniatureStories(content: Color = Color.Black, storyViewModel: StoryViewMode
         items(stories) { story ->
             Card(
                 modifier = Modifier.padding(start = 5.dp, end = 5.dp).background(Color.Transparent)
+                    .clip(RoundedCornerShape(20.dp)).size(100.dp)
             ) {
                 AsyncImage(
                     model = story.imagePreview,
                     contentDescription = "im4",
                     modifier = Modifier
-                        .background(content)
+                        .background(if (story.isViewed) Color.Transparent else Color.Black)
+                        .padding(if (story.isViewed) 0.dp else 5.dp)
                         .clip(RoundedCornerShape(20.dp))
-                        .size(100.dp)
                         .clickable {
                             storyViewModel.selectStory(story)
                             storyViewModel.showStory()
@@ -59,9 +63,9 @@ fun MiniatureStories(content: Color = Color.Black, storyViewModel: StoryViewMode
             nextPage = storyViewModel::nextPage,
             setStory = storyViewModel::setStory,
             onClose = {
-                if(storyState.isShowStory)
+                if (storyState.isShowStory)
                     storyViewModel.closeStory()
-                else if(storyState.hasFirstStory)
+                else if (storyState.hasFirstStory)
                     storyViewModel.closeFirstStory()
                 storyViewModel.unSelectStory()
             },
