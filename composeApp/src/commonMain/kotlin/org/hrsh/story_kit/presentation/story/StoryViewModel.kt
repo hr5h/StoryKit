@@ -31,6 +31,11 @@ class StoryViewModel(
     private val _storyLike: MutableMap<Long, MutableStateFlow<Boolean>> = mutableMapOf()
     private val _storySkip: MutableMap<Long, MutableStateFlow<Boolean>> = mutableMapOf()
 
+    internal val favoriteStoriesList: List<StoryItem>
+        get() = _storyList.value.filter { story ->
+            story.isFavorite
+        }
+
     init {
         subscribeStories()
     }
@@ -120,6 +125,22 @@ class StoryViewModel(
 
     internal fun closeStory() {
         _storyState.update { it.copy(isShowStory = false) }
+    }
+
+    internal fun showFavoriteStories() {
+        _storyState.update { it.copy(isShowFavoriteStories = true) }
+    }
+
+    internal fun closeFavoriteStories() {
+        _storyState.update { it.copy(isShowFavoriteStories = false) }
+    }
+
+    internal fun saveShowFavoriteStories() {
+        _storyState.update { it.copy(showFavorite = true) }
+    }
+
+    internal fun saveCloseFavoriteStories() {
+        _storyState.update { it.copy(showFavorite = false) }
     }
 
     internal fun selectStory(story: StoryItem) {

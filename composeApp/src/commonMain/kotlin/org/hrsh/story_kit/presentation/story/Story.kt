@@ -51,6 +51,7 @@ import org.hrsh.story_kit.presentation.page.PageVideo
 @Composable
 fun Story(
     stories: List<StoryItem>,
+    selectStoryItem: StoryItem,
     storyState: StoryState,
     prevPage: () -> Unit,
     nextPage: () -> Unit,
@@ -60,7 +61,6 @@ fun Story(
     storyLiked: (StoryItem) -> Unit,
     storyFavorited: (StoryItem) -> Unit,
 ) {
-    val selectStoryItem = storyState.currentStory.let { stories[it] }
     val pages =
         if (storyState.hasFirstStory) listOf(selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]])
         else stories.mapIndexed { index, storyItem ->
@@ -198,11 +198,16 @@ private fun BoxScope.Cross(onClose: () -> Unit) {
         endY = 600.0f
     )
     Box(
-        modifier = Modifier.fillMaxWidth().fillMaxHeight(5f).background(gradient)
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(5f)
+            .background(gradient)
             .align(Alignment.TopEnd),
     ) {
         IconButton(
-            modifier = Modifier.padding(top = 10.dp).align(Alignment.TopEnd),
+            modifier = Modifier
+                .padding(top = 10.dp)
+                .align(Alignment.TopEnd),
             onClick = {
                 onClose()
             }) {
