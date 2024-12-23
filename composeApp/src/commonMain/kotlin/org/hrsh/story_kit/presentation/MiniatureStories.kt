@@ -22,7 +22,7 @@ import org.hrsh.story_kit.presentation.story.Story
 import org.hrsh.story_kit.presentation.story.StoryViewModel
 
 @Composable
-fun MiniatureStories(
+internal fun MiniatureStories(
     content: Color = Color.Black,
     storyViewModel: StoryViewModel = Koin.di?.koin?.get<StoryViewModel>()!!
 ) {

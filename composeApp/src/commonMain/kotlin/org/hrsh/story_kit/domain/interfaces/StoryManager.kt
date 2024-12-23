@@ -3,7 +3,7 @@ package org.hrsh.story_kit.domain.interfaces
 import kotlinx.coroutines.flow.StateFlow
 import org.hrsh.story_kit.domain.entities.StoryItem
 
-internal interface StoryManager {
+interface StoryManager {
     fun addStory(storyItem: StoryItem)
     fun updateStory(storyItem: StoryItem)
     fun deleteStory(storyItem: StoryItem)

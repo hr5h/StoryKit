@@ -13,15 +13,16 @@ import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.interfaces.StoryManager
 import org.hrsh.story_kit.presentation.MiniatureStories
+import org.hrsh.story_kit.presentation.StoryKit
 import org.hrsh.story_kit.presentation.story.StoryViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
 fun App() {
-    val storyManager = (Koin.di?.koin?.get<StoryViewModel>()!!) as StoryManager
+    val storyManager = StoryKit.storyManager
     MaterialTheme {
-        Koin.setupKoin()
+        StoryKit(Color(red = 11, green = 172, blue = 65))
         //PageItemImage
         storyManager.addStory(
             StoryItem(
@@ -129,9 +130,5 @@ fun App() {
             }
         }
     }
-
-}
-
-object storyManager {
 
 }
