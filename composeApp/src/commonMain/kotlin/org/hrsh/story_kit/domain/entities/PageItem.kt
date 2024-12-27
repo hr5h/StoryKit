@@ -1,24 +1,26 @@
 package org.hrsh.story_kit.domain.entities
 
-sealed class PageItem {
+sealed class PageItem(open val timeShow: Float = 5f) {
     data class Image(
         val imageUrl: String,
         val text: String,
-        val timeShow: Int = 5
-    ) : PageItem()
+        override val timeShow: Float = 5f
+    ) : PageItem(timeShow)
 
     data class Video(
         val videoUrl: String,
-    ) : PageItem()
+        override val timeShow: Float = 5f
+    ) : PageItem(timeShow)
 
     data class Question(
         val imageUrl: String,
         val question: String,
-        val listAnswers: List<String>
-    ) : PageItem()
+        val listAnswers: List<String>,
+        override val timeShow: Float = 5f
+    ) : PageItem(timeShow)
 
     data class Game(
-        val name: String,
+        val name: String
     ) : PageItem()
 
     data object Error : PageItem()

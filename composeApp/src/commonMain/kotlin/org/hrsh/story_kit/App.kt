@@ -86,7 +86,6 @@ fun App() {
 //                ),
 //            )
 //        )
-        MiniatureStories(Color(red = 11, green = 172, blue = 65))
     }
 
     CoroutineScope(Dispatchers.IO).launch {

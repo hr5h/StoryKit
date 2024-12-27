@@ -10,13 +10,19 @@ class PageItemDbToDomainMapper() : (PageItemDb) -> PageItem? {
             PageType.IMAGE -> PageItem.Image(
                 imageUrl = pageItemDb.imageUrl ?: return null,
                 text = pageItemDb.text ?: return null,
-                timeShow = pageItemDb.timeShow ?: 5
+                timeShow = pageItemDb.timeShow ?: 5f
             )
-            PageType.VIDEO -> PageItem.Video(videoUrl = pageItemDb.videoUrl ?: return null)
+
+            PageType.VIDEO -> PageItem.Video(
+                videoUrl = pageItemDb.videoUrl ?: return null,
+                timeShow = pageItemDb.timeShow ?: 5f
+            )
+
             PageType.QUESTION -> PageItem.Question(
                 imageUrl = pageItemDb.imageUrl ?: return null,
                 question = pageItemDb.question ?: return null,
-                listAnswers = pageItemDb.listAnswers ?: return null
+                listAnswers = pageItemDb.listAnswers ?: return null,
+                timeShow = pageItemDb.timeShow ?: 5f
             )
         }
     }
