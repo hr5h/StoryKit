@@ -123,18 +123,19 @@ private fun ColumnScope.TopBar(
         val currentPage = stories[storyState.currentStory].listPages[storyState.currentPage[storyState.currentStory]]
         val indCurrentPage = storyState.currentPage[storyState.currentStory]
         var currentTime by remember { mutableFloatStateOf(0f) }
-        val animatedTime by animateFloatAsState(targetValue = currentTime)
 
         LaunchedEffect(indCurrentPage) {
             currentTime = 0f
             while (currentTime < 5f) {
-                delay(100)
-                currentTime += 0.1f
+                delay(20)
+                currentTime += 0.02f
             }
+
+            currentTime = 0f
             nextPage()
         }
 
-        TimeLine(selectStoryItem.listPages.size, indCurrentPage, animatedTime, currentPage.timeShow)
+        TimeLine(selectStoryItem.listPages.size, indCurrentPage, currentTime, currentPage.timeShow)
     }
 }
 

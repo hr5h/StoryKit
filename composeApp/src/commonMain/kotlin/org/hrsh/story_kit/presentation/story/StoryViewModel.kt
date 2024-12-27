@@ -121,6 +121,13 @@ class StoryViewModel(
     internal fun closeStory() {
         _storyState.update { it.copy(isShowStory = false) }
     }
+    internal fun closeAllStory() {
+        if (_storyState.value.isShowStory)
+            closeStory()
+        else if (_storyState.value.hasFirstStory)
+            closeFirstStory()
+        unSelectStory()
+    }
 
     internal fun selectStory(story: StoryItem) {
         _storyState.update {
@@ -177,6 +184,8 @@ class StoryViewModel(
 
         if (_storyState.value.currentStory < _storyList.value.size - 1) {
             _storyState.update { it.copy(currentStory = it.currentStory + 1) }
+        } else {
+            closeAllStory()
         }
     }
 
