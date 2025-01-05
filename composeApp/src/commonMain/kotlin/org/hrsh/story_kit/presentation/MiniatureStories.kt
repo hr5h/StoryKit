@@ -36,7 +36,7 @@ fun MiniatureStories(
 ) {
     val storyState = storyViewModel.storyState.collectAsState().value
     val favoriteStoriesList = storyViewModel.favoriteStoriesList
-    val stories = if(!storyState.showFavorite) storyViewModel.storyList.collectAsState().value else favoriteStoriesList
+    val stories = if(!storyState.showFavoriteStories) storyViewModel.storyFlowList.collectAsState().value else favoriteStoriesList
     LazyRow(
         modifier = Modifier
             .background(content)
@@ -103,7 +103,7 @@ fun MiniatureStories(
     if ((storyState.hasFirstStory || storyState.isShowStory) && storyState.currentStory != -1) {
         Story(
             stories = stories,
-            selectStoryItem = storyViewModel.storyList.value[storyState.currentStory],
+            selectStoryItem = storyViewModel.selectStoryItem,
             storyState = storyState,
             prevPage = storyViewModel::prevPage,
             nextPage = storyViewModel::nextPage,
@@ -114,7 +114,7 @@ fun MiniatureStories(
                 else if (storyState.hasFirstStory)
                     storyViewModel.closeFirstStory()
                 storyViewModel.unSelectStory()
-                if(storyState.showFavorite) {
+                if(storyState.showFavoriteStories) {
                     storyViewModel.showFavoriteStories()
                     storyViewModel.saveCloseFavoriteStories()
                 }

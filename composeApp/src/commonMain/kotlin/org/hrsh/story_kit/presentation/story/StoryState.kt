@@ -5,6 +5,8 @@ data class StoryState(
     val currentPage: List<Int> = emptyList(),
     val isShowStory: Boolean = false,
     val hasFirstStory: Boolean = false,
+    //нужно ли открыть окно с favoriteStories после закрытия истории
     val isShowFavoriteStories: Boolean = false,
-    val showFavorite: Boolean = false
+    //показываются ли favoriteStories
+    val showFavoriteStories: Boolean = false
 )
