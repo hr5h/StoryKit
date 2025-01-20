@@ -133,6 +133,13 @@ class StoryViewModel(
     internal fun closeStory() {
         _storyState.update { it.copy(isShowStory = false) }
     }
+    internal fun closeAllStory() {
+        if (_storyState.value.isShowStory)
+            closeStory()
+        else if (_storyState.value.hasFirstStory)
+            closeFirstStory()
+        unSelectStory()
+    }
 
     internal fun showFavoriteStories() {
         _storyState.update { it.copy(isShowFavoriteStories = true) }
@@ -213,6 +220,8 @@ class StoryViewModel(
 
         if (_storyState.value.currentStory < _storyFlowList.value.size - 1) {
             _storyState.update { it.copy(currentStory = it.currentStory + 1) }
+        } else {
+            closeAllStory()
         }
     }
 

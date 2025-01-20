@@ -8,20 +8,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.hrsh.story_kit.di.Koin
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
-import org.hrsh.story_kit.domain.interfaces.StoryManager
 import org.hrsh.story_kit.presentation.MiniatureStories
-import org.hrsh.story_kit.presentation.story.StoryViewModel
+import org.hrsh.story_kit.presentation.story.StoryKit
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
 fun App() {
-    val storyManager = (Koin.di?.koin?.get<StoryViewModel>()!!) as StoryManager
+    val storyManager = StoryKit.storyManager
     MaterialTheme {
-        Koin.setupKoin()
+        StoryKit(Color(red = 11, green = 172, blue = 65))
         //PageItemImage
         storyManager.addStory(
             StoryItem(
@@ -51,7 +49,7 @@ fun App() {
         storyManager.addStory(
             StoryItem(
                 id = 200,
-                imagePreview = "https://i01.fotocdn.net/s215/23442118aa73147b/public_pin_l/2920842511.jpg",
+                imagePreview = "https://avatars.mds.yandex.net/i?id=e339fc622756af285f34aa7777d37444_l-5234706-images-thumbs&n=13",
                 listPages = listOf(
                     PageItem.Image(
                         imageUrl = "https://avatars.mds.yandex.net/i?id=325bcdf905e6685f354011427095fa3f_l-5233671-images-thumbs&n=13",
@@ -85,7 +83,6 @@ fun App() {
 //                ),
 //            )
 //        )
-        MiniatureStories(Color(red = 11, green = 172, blue = 65))
     }
 
     CoroutineScope(Dispatchers.IO).launch {
@@ -129,9 +126,5 @@ fun App() {
             }
         }
     }
-
-}
-
-object storyManager {
 
 }

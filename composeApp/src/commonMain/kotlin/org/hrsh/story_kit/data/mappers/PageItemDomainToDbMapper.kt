@@ -13,13 +13,21 @@ class PageItemDomainToDbMapper() : (PageItem) -> PageItemDb {
                 text = pageItem.text,
                 timeShow = pageItem.timeShow
             )
-            is PageItem.Video -> PageItemDb(type = PageType.VIDEO, videoUrl = pageItem.videoUrl)
+
+            is PageItem.Video -> PageItemDb(
+                type = PageType.VIDEO,
+                videoUrl = pageItem.videoUrl,
+                timeShow = pageItem.timeShow
+            )
+
             is PageItem.Question -> PageItemDb(
                 type = PageType.QUESTION,
                 imageUrl = pageItem.imageUrl,
                 question = pageItem.question,
-                listAnswers = pageItem.listAnswers
+                listAnswers = pageItem.listAnswers,
+                timeShow = pageItem.timeShow
             )
+
             is PageItem.Error -> TODO()
             is PageItem.Game -> TODO()
         }

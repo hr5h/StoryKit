@@ -30,7 +30,7 @@ import org.hrsh.story_kit.presentation.story.StoryViewModel
 const val COUNT_FAVORITE_STORY = 4
 
 @Composable
-fun MiniatureStories(
+internal fun MiniatureStories(
     content: Color = Color.Black,
     storyViewModel: StoryViewModel = Koin.di?.koin?.get<StoryViewModel>()!!
 ) {
@@ -55,8 +55,8 @@ fun MiniatureStories(
                     model = story.imagePreview,
                     contentDescription = "im4",
                     modifier = Modifier
-                        .background(if (story.isViewed) Color.Transparent else Color.Black)
-                        .padding(if (story.isViewed) 0.dp else 5.dp)
+                        .background(if (story.isViewed) Color.Transparent else Color.Green)
+                        .padding(if (story.isViewed) 0.dp else 3.dp)
                         .clip(RoundedCornerShape(20.dp))
                         .clickable {
                             storyViewModel.selectStory(story)
@@ -109,15 +109,7 @@ fun MiniatureStories(
             nextPage = storyViewModel::nextPage,
             setStory = storyViewModel::setStory,
             onClose = {
-                if (storyState.isShowStory)
-                    storyViewModel.closeStory()
-                else if (storyState.hasFirstStory)
-                    storyViewModel.closeFirstStory()
-                storyViewModel.unSelectStory()
-                if(storyState.showFavoriteStories) {
-                    storyViewModel.showFavoriteStories()
-                    storyViewModel.saveCloseFavoriteStories()
-                }
+                storyViewModel.closeAllStory()
             },
             storyViewed = storyViewModel::storyViewed,
             storyLiked = storyViewModel::storyLiked,
