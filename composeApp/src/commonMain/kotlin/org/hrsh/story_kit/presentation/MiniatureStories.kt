@@ -63,11 +63,7 @@ internal fun MiniatureStories(
             nextPage = storyViewModel::nextPage,
             setStory = storyViewModel::setStory,
             onClose = {
-                if (storyState.isShowStory)
-                    storyViewModel.closeStory()
-                else if (storyState.hasFirstStory)
-                    storyViewModel.closeFirstStory()
-                storyViewModel.unSelectStory()
+                storyViewModel.closeAllStory()
             },
             storyViewed = storyViewModel::storyViewed,
             storyLiked = storyViewModel::storyLiked,

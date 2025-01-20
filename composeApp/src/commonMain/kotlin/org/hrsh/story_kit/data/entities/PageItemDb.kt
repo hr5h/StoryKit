@@ -11,9 +11,9 @@ data class PageItemDb(
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,
     val type: PageType,
+    val timeShow: Float? = null,
     val imageUrl: String? = null,
     val text: String? = null,
-    val timeShow: Int? = null,
     val videoUrl: String? = null,
     val question: String? = null,
     val listAnswers: List<String>? = null,

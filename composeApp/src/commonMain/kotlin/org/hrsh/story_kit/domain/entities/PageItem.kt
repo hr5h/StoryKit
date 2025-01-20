@@ -4,7 +4,7 @@ package org.hrsh.story_kit.domain.entities
  * Represents a page item that can be part of a story.
  * This sealed class can have different types of page items.
  */
-sealed class PageItem {
+sealed class PageItem(open val timeShow: Float = 5f) {
 
     /**
      * Represents an image page item.
@@ -18,8 +18,8 @@ sealed class PageItem {
     data class Image(
         val imageUrl: String,
         val text: String,
-        val timeShow: Int = 5
-    ) : PageItem()
+        override val timeShow: Float = 5f
+    ) : PageItem(timeShow)
 
     /**
      * Represents a video page item.
@@ -28,7 +28,8 @@ sealed class PageItem {
      */
     data class Video(
         val videoUrl: String,
-    ) : PageItem()
+        override val timeShow: Float = 5f
+    ) : PageItem(timeShow)
 
     /**
      * Represents a question page item.
@@ -40,8 +41,9 @@ sealed class PageItem {
     data class Question(
         val imageUrl: String,
         val question: String,
-        val listAnswers: List<String>
-    ) : PageItem()
+        val listAnswers: List<String>,
+        override val timeShow: Float = 5f
+    ) : PageItem(timeShow)
 
     /**
      * Represents a game page item.
@@ -49,7 +51,7 @@ sealed class PageItem {
      * @property name A string representing the name of the game.
      */
     data class Game(
-        val name: String,
+        val name: String
     ) : PageItem()
 
     /**

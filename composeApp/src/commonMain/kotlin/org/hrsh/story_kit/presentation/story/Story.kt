@@ -2,6 +2,7 @@ package org.hrsh.story_kit.presentation.story
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -27,12 +28,15 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -40,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
@@ -47,6 +52,7 @@ import org.hrsh.story_kit.presentation.page.PageError
 import org.hrsh.story_kit.presentation.page.PageImage
 import org.hrsh.story_kit.presentation.page.PageQuestion
 import org.hrsh.story_kit.presentation.page.PageVideo
+import kotlin.math.max
 
 @Composable
 fun Story(
@@ -72,19 +78,29 @@ fun Story(
             .background(Color.LightGray)
     ) {
         //TimeLine
-        TimeLine(storyState, stories, selectStoryItem)
+        TopBar(storyState, stories, selectStoryItem, nextPage)
         //Content
-        Content(prevPage, nextPage, storyState, pages, setStory, onClose, selectStoryItem, storyViewed)
+        Content(
+            prevPage,
+            nextPage,
+            storyState,
+            pages,
+            setStory,
+            onClose,
+            selectStoryItem,
+            storyViewed
+        )
         //LikeAndFavorite
         LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited)
     }
 }
 
 @Composable
-private fun ColumnScope.TimeLine(
+private fun ColumnScope.TopBar(
     storyState: StoryState,
     stories: List<StoryItem>,
-    selectStoryItem: StoryItem
+    selectStoryItem: StoryItem,
+    nextPage: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -93,16 +109,88 @@ private fun ColumnScope.TimeLine(
             .background(Color.Black)
             .padding(5.dp),
     ) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth(),
-            text = "Текущая история: ${storyState.currentStory + 1}/${stories.size}\n"
-                    + "Текущая страница: ${storyState.currentPage[storyState.currentStory] + 1}/${selectStoryItem.listPages.size}",
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            fontSize = 13.sp,
-            lineHeight = 14.sp
+//        Text(
+//            modifier = Modifier
+//                .fillMaxWidth(),
+//            text = "Текущая история: ${storyState.currentStory + 1}/${stories.size}\n"
+//                    + "Текущая страница: ${storyState.currentPage[storyState.currentStory] + 1}/${selectStoryItem.listPages.size}",
+//            color = Color.White,
+//            fontWeight = FontWeight.Bold,
+//            textAlign = TextAlign.Center,
+//            fontSize = 13.sp,
+//            lineHeight = 14.sp
+//        )
+        val currentPage = stories[storyState.currentStory].listPages[storyState.currentPage[storyState.currentStory]]
+        val indCurrentPage = storyState.currentPage[storyState.currentStory]
+        var currentTime by remember { mutableFloatStateOf(0f) }
+
+        LaunchedEffect(indCurrentPage) {
+            currentTime = 0f
+            while (currentTime < 5f) {
+                delay(20)
+                currentTime += 0.02f
+            }
+
+            currentTime = 0f
+            nextPage()
+        }
+
+        TimeLine(selectStoryItem.listPages.size, indCurrentPage, currentTime, currentPage.timeShow)
+    }
+}
+
+@Composable
+fun TimeLine(
+    countTimeLine: Int,
+    currentTimeLine: Int,
+    currentTime: Float,
+    maxTime: Float
+) {
+    Canvas(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Black)
+            .padding(10.dp)
+    ) {
+        val widthTimeLine = (size / countTimeLine.toFloat()).width
+        val heightTimeLine = 10.dp.toPx()
+        val offsetTimeLine = 2f
+        val cornerRadius = 10.dp.toPx()
+        (0..<countTimeLine).forEach {
+            drawRoundRect(
+                color = Color.White,
+                size = size.copy(
+                    height = heightTimeLine,
+                    width = widthTimeLine - offsetTimeLine * (countTimeLine - 1)
+                ),
+                topLeft = Offset(x = it * (widthTimeLine + offsetTimeLine), y = 0f),
+                cornerRadius = CornerRadius(x = cornerRadius, y = cornerRadius)
+            )
+        }
+        (0..<currentTimeLine).forEach {
+            drawRoundRect(
+                color = Color.Gray,
+                size = size.copy(
+                    height = heightTimeLine,
+                    width = widthTimeLine - offsetTimeLine * (countTimeLine - 1)
+                ),
+                topLeft = Offset(x = it * (widthTimeLine + offsetTimeLine), y = 0f),
+                cornerRadius = CornerRadius(x = cornerRadius, y = cornerRadius)
+            )
+        }
+        val leftTime = maxTime - currentTime
+        val widthCurrentTime = widthTimeLine / maxTime * leftTime
+        drawRoundRect(
+            color = Color.Gray,
+            size = size.copy(
+                height = heightTimeLine,
+                width = max(
+                    (widthTimeLine - widthCurrentTime) - offsetTimeLine * (countTimeLine - 1),
+                    0f
+                )
+            ),
+            topLeft = Offset(x = currentTimeLine * (widthTimeLine + offsetTimeLine), y = 0f),
+            cornerRadius = CornerRadius(x = cornerRadius, y = cornerRadius)
         )
     }
 }
@@ -241,7 +329,7 @@ private fun ColumnScope.LikeAndFavorite(
                     modifier = Modifier.size(40.dp),
                     imageVector = Icons.Default.Favorite,
                     contentDescription = "like",
-                    tint = if(selectStoryItem.isLike) Color.Red else Color.White
+                    tint = if (selectStoryItem.isLike) Color.Red else Color.White
                 )
                 Text(
                     modifier = Modifier
@@ -255,13 +343,13 @@ private fun ColumnScope.LikeAndFavorite(
         }
         IconButton(modifier = Modifier
             .padding(10.dp), onClick = {
-                storyFavorited(selectStoryItem)
+            storyFavorited(selectStoryItem)
         }) {
             Icon(
                 modifier = Modifier.size(40.dp),
                 imageVector = Icons.Default.Star,
                 contentDescription = "star",
-                tint = if(selectStoryItem.isFavorite) Color.Yellow else Color.White
+                tint = if (selectStoryItem.isFavorite) Color.Yellow else Color.White
             )
         }
     }
