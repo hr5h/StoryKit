@@ -21,8 +21,8 @@ class StoryViewModel(
     private val deleteStoryUseCase: DeleteStoryUseCase
 ) : ViewModel(), StoryManager {
 
-    private val _storyList: MutableStateFlow<List<StoryItem>> = MutableStateFlow(emptyList())
-    internal val storyList: StateFlow<List<StoryItem>> = _storyList.asStateFlow()
+    private val _storyFlowList: MutableStateFlow<List<StoryItem>> = MutableStateFlow(emptyList())
+    internal val storyFlowList: StateFlow<List<StoryItem>> = _storyFlowList.asStateFlow()
 
     private val _storyState: MutableStateFlow<StoryState> = MutableStateFlow(StoryState())
     internal val storyState: StateFlow<StoryState> = _storyState.asStateFlow()
@@ -30,6 +30,18 @@ class StoryViewModel(
     private val _storyView: MutableMap<Long, MutableStateFlow<Boolean>> = mutableMapOf()
     private val _storyLike: MutableMap<Long, MutableStateFlow<Boolean>> = mutableMapOf()
     private val _storySkip: MutableMap<Long, MutableStateFlow<Boolean>> = mutableMapOf()
+
+    internal val selectStoryItem: StoryItem
+        get() = if (!_storyState.value.showFavoriteStories)
+            storyFlowList.value[_storyState.value.currentStory]
+        else
+            favoriteStoriesList[_storyState.value.currentStory]
+
+    internal val favoriteStoriesList: List<StoryItem>
+        get() = _storyFlowList.value.filter { story ->
+            story.isFavorite
+        }
+
 
     init {
         subscribeStories()
@@ -39,10 +51,10 @@ class StoryViewModel(
     private fun subscribeStories() {
         viewModelScope.launch {
             subscribeStoryUseCase().collect { result ->
-                _storyList.update { result }
+                _storyFlowList.update { result }
                 //println(result.joinToString("\n"))
+                initFirstStory()
             }
-            initFirstStory()
         }
     }
 
@@ -69,7 +81,7 @@ class StoryViewModel(
     override fun subscribeStoryView(id: Long): StateFlow<Boolean> {
         return _storyView.getOrPut(id) {
             MutableStateFlow(
-                _storyList.value.firstOrNull { it.id == id }?.isViewed ?: false
+                _storyFlowList.value.firstOrNull { it.id == id }?.isViewed ?: false
             )
         }
     }
@@ -77,7 +89,7 @@ class StoryViewModel(
     override fun subscribeStoryLike(id: Long): StateFlow<Boolean> {
         return _storyLike.getOrPut(id) {
             MutableStateFlow(
-                _storyList.value.firstOrNull { it.id == id }?.isLike ?: false
+                _storyFlowList.value.firstOrNull { it.id == id }?.isLike ?: false
             )
         }
     }
@@ -129,11 +141,35 @@ class StoryViewModel(
         unSelectStory()
     }
 
+    internal fun showFavoriteStories() {
+        _storyState.update { it.copy(isShowFavoriteStories = true) }
+    }
+
+    internal fun closeFavoriteStories() {
+        _storyState.update { it.copy(isShowFavoriteStories = false) }
+    }
+
+    internal fun saveShowFavoriteStories() {
+        _storyState.update { it.copy(showFavoriteStories = true) }
+    }
+
+    internal fun saveCloseFavoriteStories() {
+        _storyState.update { it.copy(showFavoriteStories = false) }
+    }
+
     internal fun selectStory(story: StoryItem) {
-        _storyState.update {
-            it.copy(
-                currentStory = _storyList.value.indexOf(story),
-                currentPage = _storyList.value.map { 0 })
+        if (!_storyState.value.isShowFavoriteStories) {
+            _storyState.update {
+                it.copy(
+                    currentStory = _storyFlowList.value.indexOf(story),
+                    currentPage = _storyFlowList.value.map { 0 })
+            }
+        } else {
+            _storyState.update {
+                it.copy(
+                    currentStory = favoriteStoriesList.indexOf(story),
+                    currentPage = favoriteStoriesList.map { 0 })
+            }
         }
     }
 
@@ -160,7 +196,7 @@ class StoryViewModel(
     internal fun nextPage() {
         if (_storyState.value.currentStory == -1) return
 
-        if (_storyState.value.currentPage[_storyState.value.currentStory] < _storyList.value[_storyState.value.currentStory].listPages.size - 1) {
+        if (_storyState.value.currentPage[_storyState.value.currentStory] < _storyFlowList.value[_storyState.value.currentStory].listPages.size - 1) {
             val newList = _storyState.value.currentPage.toMutableList()
             newList[_storyState.value.currentStory] += 1
             _storyState.update { state ->
@@ -182,7 +218,7 @@ class StoryViewModel(
     private fun nextStory() {
         if (_storyState.value.currentStory == -1) return
 
-        if (_storyState.value.currentStory < _storyList.value.size - 1) {
+        if (_storyState.value.currentStory < _storyFlowList.value.size - 1) {
             _storyState.update { it.copy(currentStory = it.currentStory + 1) }
         } else {
             closeAllStory()
@@ -197,7 +233,7 @@ class StoryViewModel(
         if (_storyState.value.currentStory == -1) {
             _storyState.update {
                 it.copy(
-                    currentStory = _storyList.value.indexOf(_storyList.value.firstOrNull { first -> first.isStartStory }),
+                    currentStory = _storyFlowList.value.indexOf(_storyFlowList.value.firstOrNull { first -> first.isStartStory }),
                     currentPage = it.currentPage + 0
                 )
             }
