@@ -14,7 +14,7 @@ import org.hrsh.story_kit.domain.usecases.InsertStoryUseCase
 import org.hrsh.story_kit.domain.usecases.SubscribeStoryUseCase
 import org.hrsh.story_kit.domain.usecases.UpdateStoryUseCase
 
-class StoryViewModel(
+internal class StoryViewModel(
     private val subscribeStoryUseCase: SubscribeStoryUseCase,
     private val insertStoryUseCase: InsertStoryUseCase,
     private val updateStoryUseCase: UpdateStoryUseCase,
@@ -130,15 +130,20 @@ class StoryViewModel(
         _storyState.update { it.copy(isShowStory = true) }
     }
 
-    internal fun closeStory() {
+    private fun closeStory() {
         _storyState.update { it.copy(isShowStory = false) }
     }
+
     internal fun closeAllStory() {
         if (_storyState.value.isShowStory)
             closeStory()
         else if (_storyState.value.hasFirstStory)
             closeFirstStory()
         unSelectStory()
+        if(_storyState.value.showFavoriteStories) {
+            showFavoriteStories()
+            saveCloseFavoriteStories()
+        }
     }
 
     internal fun showFavoriteStories() {
@@ -242,7 +247,7 @@ class StoryViewModel(
         }
     }
 
-    internal fun closeFirstStory() {
+    private fun closeFirstStory() {
         _storyState.update { it.copy(hasFirstStory = false) }
     }
 }
