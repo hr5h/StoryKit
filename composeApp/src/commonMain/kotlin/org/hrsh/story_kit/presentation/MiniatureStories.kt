@@ -43,8 +43,8 @@ internal fun MiniatureStories(
                     model = story.imagePreview,
                     contentDescription = "im4",
                     modifier = Modifier
-                        .background(if (story.isViewed) Color.Transparent else Color.Black)
-                        .padding(if (story.isViewed) 0.dp else 5.dp)
+                        .background(if (story.isViewed) Color.Transparent else Color.Green)
+                        .padding(if (story.isViewed) 0.dp else 3.dp)
                         .clip(RoundedCornerShape(20.dp))
                         .clickable {
                             storyViewModel.selectStory(story)

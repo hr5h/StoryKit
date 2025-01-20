@@ -129,3 +129,7 @@ dependencies {
 room {
     schemaDirectory("$projectDir/schemas")
 }
+
+subprojects {
+    apply(plugin = "org.jetbrains.dokka")
+}
