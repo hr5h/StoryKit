@@ -12,7 +12,7 @@ sealed class PageItem(open val timeShow: Float = 5f) {
      * @property imageUrl A string representing the URL of the image that will be displayed
      *                    as the main content.
      * @property text A string that contains text to be shown at the bottom of the image.
-     * @property timeShow An integer representing the duration (in seconds) for which the
+     * @property timeShow A float representing the duration (in seconds) for which the
      *                    story will be displayed.
      */
     data class Image(
@@ -25,6 +25,8 @@ sealed class PageItem(open val timeShow: Float = 5f) {
      * Represents a video page item.
      *
      * @property videoUrl A string representing the URL of the video that will be displayed.
+     * @property timeShow A float representing the duration (in seconds) for which the
+     *                    video will be displayed.
      */
     data class Video(
         val videoUrl: String,
@@ -37,6 +39,8 @@ sealed class PageItem(open val timeShow: Float = 5f) {
      * @property imageUrl A string representing the URL of the image associated with the question.
      * @property question A string containing the question that will be displayed.
      * @property listAnswers A list of strings representing the possible answers that can be selected.
+     * @property timeShow A float representing the duration (in seconds) for which the
+     *                    question will be displayed.
      */
     data class Question(
         val imageUrl: String,
