@@ -1,5 +1,7 @@
 package org.hrsh.story_kit.di
 
+import org.hrsh.story_kit.domain.usecases.DeleteAllStoryUseCase
+import org.hrsh.story_kit.domain.usecases.DeleteAllStoryUseCaseImpl
 import org.hrsh.story_kit.domain.usecases.DeleteStoryUseCase
 import org.hrsh.story_kit.domain.usecases.DeleteStoryUseCaseImpl
 import org.hrsh.story_kit.domain.usecases.InsertStoryUseCase
@@ -17,5 +19,6 @@ fun domainModule(): Module {
         single<InsertStoryUseCase> { InsertStoryUseCaseImpl(get()) }
         single<UpdateStoryUseCase> { UpdateStoryUseCaseImpl(get()) }
         single<DeleteStoryUseCase> { DeleteStoryUseCaseImpl(get()) }
+        single<DeleteAllStoryUseCase> { DeleteAllStoryUseCaseImpl(get()) }
     }
 }

@@ -36,4 +36,8 @@ class StoryRepositoryImpl(
         val storyItemDb = storyItemDomainToDbMapper(storyItem)
         storyDao.delete(storyItemDb)
     }
+
+    override suspend fun deleteAllStory() {
+        storyDao.deleteAll()
+    }
 }

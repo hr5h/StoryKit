@@ -22,4 +22,7 @@ interface StoryDao {
 
     @Delete
     suspend fun delete(storyItemDb: StoryItemDb)
+
+    @Query("DELETE FROM ${StoryItemDb.STORY_TABLE_NAME}")
+    suspend fun deleteAll()
 }

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.interfaces.StoryManager
+import org.hrsh.story_kit.domain.usecases.DeleteAllStoryUseCase
 import org.hrsh.story_kit.domain.usecases.DeleteStoryUseCase
 import org.hrsh.story_kit.domain.usecases.InsertStoryUseCase
 import org.hrsh.story_kit.domain.usecases.SubscribeStoryUseCase
@@ -18,7 +19,8 @@ internal class StoryViewModel(
     private val subscribeStoryUseCase: SubscribeStoryUseCase,
     private val insertStoryUseCase: InsertStoryUseCase,
     private val updateStoryUseCase: UpdateStoryUseCase,
-    private val deleteStoryUseCase: DeleteStoryUseCase
+    private val deleteStoryUseCase: DeleteStoryUseCase,
+    private val deleteAllStoryUseCase: DeleteAllStoryUseCase
 ) : ViewModel(), StoryManager {
 
     private val _storyFlowList: MutableStateFlow<List<StoryItem>> = MutableStateFlow(emptyList())
@@ -73,6 +75,12 @@ internal class StoryViewModel(
     override fun deleteStory(storyItem: StoryItem) {
         viewModelScope.launch {
             deleteStoryUseCase(storyItem)
+        }
+    }
+
+    override fun deleteAllStory() {
+        viewModelScope.launch {
+            deleteAllStoryUseCase.invoke()
         }
     }
     //БД>

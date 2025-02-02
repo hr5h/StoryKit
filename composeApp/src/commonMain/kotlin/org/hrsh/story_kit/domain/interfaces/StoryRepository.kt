@@ -9,4 +9,5 @@ interface StoryRepository {
     suspend fun postStory(storyItem: StoryItem)
     suspend fun updateStory(storyItem: StoryItem)
     suspend fun deleteStory(storyItem: StoryItem)
+    suspend fun deleteAllStory()
 }

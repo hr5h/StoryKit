@@ -30,6 +30,11 @@ interface StoryManager {
     fun deleteStory(storyItem: StoryItem)
 
     /**
+     * Deletes all story items.
+     */
+    fun deleteAllStory()
+
+    /**
      * Subscribes to changes in the visibility state of a story.
      *
      * @param id The unique identifier of the story.
