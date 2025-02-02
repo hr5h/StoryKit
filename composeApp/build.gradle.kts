@@ -76,6 +76,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 }
 
@@ -84,6 +87,7 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         applicationId = "org.hrsh.story_kit"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
@@ -113,6 +117,13 @@ android {
 }
 
 dependencies {
+    androidTestImplementation(libs.mockito.android)
+    implementation(libs.mockito.core)
+    testImplementation("junit:junit:4.13.2")
+
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("androidx.test.ext:junit-ktx:1.1.3")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     debugImplementation(compose.uiTooling)
     val composeBom = platform("androidx.compose:compose-bom:2023.10.00")
     implementation(composeBom)
