@@ -72,9 +72,12 @@ internal class StoryViewModel(
         }
     }
 
-    override fun deleteStory(storyItem: StoryItem) {
+    override fun deleteStory(id: Long) {
         viewModelScope.launch {
-            deleteStoryUseCase(storyItem)
+            val storyItem = _storyFlowList.value.firstOrNull { it.id == id }
+            if(storyItem != null) {
+                deleteStoryUseCase(storyItem)
+            }
         }
     }
 

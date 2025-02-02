@@ -25,9 +25,9 @@ interface StoryManager {
     /**
      * Deletes a story item.
      *
-     * @param storyItem The story item to be deleted.
+     * @param id The unique identifier of the story item to be deleted.
      */
-    fun deleteStory(storyItem: StoryItem)
+    fun deleteStory(id: Long)
 
     /**
      * Deletes all story items.
