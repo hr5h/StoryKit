@@ -1,25 +1,54 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.room)
 
     id("com.google.devtools.ksp")
     kotlin("plugin.serialization")
+
+    id("maven-publish")
+}
+
+group = "org.hrsh.story_kit"
+version = "1.0.0"
+
+publishing.publications
+    .withType<MavenPublication>()
+    .configureEach {
+        groupId = "org.hrsh.story_kit"
+        version = "1.0.0"
+    }
+
+publishing {
+    repositories {
+        mavenLocal()
+
+        maven {
+            name = "BuildDir"
+            url = uri(rootProject.layout.buildDirectory.dir("maven-repo"))
+        }
+    }
 }
 
 kotlin {
     androidTarget {
+        publishLibraryVariants("release")
+        withSourcesJar(publish = true)
+
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
+    val xcf = XCFramework()
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -28,11 +57,12 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            xcf.add(this)
         }
     }
-    
+
     sourceSets {
-        
+
         androidMain.dependencies {
             //OkHttp
             implementation(libs.ktor.client.okhttp)
@@ -84,11 +114,7 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.hrsh.story_kit"
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
     }
     packaging {
         resources {

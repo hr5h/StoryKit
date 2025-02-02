@@ -10,4 +10,5 @@ plugins {
     alias(libs.plugins.ksp) apply false
     kotlin("plugin.serialization") version "1.5.0" apply false
     id("org.jetbrains.dokka") version "2.0.0"
+    alias(libs.plugins.kotlinAndroid) apply false
 }
