@@ -1,5 +1,6 @@
 package org.hrsh.story_kit.domain.interfaces
 
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import org.hrsh.story_kit.domain.entities.StoryItem
 
@@ -35,26 +36,23 @@ interface StoryManager {
     fun deleteAllStory()
 
     /**
-     * Subscribes to changes in the visibility state of a story.
+     * Subscribes to changes in the history view status.
      *
-     * @param id The unique identifier of the story.
-     * @return A [StateFlow] that emits a boolean indicating the visibility state of the story.
+     * @return A [Flow], which outputs a long history ID when viewing the history.
      */
-    fun subscribeStoryView(id: Long): StateFlow<Boolean>
+    fun subscribeStoryView(): Flow<Long>
 
     /**
      * Subscribes to changes in the like state of a story.
      *
-     * @param id The unique identifier of the story.
-     * @return A [StateFlow] that emits a boolean indicating whether the story is liked.
+     * @return A [Flow] that emits a Pair containing the story's ID and a Boolean indicating whether the story is liked.
      */
-    fun subscribeStoryLike(id: Long): StateFlow<Boolean>
+    fun subscribeStoryLike(): Flow<Pair<Long, Boolean>>
 
     /**
      * Subscribes to changes in the skip state of a story.
      *
-     * @param id The unique identifier of the story.
-     * @return A [StateFlow] that emits a boolean indicating whether the story has been skipped.
+     * @return A [Flow] that emits a Pair containing the story's ID and a Boolean indicating whether the story has been skipped.
      */
-    fun subscribeStorySkip(id: Long): StateFlow<Boolean>
+    fun subscribeStorySkip(): Flow<Pair<Long, Boolean>>
 }

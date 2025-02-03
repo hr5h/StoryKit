@@ -2,9 +2,14 @@ package org.hrsh.story_kit.presentation.story
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.hrsh.story_kit.domain.entities.StoryItem
@@ -29,9 +34,9 @@ internal class StoryViewModel(
     private val _storyState: MutableStateFlow<StoryState> = MutableStateFlow(StoryState())
     internal val storyState: StateFlow<StoryState> = _storyState.asStateFlow()
 
-    private val _storyView: MutableMap<Long, MutableStateFlow<Boolean>> = mutableMapOf()
-    private val _storyLike: MutableMap<Long, MutableStateFlow<Boolean>> = mutableMapOf()
-    private val _storySkip: MutableMap<Long, MutableStateFlow<Boolean>> = mutableMapOf()
+    private val _storyView: MutableSharedFlow<Long> = MutableSharedFlow()
+    private val _storyLike: MutableSharedFlow<Pair<Long, Boolean>> = MutableSharedFlow()
+    private val _storySkip: MutableSharedFlow<Pair<Long, Boolean>> = MutableSharedFlow()
 
     internal val selectStoryItem: StoryItem
         get() = if (!_storyState.value.showFavoriteStories)
@@ -89,24 +94,16 @@ internal class StoryViewModel(
     //БД>
 
     //<subscribeStory
-    override fun subscribeStoryView(id: Long): StateFlow<Boolean> {
-        return _storyView.getOrPut(id) {
-            MutableStateFlow(
-                _storyFlowList.value.firstOrNull { it.id == id }?.isViewed ?: false
-            )
-        }
+    override fun subscribeStoryView(): Flow<Long> {
+        return _storyView.asSharedFlow()
     }
 
-    override fun subscribeStoryLike(id: Long): StateFlow<Boolean> {
-        return _storyLike.getOrPut(id) {
-            MutableStateFlow(
-                _storyFlowList.value.firstOrNull { it.id == id }?.isLike ?: false
-            )
-        }
+    override fun subscribeStoryLike(): Flow<Pair<Long, Boolean>> {
+        return _storyLike.asSharedFlow()
     }
 
-    override fun subscribeStorySkip(id: Long): StateFlow<Boolean> {
-        return _storySkip.getOrPut(id) { MutableStateFlow(false) }
+    override fun subscribeStorySkip(): Flow<Pair<Long, Boolean>> {
+        return _storySkip.asSharedFlow()
     }
     //subscribeStory>
 
@@ -114,7 +111,9 @@ internal class StoryViewModel(
     internal fun storyViewed(storyItem: StoryItem) {
         updateStory(storyItem.copy(isViewed = true))
 
-        _storyView[storyItem.id]?.update { true }
+        viewModelScope.launch {
+            _storyView.emit(storyItem.id)
+        }
     }
 
     internal fun storyLiked(storyItem: StoryItem) {
@@ -125,7 +124,9 @@ internal class StoryViewModel(
             )
         )
 
-        _storyLike[storyItem.id]?.update { !storyItem.isLike }
+        viewModelScope.launch {
+            _storyLike.emit(Pair(storyItem.id, !storyItem.isLike))
+        }
     }
 
     internal fun storyFavorited(storyItem: StoryItem) {
@@ -189,10 +190,8 @@ internal class StoryViewModel(
         }
     }
 
-    internal fun unSelectStory() {
-        _storyState.update {
-            it.copy(currentStory = -1)
-        }
+    internal fun setStory(ind: Int) {
+        _storyState.update { it.copy(currentStory = ind) }
     }
 
     internal fun prevPage() {
@@ -241,8 +240,10 @@ internal class StoryViewModel(
         }
     }
 
-    internal fun setStory(ind: Int) {
-        _storyState.update { it.copy(currentStory = ind) }
+    private fun unSelectStory() {
+        _storyState.update {
+            it.copy(currentStory = -1)
+        }
     }
 
     private fun initFirstStory() {
