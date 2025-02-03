@@ -30,7 +30,6 @@ fun PageQuestion(itemQuestion: PageItem.Question, imageSize: Float) {
                 scaleX = imageSize
                 scaleY = imageSize
             }
-            .background(Color.Black)
             .padding(5.dp)
     ) {
         AsyncImage(

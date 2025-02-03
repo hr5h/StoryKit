@@ -10,7 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
-import org.hrsh.story_kit.presentation.MiniatureStories
+import org.hrsh.story_kit.presentation.story.StoryColors
 import org.hrsh.story_kit.presentation.story.StoryKit
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -19,7 +19,13 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App() {
     val storyManager = StoryKit.storyManager
     MaterialTheme {
-        StoryKit(Color(red = 11, green = 172, blue = 65))
+        val storyColors = StoryColors(
+            miniature = Color(red = 11, green = 172, blue = 65),
+            storyStroke = Color.Green,
+            favoritesPreview = Color(144, 238, 144),
+            favoritesDialog = Color(144, 238, 144),
+        )
+        StoryKit(storyColors)
         //PageItemImage
         storyManager.addStory(
             StoryItem(
@@ -103,4 +109,10 @@ fun App() {
         }
     }
 
+    CoroutineScope(Dispatchers.IO).launch {
+        delay(2000)
+        launch {
+            //storyManager.deleteAllStory()
+        }
+    }
 }

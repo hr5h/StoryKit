@@ -33,7 +33,6 @@ fun PageError(pageSize: Float) {
                 scaleY = pageSize
             }
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.Gray)
             .padding(5.dp),
     ) {
         Column(

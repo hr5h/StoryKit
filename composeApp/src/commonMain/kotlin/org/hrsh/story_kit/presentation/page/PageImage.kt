@@ -1,6 +1,5 @@
 package org.hrsh.story_kit.presentation.page
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,7 +29,6 @@ fun PageImage(itemImage: PageItem.Image, imageSize: Float) {
                 scaleX = imageSize
                 scaleY = imageSize
             }
-            .background(Color.Black)
             .padding(5.dp)
     ) {
         AsyncImage(
@@ -45,7 +43,6 @@ fun PageImage(itemImage: PageItem.Image, imageSize: Float) {
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .background(Color(0x80000000))
                 .padding(vertical = 10.dp)
                 .wrapContentHeight(Alignment.CenterVertically)
         ) {

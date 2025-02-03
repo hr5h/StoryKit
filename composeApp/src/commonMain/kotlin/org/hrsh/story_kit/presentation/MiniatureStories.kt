@@ -2,7 +2,6 @@ package org.hrsh.story_kit.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,18 +19,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import coil3.compose.AsyncImage
 import org.hrsh.story_kit.di.Koin
-import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.presentation.story.Story
+import org.hrsh.story_kit.presentation.story.StoryColors
 import org.hrsh.story_kit.presentation.story.StoryViewModel
 
 const val COUNT_FAVORITE_STORY = 4
 
 @Composable
 internal fun MiniatureStories(
-    content: Color = Color.Black,
+    colors: StoryColors,
     storyViewModel: StoryViewModel = Koin.di?.koin?.get<StoryViewModel>()!!
 ) {
     val storyState = storyViewModel.storyState.collectAsState().value
@@ -39,7 +37,7 @@ internal fun MiniatureStories(
     val stories = if(!storyState.showFavoriteStories) storyViewModel.storyFlowList.collectAsState().value else favoriteStoriesList
     LazyRow(
         modifier = Modifier
-            .background(content)
+            .background(colors.miniature)
             .fillMaxWidth()
             .padding(10.dp)
     ) {
@@ -55,7 +53,7 @@ internal fun MiniatureStories(
                     model = story.imagePreview,
                     contentDescription = "im4",
                     modifier = Modifier
-                        .background(if (story.isViewed) Color.Transparent else Color.Green)
+                        .background(if (story.isViewed) Color.Transparent else colors.storyStroke)
                         .padding(if (story.isViewed) 0.dp else 3.dp)
                         .clip(RoundedCornerShape(20.dp))
                         .clickable {
@@ -78,7 +76,7 @@ internal fun MiniatureStories(
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         modifier = Modifier
-                            .background(Color.LightGray)
+                            .background(colors.favoritesPreview)
                             .clickable {
                                 storyViewModel.showFavoriteStories()
                             }
@@ -114,6 +112,7 @@ internal fun MiniatureStories(
             storyViewed = storyViewModel::storyViewed,
             storyLiked = storyViewModel::storyLiked,
             storyFavorited = storyViewModel::storyFavorited,
+            colors
         )
     }
     if (storyState.isShowFavoriteStories) {
@@ -127,50 +126,9 @@ internal fun MiniatureStories(
                 storyViewModel::selectStory,
                 storyViewModel::showStory,
                 storyViewModel::saveShowFavoriteStories,
-                storyViewModel::closeFavoriteStories
+                storyViewModel::closeFavoriteStories,
+                colors
             )
-        }
-    }
-}
-
-@Composable
-fun ShowFavoriteStories(
-    favoriteStoriesList: List<StoryItem>,
-    selectStory: (StoryItem) -> Unit,
-    showStory: () -> Unit,
-    saveShowFavoriteStories: () -> Unit,
-    closeFavoriteStories: () -> Unit,
-) {
-    Dialog(onDismissRequest = { closeFavoriteStories() }) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxSize(0.5f),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .background(Color.LightGray)
-            ) {
-                items(favoriteStoriesList) { story ->
-                    AsyncImage(
-                        model = story.imagePreview,
-                        contentDescription = "im4",
-                        modifier = Modifier
-                            .background(Color.Transparent)
-                            .padding(10.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .clickable {
-                                selectStory(story)
-                                saveShowFavoriteStories()
-                                showStory()
-                                closeFavoriteStories()
-                            },
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
         }
     }
 }

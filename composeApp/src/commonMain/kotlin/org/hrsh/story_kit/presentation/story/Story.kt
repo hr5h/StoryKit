@@ -66,6 +66,7 @@ fun Story(
     storyViewed: (StoryItem) -> Unit,
     storyLiked: (StoryItem) -> Unit,
     storyFavorited: (StoryItem) -> Unit,
+    colors: StoryColors
 ) {
     val pages =
         if (storyState.hasFirstStory) listOf(selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]])
@@ -75,10 +76,9 @@ fun Story(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.LightGray)
     ) {
         //TimeLine
-        TopBar(storyState, stories, selectStoryItem, nextPage)
+        TopBar(storyState, stories, selectStoryItem, nextPage, colors)
         //Content
         Content(
             prevPage,
@@ -88,10 +88,11 @@ fun Story(
             setStory,
             onClose,
             selectStoryItem,
-            storyViewed
+            storyViewed,
+            colors
         )
         //LikeAndFavorite
-        LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited)
+        LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited, colors)
     }
 }
 
@@ -101,12 +102,13 @@ private fun ColumnScope.TopBar(
     stories: List<StoryItem>,
     selectStoryItem: StoryItem,
     nextPage: () -> Unit,
+    colors: StoryColors
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .weight(1f)
-            .background(Color.Black)
+            .background(colors.storyTopBar)
             .padding(5.dp),
     ) {
 //        Text(
@@ -135,7 +137,7 @@ private fun ColumnScope.TopBar(
             nextPage()
         }
 
-        TimeLine(selectStoryItem.listPages.size, indCurrentPage, currentTime, currentPage.timeShow)
+        TimeLine(selectStoryItem.listPages.size, indCurrentPage, currentTime, currentPage.timeShow, colors)
     }
 }
 
@@ -144,12 +146,13 @@ fun TimeLine(
     countTimeLine: Int,
     currentTimeLine: Int,
     currentTime: Float,
-    maxTime: Float
+    maxTime: Float,
+    colors: StoryColors
 ) {
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Black)
+            .background(colors.storyTopBar)
             .padding(10.dp)
     ) {
         val widthTimeLine = (size / countTimeLine.toFloat()).width
@@ -204,13 +207,14 @@ private fun ColumnScope.Content(
     setStory: (Int) -> Unit,
     onClose: () -> Unit,
     selectStoryItem: StoryItem,
-    storyViewed: (StoryItem) -> Unit
+    storyViewed: (StoryItem) -> Unit,
+    colors: StoryColors
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .weight(17f)
-            .background(Color.Black)
+            .background(colors.storyBackground)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = { offset ->
@@ -313,12 +317,13 @@ private fun ColumnScope.LikeAndFavorite(
     selectStoryItem: StoryItem,
     storyLiked: (StoryItem) -> Unit,
     storyFavorited: (StoryItem) -> Unit,
+    colors: StoryColors
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .weight(2f)
-            .background(Color.Black)
+            .background(colors.storyBottomBar)
             .padding(5.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
