@@ -1,3 +1,4 @@
+import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -78,6 +79,11 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(kotlin("test-annotations-common"))
+            implementation(libs.assertk)
+
+            @OptIn(ExperimentalComposeLibrary::class)
+            implementation(compose.uiTest)
         }
     }
 }
@@ -117,6 +123,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.ui.test.junit4.android)
     androidTestImplementation(libs.mockito.android)
     implementation(libs.mockito.core)
     testImplementation("junit:junit:4.13.2")

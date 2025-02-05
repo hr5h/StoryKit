@@ -28,6 +28,10 @@ ksp = "2.0.21-1.0.27"
 mockitoCore = "5.3.1"
 testng = "6.9.6"
 junitJupiter = "5.8.1"
+assertk = "0.28.1"
+coreKtx = "1.6.1"
+composeTest = "1.6.8"
+uiTestJunit4Android = "1.7.7"
 [libraries]
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Exoplayer" }
 androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3Exoplayer" }
@@ -62,6 +66,11 @@ sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 testng = { group = "org.testng", name = "testng", version.ref = "testng" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
+compose-ui-test-junit4-android = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "composeTest" }
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "composeTest" }
+core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtx" }
+androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
