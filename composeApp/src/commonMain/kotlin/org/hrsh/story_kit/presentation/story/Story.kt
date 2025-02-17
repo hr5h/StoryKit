@@ -313,7 +313,7 @@ private fun BoxScope.Cross(onClose: () -> Unit) {
 }
 
 @Composable
-private fun ColumnScope.LikeAndFavorite(
+internal fun ColumnScope.LikeAndFavorite(
     selectStoryItem: StoryItem,
     storyLiked: (StoryItem) -> Unit,
     storyFavorited: (StoryItem) -> Unit,

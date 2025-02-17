@@ -1,6 +1,7 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -15,6 +16,8 @@ plugins {
 
 kotlin {
     androidTarget {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -81,7 +84,6 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(kotlin("test-annotations-common"))
             implementation(libs.assertk)
-
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
         }
@@ -123,7 +125,11 @@ android {
 }
 
 dependencies {
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4-android:1.6.8")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.8")
+
     implementation(libs.androidx.ui.test.junit4.android)
+    implementation(libs.androidx.ui.test.android)
     androidTestImplementation(libs.mockito.android)
     implementation(libs.mockito.core)
     testImplementation("junit:junit:4.13.2")
