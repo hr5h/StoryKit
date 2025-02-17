@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -55,28 +57,23 @@ fun PageQuestion(itemQuestion: PageItem.Question, imageSize: Float) {
                 .align(Alignment.BottomCenter)
         ) {
             for (i in itemQuestion.listAnswers) {
-//                Button(
-//                    modifier = Modifier
-//                    .padding(vertical = 5.dp)
-//                    .fillMaxWidth()
-//                    .padding(horizontal = 20.dp)
-//                    .background(Color.White),
-//                    onClick = {}
-//                    )
-//                {
+                Button(
+                    modifier = Modifier
+                    .padding(vertical = 5.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                    shape = RoundedCornerShape(30.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor =  Color.White),
+                    onClick = { }
+                    )
+                {
                     Text(
-                        modifier = Modifier
-                            .padding(vertical = 5.dp)
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp)
-                            .clip(RoundedCornerShape(30.dp))
-                            .background(Color.White),
                         text = i,
                         fontSize = 28.sp,
                         color = Color.Black,
                         textAlign = TextAlign.Center
                     )
-//                }
+                }
             }
         }
     }
