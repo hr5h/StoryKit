@@ -9,7 +9,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.room)
-
+    //snapshot
+    id("dev.testify")
     id("com.google.devtools.ksp")
     kotlin("plugin.serialization")
 }
@@ -125,6 +126,8 @@ android {
 }
 
 dependencies {
+    //snapshot
+    androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4-android:1.6.8")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.8")
 
