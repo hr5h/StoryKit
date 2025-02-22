@@ -172,7 +172,7 @@ fun TimeLine(
         }
         (0..<currentTimeLine).forEach {
             drawRoundRect(
-                color = Color.Gray,
+                color = colors.timeline,
                 size = size.copy(
                     height = heightTimeLine,
                     width = widthTimeLine - offsetTimeLine * (countTimeLine - 1)
@@ -184,7 +184,7 @@ fun TimeLine(
         val leftTime = maxTime - currentTime
         val widthCurrentTime = widthTimeLine / maxTime * leftTime
         drawRoundRect(
-            color = Color.Gray,
+            color = colors.timeline,
             size = size.copy(
                 height = heightTimeLine,
                 width = max(
@@ -233,7 +233,8 @@ private fun ColumnScope.Content(
             pageCount = { pages.size })
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier
+            modifier = Modifier,
+            beyondViewportPageCount = 10
         ) { index ->
             val pageOffset =
                 (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
@@ -339,7 +340,7 @@ private fun ColumnScope.LikeAndFavorite(
                     modifier = Modifier.size(40.dp),
                     imageVector = Icons.Default.Favorite,
                     contentDescription = "like",
-                    tint = if (selectStoryItem.isLike) Color.Red else Color.White
+                    tint = if (selectStoryItem.isLike) colors.isLiked else colors.isNotLiked
                 )
                 Text(
                     modifier = Modifier
@@ -359,7 +360,7 @@ private fun ColumnScope.LikeAndFavorite(
                 modifier = Modifier.size(40.dp),
                 imageVector = Icons.Default.Star,
                 contentDescription = "star",
-                tint = if (selectStoryItem.isFavorite) Color.Yellow else Color.White
+                tint = if (selectStoryItem.isFavorite) colors.isFavorited else colors.isNotFavorited
             )
         }
     }
