@@ -45,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
@@ -66,7 +67,8 @@ fun Story(
     storyViewed: (StoryItem) -> Unit,
     storyLiked: (StoryItem) -> Unit,
     storyFavorited: (StoryItem) -> Unit,
-    colors: StoryColors
+    colors: StoryColors,
+    onChose: (StoryItem, Int) -> Unit
 ) {
     val pages =
         if (storyState.hasFirstStory) listOf(selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]])
@@ -89,7 +91,8 @@ fun Story(
             onClose,
             selectStoryItem,
             storyViewed,
-            colors
+            colors,
+            onChose
         )
         //LikeAndFavorite
         LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited, colors)
@@ -208,7 +211,8 @@ private fun ColumnScope.Content(
     onClose: () -> Unit,
     selectStoryItem: StoryItem,
     storyViewed: (StoryItem) -> Unit,
-    colors: StoryColors
+    colors: StoryColors,
+    onChose: (StoryItem, Int) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -259,7 +263,7 @@ private fun ColumnScope.Content(
             when (pages[index]) {
                 is PageItem.Image -> PageImage(
                     pages[index] as PageItem.Image,
-                    pageSize
+                    pageSize,
                 )
 
                 is PageItem.Video -> PageVideo(
@@ -269,7 +273,9 @@ private fun ColumnScope.Content(
 
                 is PageItem.Question -> PageQuestion(
                     pages[index] as PageItem.Question,
-                    pageSize
+                    pageSize,
+                    selectStoryItem,
+                    onChose
                 )
 
                 is PageItem.Game -> TODO()
