@@ -228,6 +228,7 @@ private fun ColumnScope.Content(
             }
     ) {
         var lastPage by remember { mutableStateOf(-1) }
+        var lastStory by remember { mutableStateOf(-1) }
         val pagerState = rememberPagerState(
             initialPage = storyState.currentStory,
             pageCount = { pages.size })
@@ -254,8 +255,14 @@ private fun ColumnScope.Content(
                     }
             }
             LaunchedEffect(storyState.currentStory) {
-                storyViewed(selectStoryItem)
-                pagerState.animateScrollToPage(storyState.currentStory)
+                snapshotFlow { storyState.currentStory }
+                    .collectLatest { newStory ->
+                        if (newStory != lastStory) {
+                            lastStory = newStory
+                            storyViewed(selectStoryItem)
+                            pagerState.animateScrollToPage(storyState.currentStory)
+                        }
+                    }
             }
             when (pages[index]) {
                 is PageItem.Image -> PageImage(

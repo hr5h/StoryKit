@@ -25,7 +25,6 @@ actual fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean) {
     }
 
     LaunchedEffect(isVisible) {
-        println(isVisible)
         if(isVisible) {
             player.prepare()
             player.play()
