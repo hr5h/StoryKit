@@ -7,7 +7,7 @@ import org.koin.dsl.KoinAppDeclaration
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
     startKoin {
         appDeclaration()
-        modules(databaseModule(), repositoryModule(), mapperModule(), domainModule(), storyViewModelModule())
+        modules(databaseModule(), videoPlayerModule(), repositoryModule(), mapperModule(), domainModule(), storyViewModelModule())
     }
 
 object Koin {

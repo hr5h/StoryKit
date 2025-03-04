@@ -128,7 +128,8 @@ private fun ColumnScope.TopBar(
 
         LaunchedEffect(indCurrentPage) {
             currentTime = 0f
-            while (currentTime < 5f) {
+            println(selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]].timeShow)
+            while (currentTime < selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]].timeShow) {
                 delay(20)
                 currentTime += 0.02f
             }

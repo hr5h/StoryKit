@@ -1,7 +1,11 @@
 package org.hrsh.story_kit.di
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import org.koin.core.module.Module
 
-@Composable
-expect fun VideoPlayer(modifier: Modifier, url: String)
+expect class VideoPlayer() {
+    fun play(url: String)
+    fun stop()
+    fun release()
+}
+
+expect fun videoPlayerModule(): Module

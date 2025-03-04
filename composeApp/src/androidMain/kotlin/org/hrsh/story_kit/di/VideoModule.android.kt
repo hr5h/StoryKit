@@ -1,41 +1,32 @@
 package org.hrsh.story_kit.di
 
-import android.net.Uri
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
+import android.content.Context
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
+import org.koin.dsl.module
 
-@Composable
-actual fun VideoPlayer(modifier: Modifier, url: String) {
-    val context = LocalContext.current
-    val player = remember {
-        ExoPlayer.Builder(context).build().apply {
-            val mediaItem = MediaItem.fromUri(Uri.parse(url))
-            setMediaItem(mediaItem)
-            prepare()
-            playWhenReady = true
-        }
+actual class VideoPlayer actual constructor() {
+    private var exoPlayer: ExoPlayer? = null
+
+    actual fun play(url: String) {
+        val context = Koin.di?.koin?.get<Context>()!!
+        exoPlayer = ExoPlayer.Builder(context).build()
+        val mediaItem = MediaItem.fromUri(url)
+        exoPlayer?.setMediaItem(mediaItem)
+        exoPlayer?.prepare()
+        exoPlayer?.play()
     }
 
-    DisposableEffect(Unit) {
-        onDispose {
-            player.release()
-        }
+    actual fun stop() {
+        exoPlayer?.stop()
     }
 
-    AndroidView(
-        factory = { PlayerView(context).apply {
-            setUseController(false)
-        } },
-        modifier = modifier,
-        update = { playerView ->
-            playerView.player = player
-        }
-    )
+    actual fun release() {
+        exoPlayer?.release()
+        exoPlayer = null
+    }
+}
+
+actual fun videoPlayerModule() = module {
+    single<VideoPlayer> { VideoPlayer() }
 }

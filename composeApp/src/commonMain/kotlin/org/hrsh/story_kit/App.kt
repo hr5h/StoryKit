@@ -78,7 +78,8 @@ fun App() {
                 imagePreview = "https://vels76.ru/sites/default/files/znachok-videozapisi.jpg",
                 listPages = listOf(
                     PageItem.Video(
-                        videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                        videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                        timeShow = 30f
                     )
                 ),
             )
