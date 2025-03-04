@@ -10,12 +10,12 @@ import org.hrsh.story_kit.domain.entities.PageItem
 
 @Composable
 fun PageVideo(
-    itemVideo: PageItem.Video, pageSize: Float
+    itemVideo: PageItem.Video, pageSize: Float, isVisible: Boolean
 ) {
     Box(modifier = Modifier.graphicsLayer {
         scaleX = pageSize
         scaleY = pageSize
     }) {
-        VideoPlayer(modifier = Modifier.fillMaxSize(), itemVideo.videoUrl)
+        VideoPlayer(modifier = Modifier.fillMaxSize(), itemVideo.videoUrl, isVisible)
     }
 }

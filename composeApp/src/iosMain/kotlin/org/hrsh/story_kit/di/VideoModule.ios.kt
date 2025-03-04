@@ -9,7 +9,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 
 @OptIn(ExperimentalForeignApi::class)
 @Composable
-actual fun VideoPlayer(modifier: Modifier, url: String) {
+actual fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean) {
     val player = remember { AVPlayer(uRL = NSURL.URLWithString(url)!!) }
     val playerLayer = remember { AVPlayerLayer() }
     val avPlayerViewController = remember { AVPlayerViewController() }

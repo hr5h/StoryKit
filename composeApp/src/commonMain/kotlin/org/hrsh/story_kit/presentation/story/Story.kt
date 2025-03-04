@@ -126,9 +126,9 @@ private fun ColumnScope.TopBar(
         val indCurrentPage = storyState.currentPage[storyState.currentStory]
         var currentTime by remember { mutableFloatStateOf(0f) }
 
-        LaunchedEffect(indCurrentPage) {
+        LaunchedEffect(indCurrentPage, storyState.currentStory) {
             currentTime = 0f
-            while (currentTime < 5f) {
+            while (currentTime < selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]].timeShow) {
                 delay(20)
                 currentTime += 0.02f
             }
@@ -265,7 +265,8 @@ private fun ColumnScope.Content(
 
                 is PageItem.Video -> PageVideo(
                     pages[index] as PageItem.Video,
-                    pageSize
+                    pageSize,
+                    pages[pagerState.currentPage] is PageItem.Video
                 )
 
                 is PageItem.Question -> PageQuestion(
