@@ -26,12 +26,12 @@ actual fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean) {
 
     LaunchedEffect(isVisible) {
         if(isVisible) {
-            player.prepare()
             player.play()
         }
         else {
             player.stop()
             player.seekTo(0)
+            player.prepare()
         }
     }
 
