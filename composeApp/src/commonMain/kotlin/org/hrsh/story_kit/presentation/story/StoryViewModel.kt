@@ -40,9 +40,16 @@ internal class StoryViewModel(
     private val _storyAnswerChose: MutableSharedFlow<Pair<Long, Int>> = MutableSharedFlow()
 
     internal fun updatePressed(storyItem: StoryItem, value: Int) {
-        updateStory(
-            storyItem.copy(indexPressed = value)
-        )
+        if (storyItem.indexPressed == value) {
+            updateStory(
+                storyItem.copy(indexPressed = -1)
+            )
+        } else {
+            updateStory(
+                storyItem.copy(indexPressed = value)
+            )
+        }
+
         viewModelScope.launch {
             _storyAnswerChose.emit(Pair(storyItem.id, value))
         }
