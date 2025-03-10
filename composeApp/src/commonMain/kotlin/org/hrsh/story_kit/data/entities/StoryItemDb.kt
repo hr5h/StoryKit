@@ -16,6 +16,7 @@ data class StoryItemDb(
     val countLike: Int,
     val isFavorite: Boolean,
     val isViewed: Boolean,
+    val indexPressed: Int
 ) {
     companion object {
         const val STORY_TABLE_NAME = "story_table"

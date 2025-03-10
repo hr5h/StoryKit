@@ -15,7 +15,8 @@ class StoryItemDomainToDbMapper(
             isLike = storyItem.isLike,
             countLike = storyItem.countLike,
             isFavorite = storyItem.isFavorite,
-            isViewed = storyItem.isViewed
+            isViewed = storyItem.isViewed,
+            indexPressed = storyItem.indexPressed
         )
     }
 
