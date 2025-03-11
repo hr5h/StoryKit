@@ -25,6 +25,7 @@ class PageItemDomainToDbMapper() : (PageItem) -> PageItemDb {
                 imageUrl = pageItem.imageUrl,
                 question = pageItem.question,
                 listAnswers = pageItem.listAnswers,
+                indexSelected = pageItem.indexSelected,
                 timeShow = pageItem.timeShow
             )
 

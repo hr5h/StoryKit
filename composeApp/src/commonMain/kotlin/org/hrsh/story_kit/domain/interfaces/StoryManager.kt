@@ -55,4 +55,6 @@ interface StoryManager {
      * @return A [Flow] that emits a Pair containing the story's ID and a Boolean indicating whether the story has been skipped.
      */
     fun subscribeStorySkip(): Flow<Pair<Long, Boolean>>
+
+    fun storyAnswerChose(): Flow<Pair<Long, Int>>
 }

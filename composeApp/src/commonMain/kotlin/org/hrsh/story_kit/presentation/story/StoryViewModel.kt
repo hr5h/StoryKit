@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.interfaces.StoryManager
 import org.hrsh.story_kit.domain.usecases.DeleteAllStoryUseCase
@@ -37,6 +38,7 @@ internal class StoryViewModel(
     private val _storyView: MutableSharedFlow<Long> = MutableSharedFlow()
     private val _storyLike: MutableSharedFlow<Pair<Long, Boolean>> = MutableSharedFlow()
     private val _storySkip: MutableSharedFlow<Pair<Long, Boolean>> = MutableSharedFlow()
+    private val _storyAnswerChose: MutableSharedFlow<Pair<Long, Int>> = MutableSharedFlow()
 
     internal val selectStoryItem: StoryItem
         get() = if (!_storyState.value.showFavoriteStories)
@@ -77,6 +79,23 @@ internal class StoryViewModel(
         }
     }
 
+    internal fun updateSelected(storyItem: StoryItem, pageItem: PageItem, value: Int) {
+        val modifiedPagesList = storyItem.listPages.map { item ->
+            if (item is PageItem.Question && item.question == (pageItem as PageItem.Question).question) {
+                item.copy(indexSelected = if (item.indexSelected == value) -1 else value)
+            } else {
+                item
+            }
+        }
+        updateStory(
+            storyItem.copy(listPages = modifiedPagesList)
+        )
+
+        viewModelScope.launch {
+            _storyAnswerChose.emit(Pair(storyItem.id, value))
+        }
+    }
+
     override fun deleteStory(id: Long) {
         viewModelScope.launch {
             val storyItem = _storyFlowList.value.firstOrNull { it.id == id }
@@ -106,6 +125,10 @@ internal class StoryViewModel(
         return _storySkip.asSharedFlow()
     }
     //subscribeStory>
+
+    override fun storyAnswerChose(): Flow<Pair<Long, Int>> {
+        return _storyAnswerChose.asSharedFlow()
+    }
 
     //<storyEvent
     internal fun storyViewed(storyItem: StoryItem) {
