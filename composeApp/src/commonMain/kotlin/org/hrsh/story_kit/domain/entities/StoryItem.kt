@@ -25,6 +25,5 @@ data class StoryItem(
     val isLike: Boolean = false,
     val countLike: Int = 0,
     val isFavorite: Boolean = false,
-    val isViewed: Boolean = false,
-    val indexPressed: Int = -1
+    val isViewed: Boolean = false
 )

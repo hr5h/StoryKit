@@ -31,7 +31,7 @@ import org.hrsh.story_kit.domain.entities.StoryItem
 fun PageQuestion(itemQuestion: PageItem.Question,
                  imageSize: Float,
                  selectedStoryItem: StoryItem,
-                 onChose: (StoryItem, Int) -> Unit) {
+                 onChose: (StoryItem, PageItem, Int) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -64,10 +64,10 @@ fun PageQuestion(itemQuestion: PageItem.Question,
                 .align(Alignment.BottomCenter)
         ) {
             itemQuestion.listAnswers.forEachIndexed { index, item ->
-                val modifiedColor = if (selectedStoryItem.indexPressed == -1) {
+                val modifiedColor = if (itemQuestion.indexSelected == -1) {
                     Color.White
                 } else {
-                    if (index == selectedStoryItem.indexPressed) {
+                    if (index == itemQuestion.indexSelected) {
                         Color.White.copy(alpha = 1.2f)
                     } else {
                         Color.White.copy(alpha = 0.7f)
@@ -81,7 +81,7 @@ fun PageQuestion(itemQuestion: PageItem.Question,
                     .padding(horizontal = 20.dp),
                     shape = RoundedCornerShape(30.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = modifiedColor),
-                    onClick = { onChose(selectedStoryItem, index); }
+                    onClick = { onChose(selectedStoryItem, itemQuestion, index); }
                     )
                 {
                     Text(

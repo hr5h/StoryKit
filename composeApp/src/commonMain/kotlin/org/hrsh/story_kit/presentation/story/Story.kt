@@ -68,7 +68,7 @@ fun Story(
     storyLiked: (StoryItem) -> Unit,
     storyFavorited: (StoryItem) -> Unit,
     colors: StoryColors,
-    onChose: (StoryItem, Int) -> Unit
+    onChose: (StoryItem, PageItem, Int) -> Unit
 ) {
     val pages =
         if (storyState.hasFirstStory) listOf(selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]])
@@ -212,7 +212,7 @@ private fun ColumnScope.Content(
     selectStoryItem: StoryItem,
     storyViewed: (StoryItem) -> Unit,
     colors: StoryColors,
-    onChose: (StoryItem, Int) -> Unit
+    onChose: (StoryItem, PageItem, Int) -> Unit
 ) {
     Box(
         modifier = Modifier

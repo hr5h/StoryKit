@@ -113,7 +113,7 @@ internal fun MiniatureStories(
             storyLiked = storyViewModel::storyLiked,
             storyFavorited = storyViewModel::storyFavorited,
             colors,
-            storyViewModel::updatePressed
+            storyViewModel::updateSelected
         )
     }
     if (storyState.isShowFavoriteStories) {

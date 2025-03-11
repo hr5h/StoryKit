@@ -17,6 +17,7 @@ data class PageItemDb(
     val videoUrl: String? = null,
     val question: String? = null,
     val listAnswers: List<String>? = null,
+    val indexSelected: Int? = null,
 ) {
     companion object {
         const val STORY_TABLE_NAME = "story_table"
