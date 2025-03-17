@@ -56,5 +56,5 @@ interface StoryManager {
      */
     fun subscribeStorySkip(): Flow<Pair<Long, Boolean>>
 
-    fun storyAnswerChose(): Flow<Pair<Long, Int>>
+    fun storyAnswerChose(): Flow<Triple<Long, Int, Int>>
 }

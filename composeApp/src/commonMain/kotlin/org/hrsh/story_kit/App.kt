@@ -119,8 +119,8 @@ fun App() {
     CoroutineScope(Dispatchers.IO).launch {
         delay(2000)
         launch {
-            storyManager.storyAnswerChose().collect { (id, index) ->
-                println("In story with id = $id: index of chosen answer is $index")
+            storyManager.storyAnswerChose().collect { (id, pageIndex, index) ->
+                println("In story with id = $id in page with index = $pageIndex: index of chosen answer is $index")
             }
         }
     }

@@ -80,8 +80,15 @@ fun PageQuestion(itemQuestion: PageItem.Question,
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
                     shape = RoundedCornerShape(30.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = modifiedColor),
-                    onClick = { onChose(selectedStoryItem, itemQuestion, index); }
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White,
+                        disabledBackgroundColor =
+                        if (index == itemQuestion.indexSelected)
+                            Color.White.copy(alpha = 1.2f)
+                        else
+                            Color.White.copy(alpha = 0.7f)
+                    ),
+                    onClick = { onChose(selectedStoryItem, itemQuestion, index); },
+                    enabled = itemQuestion.indexSelected == -1
                     )
                 {
                     Text(
