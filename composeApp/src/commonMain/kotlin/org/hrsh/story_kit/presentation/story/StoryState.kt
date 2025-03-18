@@ -8,5 +8,5 @@ data class StoryState(
     //нужно ли открыть окно с favoriteStories после закрытия истории
     val isShowFavoriteStories: Boolean = false,
     //показываются ли favoriteStories
-    val showFavoriteStories: Boolean = false
+    val showFavoriteStories: Boolean = false,
 )

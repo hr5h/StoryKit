@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.interfaces.StoryManager
 import org.hrsh.story_kit.domain.usecases.DeleteAllStoryUseCase
@@ -37,6 +38,7 @@ internal class StoryViewModel(
     private val _storyView: MutableSharedFlow<Long> = MutableSharedFlow()
     private val _storyLike: MutableSharedFlow<Pair<Long, Boolean>> = MutableSharedFlow()
     private val _storySkip: MutableSharedFlow<Pair<Long, Boolean>> = MutableSharedFlow()
+    private val _storyAnswerChose: MutableSharedFlow<Triple<Long, Int, Int>> = MutableSharedFlow()
 
     internal val selectStoryItem: StoryItem
         get() = if (!_storyState.value.showFavoriteStories)
@@ -105,9 +107,32 @@ internal class StoryViewModel(
     override fun subscribeStorySkip(): Flow<Pair<Long, Boolean>> {
         return _storySkip.asSharedFlow()
     }
+
+    override fun storyAnswerChose(): Flow<Triple<Long, Int, Int>> {
+        return _storyAnswerChose.asSharedFlow()
+    }
     //subscribeStory>
 
     //<storyEvent
+    internal fun updateSelected(storyItem: StoryItem, pageItem: PageItem, value: Int) {
+        var pageIndex: Int = -1
+        val modifiedPagesList = storyItem.listPages.mapIndexed { index, item ->
+            if (item is PageItem.Question && item.question == (pageItem as PageItem.Question).question) {
+                pageIndex = index
+                item.copy(indexSelected = if (item.indexSelected == value) -1 else value)
+            } else {
+                item
+            }
+        }
+        updateStory(
+            storyItem.copy(listPages = modifiedPagesList)
+        )
+
+        viewModelScope.launch {
+            _storyAnswerChose.emit(Triple(storyItem.id, pageIndex, value))
+        }
+    }
+
     internal fun storyViewed(storyItem: StoryItem) {
         updateStory(storyItem.copy(isViewed = true))
 

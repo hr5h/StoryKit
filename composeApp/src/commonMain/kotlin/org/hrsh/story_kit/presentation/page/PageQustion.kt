@@ -11,6 +11,8 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,10 +23,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import kotlinx.coroutines.flow.StateFlow
 import org.hrsh.story_kit.domain.entities.PageItem
+import org.hrsh.story_kit.domain.entities.StoryItem
 
 @Composable
-fun PageQuestion(itemQuestion: PageItem.Question, imageSize: Float) {
+fun PageQuestion(itemQuestion: PageItem.Question,
+                 imageSize: Float,
+                 selectedStoryItem: StoryItem,
+                 onChose: (StoryItem, PageItem, Int) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -56,19 +63,36 @@ fun PageQuestion(itemQuestion: PageItem.Question, imageSize: Float) {
             modifier = Modifier
                 .align(Alignment.BottomCenter)
         ) {
-            for (i in itemQuestion.listAnswers) {
+            itemQuestion.listAnswers.forEachIndexed { index, item ->
+                val modifiedColor = if (itemQuestion.indexSelected == -1) {
+                    Color.White
+                } else {
+                    if (index == itemQuestion.indexSelected) {
+                        Color.White.copy(alpha = 1.2f)
+                    } else {
+                        Color.White.copy(alpha = 0.7f)
+                    }
+                }
+
                 Button(
                     modifier = Modifier
                     .padding(vertical = 5.dp)
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
                     shape = RoundedCornerShape(30.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor =  Color.White),
-                    onClick = { }
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White,
+                        disabledBackgroundColor =
+                        if (index == itemQuestion.indexSelected)
+                            Color.White.copy(alpha = 1.2f)
+                        else
+                            Color.White.copy(alpha = 0.7f)
+                    ),
+                    onClick = { onChose(selectedStoryItem, itemQuestion, index); },
+                    enabled = itemQuestion.indexSelected == -1
                     )
                 {
                     Text(
-                        text = i,
+                        text = item,
                         fontSize = 28.sp,
                         color = Color.Black,
                         textAlign = TextAlign.Center
