@@ -51,7 +51,6 @@ internal class StoryViewModel(
             story.isFavorite
         }
 
-
     init {
         subscribeStories()
     }
@@ -114,26 +113,7 @@ internal class StoryViewModel(
     //subscribeStory>
 
     //<storyEvent
-    internal fun updateSelected(storyItem: StoryItem, pageItem: PageItem, value: Int) {
-        var pageIndex: Int = -1
-        val modifiedPagesList = storyItem.listPages.mapIndexed { index, item ->
-            if (item is PageItem.Question && item.question == (pageItem as PageItem.Question).question) {
-                pageIndex = index
-                item.copy(indexSelected = if (item.indexSelected == value) -1 else value)
-            } else {
-                item
-            }
-        }
-        updateStory(
-            storyItem.copy(listPages = modifiedPagesList)
-        )
-
-        viewModelScope.launch {
-            _storyAnswerChose.emit(Triple(storyItem.id, pageIndex, value))
-        }
-    }
-
-    internal fun storyViewed(storyItem: StoryItem) {
+        internal fun storyViewed(storyItem: StoryItem) {
         updateStory(storyItem.copy(isViewed = true))
 
         viewModelScope.launch {
@@ -160,6 +140,25 @@ internal class StoryViewModel(
                 isFavorite = !storyItem.isFavorite
             )
         )
+    }
+
+    internal fun updateSelected(storyItem: StoryItem, pageItem: PageItem, value: Int) {
+        var pageIndex: Int = -1
+        val modifiedPagesList = storyItem.listPages.mapIndexed { index, item ->
+            if (item is PageItem.Question && item.question == (pageItem as PageItem.Question).question) {
+                pageIndex = index
+                item.copy(indexSelected = if (item.indexSelected == value) -1 else value)
+            } else {
+                item
+            }
+        }
+        updateStory(
+            storyItem.copy(listPages = modifiedPagesList)
+        )
+
+        viewModelScope.launch {
+            _storyAnswerChose.emit(Triple(storyItem.id, pageIndex, value))
+        }
     }
     //storyEvent>
 
