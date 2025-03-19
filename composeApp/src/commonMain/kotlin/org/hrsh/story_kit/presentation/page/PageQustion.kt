@@ -143,7 +143,7 @@ fun FillButton(
     ) {
         val newWidth = size.width * ratio * process
 
-        if(newWidth > 50) {
+        if(newWidth > 30) {
             drawRoundRect(
                 color = colorResult.copy(alpha = 0.5f),
                 size = size.copy(
@@ -162,7 +162,7 @@ fun FillButton(
                 useCenter = false,
                 size = size.copy(
                     height = size.height * 1.5f,
-                    width = newWidth
+                    width = newWidth + 20f
                 ),
                 topLeft = Offset(x = -size.width * 0.075f, y = -size.height * 0.25f),
             )
