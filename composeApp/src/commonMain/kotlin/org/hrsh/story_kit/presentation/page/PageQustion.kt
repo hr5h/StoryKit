@@ -1,5 +1,7 @@
 package org.hrsh.story_kit.presentation.page
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,6 +15,8 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -67,6 +71,17 @@ fun PageQuestion(
                 .align(Alignment.BottomCenter)
         ) {
             val sumRatio = itemQuestion.listResults.sum().toFloat()
+            val currentTime = remember { Animatable(initialValue = 0f) }
+            val maxTime = 1f
+
+            if (itemQuestion.indexSelected != -1) {
+                LaunchedEffect(Unit) {
+                    currentTime.animateTo(
+                        targetValue = maxTime,
+                        animationSpec = tween(durationMillis = maxTime.toInt() * 1000),
+                    )
+                }
+            }
             itemQuestion.listAnswers.forEachIndexed { index, item ->
                 Box(
                     modifier = Modifier
@@ -92,8 +107,11 @@ fun PageQuestion(
                         Box(
                             contentAlignment = Alignment.Center
                         ) {
-                            if(itemQuestion.indexSelected != -1) {
-                                FillButton(itemQuestion.listResults[index]/sumRatio)
+                            if (itemQuestion.indexSelected != -1) {
+                                FillButton(
+                                    itemQuestion.listResults[index] / sumRatio,
+                                    currentTime.value / maxTime
+                                )
                             }
                             Text(
                                 text = item,
@@ -111,19 +129,20 @@ fun PageQuestion(
 
 @Composable
 fun FillButton(
-    ratio: Float
+    ratio: Float,
+    process: Float,
 ) {
     Canvas(
         modifier = Modifier
             .padding(vertical = 5.dp, horizontal = 20.dp)
             .fillMaxSize()
     ) {
-        val newWidth = size.width * ratio
+        val newWidth = size.width * ratio * process
         drawRoundRect(
             color = Color.Green.copy(alpha = 0.5f),
             size = size.copy(
                 height = size.height * 1.5f,
-                width = newWidth
+                width = newWidth * 1.15f
             ),
             topLeft = Offset(x = -size.width * 0.075f, y = -size.height * 0.25f),
             cornerRadius = CornerRadius(x = 60f, y = 60f),
