@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -79,8 +80,10 @@ fun Story(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        var isAnimate = remember { mutableStateOf(true) }
+
         //TimeLine
-        TopBar(storyState, stories, selectStoryItem, nextPage, colors)
+        TopBar(storyState, stories, selectStoryItem, nextPage, isAnimate, colors)
         //Content
         Content(
             prevPage,
@@ -91,8 +94,9 @@ fun Story(
             onClose,
             selectStoryItem,
             storyViewed,
+            onChose,
             colors,
-            onChose
+            isAnimate
         )
         //LikeAndFavorite
         LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited, colors)
@@ -105,6 +109,7 @@ private fun ColumnScope.TopBar(
     stories: List<StoryItem>,
     selectStoryItem: StoryItem,
     nextPage: () -> Unit,
+    isAnimate: MutableState<Boolean>,
     colors: StoryColors
 ) {
     Box(
@@ -125,7 +130,8 @@ private fun ColumnScope.TopBar(
 //            fontSize = 13.sp,
 //            lineHeight = 14.sp
 //        )
-        val currentPage = stories[storyState.currentStory].listPages[storyState.currentPage[storyState.currentStory]]
+        val currentPage =
+            stories[storyState.currentStory].listPages[storyState.currentPage[storyState.currentStory]]
         val indCurrentPage = storyState.currentPage[storyState.currentStory]
         var currentTime by remember { mutableFloatStateOf(0f) }
 
@@ -133,14 +139,22 @@ private fun ColumnScope.TopBar(
             currentTime = 0f
             while (currentTime < selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]].timeShow) {
                 delay(20)
-                currentTime += 0.02f
+                if(isAnimate.value) {
+                    currentTime += 0.02f
+                }
             }
 
             currentTime = 0f
             nextPage()
         }
 
-        TimeLine(selectStoryItem.listPages.size, indCurrentPage, currentTime, currentPage.timeShow, colors)
+        TimeLine(
+            selectStoryItem.listPages.size,
+            indCurrentPage,
+            currentTime,
+            currentPage.timeShow,
+            colors
+        )
     }
 }
 
@@ -164,18 +178,7 @@ fun TimeLine(
         val cornerRadius = 10.dp.toPx()
         (0..<countTimeLine).forEach {
             drawRoundRect(
-                color = Color.White,
-                size = size.copy(
-                    height = heightTimeLine,
-                    width = widthTimeLine - offsetTimeLine * (countTimeLine - 1)
-                ),
-                topLeft = Offset(x = it * (widthTimeLine + offsetTimeLine), y = 0f),
-                cornerRadius = CornerRadius(x = cornerRadius, y = cornerRadius)
-            )
-        }
-        (0..<currentTimeLine).forEach {
-            drawRoundRect(
-                color = colors.timeline,
+                color = if (it < currentTimeLine) colors.timeLine else colors.timeLineBackground,
                 size = size.copy(
                     height = heightTimeLine,
                     width = widthTimeLine - offsetTimeLine * (countTimeLine - 1)
@@ -187,7 +190,7 @@ fun TimeLine(
         val leftTime = maxTime - currentTime
         val widthCurrentTime = widthTimeLine / maxTime * leftTime
         drawRoundRect(
-            color = colors.timeline,
+            color = colors.timeLine,
             size = size.copy(
                 height = heightTimeLine,
                 width = max(
@@ -211,8 +214,9 @@ private fun ColumnScope.Content(
     onClose: () -> Unit,
     selectStoryItem: StoryItem,
     storyViewed: (StoryItem) -> Unit,
+    onChose: (StoryItem, PageItem, Int) -> Unit,
     colors: StoryColors,
-    onChose: (StoryItem, PageItem, Int) -> Unit
+    isAnimate: MutableState<Boolean>,
 ) {
     Box(
         modifier = Modifier
@@ -221,6 +225,14 @@ private fun ColumnScope.Content(
             .background(colors.storyBackground)
             .pointerInput(Unit) {
                 detectTapGestures(
+                    onLongPress = {
+                        isAnimate.value = false
+                    },
+                    onPress = {
+                        if (tryAwaitRelease()) {
+                            isAnimate.value = true
+                        }
+                    },
                     onTap = { offset ->
                         if (offset.x < size.width / 2) {
                             prevPage()
