@@ -142,14 +142,30 @@ fun FillButton(
             .fillMaxSize()
     ) {
         val newWidth = size.width * ratio * process
-        drawRoundRect(
-            color = colorResult.copy(alpha = 0.5f),
-            size = size.copy(
-                height = size.height * 1.5f,
-                width = newWidth * 1.15f
-            ),
-            topLeft = Offset(x = -size.width * 0.075f, y = -size.height * 0.25f),
-            cornerRadius = CornerRadius(x = 60f, y = 60f),
-        )
+
+        if(newWidth > 50) {
+            drawRoundRect(
+                color = colorResult.copy(alpha = 0.5f),
+                size = size.copy(
+                    height = size.height * 1.5f,
+                    width = newWidth * 1.15f
+                ),
+                topLeft = Offset(x = -size.width * 0.075f, y = -size.height * 0.25f),
+                cornerRadius = CornerRadius(x = 60f, y = 60f),
+            )
+        }
+        else {
+            drawArc(
+                color = colorResult.copy(alpha = 0.5f),
+                startAngle = 90f,
+                sweepAngle = 180f,
+                useCenter = false,
+                size = size.copy(
+                    height = size.height * 1.5f,
+                    width = newWidth
+                ),
+                topLeft = Offset(x = -size.width * 0.075f, y = -size.height * 0.25f),
+            )
+        }
     }
 }
