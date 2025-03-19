@@ -1,10 +1,12 @@
 package org.hrsh.story_kit.presentation.page
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -14,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.foundation.Canvas
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -28,10 +29,12 @@ import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
 
 @Composable
-fun PageQuestion(itemQuestion: PageItem.Question,
-                 imageSize: Float,
-                 selectedStoryItem: StoryItem,
-                 onChose: (StoryItem, PageItem, Int) -> Unit) {
+fun PageQuestion(
+    itemQuestion: PageItem.Question,
+    imageSize: Float,
+    selectedStoryItem: StoryItem,
+    onChose: (StoryItem, PageItem, Int) -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -63,38 +66,67 @@ fun PageQuestion(itemQuestion: PageItem.Question,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
         ) {
+            val sumRatio = itemQuestion.listResults.sum().toFloat()
             itemQuestion.listAnswers.forEachIndexed { index, item ->
-                Button(
+                Box(
                     modifier = Modifier
-                    .padding(vertical = 5.dp)
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                    shape = RoundedCornerShape(30.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White,
-                        disabledBackgroundColor =
-                        if (index == itemQuestion.indexSelected)
-                            Color.White.copy(alpha = 1.2f)
-                        else
-                            Color.White.copy(alpha = 0.7f)
-                    ),
-                    onClick = { onChose(selectedStoryItem, itemQuestion, index); },
-                    enabled = itemQuestion.indexSelected == -1
-                    )
-                {
-                    Box(
+                        .fillMaxWidth()
+                        .height(60.dp)
+                ) {
+                    Button(
+                        modifier = Modifier
+                            .padding(vertical = 5.dp, horizontal = 20.dp)
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(30.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.White,
+                            disabledBackgroundColor =
+                            if (index == itemQuestion.indexSelected)
+                                Color.White.copy(alpha = 1.2f)
+                            else
+                                Color.White.copy(alpha = 0.7f)
+                        ),
+                        onClick = { onChose(selectedStoryItem, itemQuestion, index) },
+                        enabled = itemQuestion.indexSelected == -1
                     ) {
-                        Text(
-                            text = item,
-                            fontSize = 28.sp,
-                            color = Color.Black,
-                            textAlign = TextAlign.Center
-                        )
-                        Canvas(modifier = Modifier.fillMaxSize()) {
-
+                        Box(
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if(itemQuestion.indexSelected != -1) {
+                                FillButton(itemQuestion.listResults[index]/sumRatio)
+                            }
+                            Text(
+                                text = item,
+                                fontSize = 28.sp,
+                                color = Color.Black,
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun FillButton(
+    ratio: Float
+) {
+    Canvas(
+        modifier = Modifier
+            .padding(vertical = 5.dp, horizontal = 20.dp)
+            .fillMaxSize()
+    ) {
+        val newWidth = size.width * ratio
+        drawRoundRect(
+            color = Color.Green.copy(alpha = 0.5f),
+            size = size.copy(
+                height = size.height * 1.5f,
+                width = newWidth
+            ),
+            topLeft = Offset(x = -size.width * 0.075f, y = -size.height * 0.25f),
+            cornerRadius = CornerRadius(x = 60f, y = 60f),
+        )
     }
 }

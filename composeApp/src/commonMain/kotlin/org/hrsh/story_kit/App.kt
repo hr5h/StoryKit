@@ -51,7 +51,7 @@ fun App() {
                         imageUrl = "https://avatars.yandex.net/get-music-content/5234847/767e884c.a.16290016-1/m1000x1000?webp=false",
                         question = "Как вы оцениваете наши истории?",
                         listAnswers = listOf("1", "2", "3", "4", "5+"),
-                        listResults = listOf(10, 120, 1, 30, 999),
+                        listResults = listOf(50, 30, 20, 10, 60),
                     )
                 ),
             )

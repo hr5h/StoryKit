@@ -19,19 +19,17 @@ actual fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean) {
         ExoPlayer.Builder(context).build().apply {
             val mediaItem = MediaItem.fromUri(Uri.parse(url))
             setMediaItem(mediaItem)
-            prepare()
             playWhenReady = true
         }
     }
 
     LaunchedEffect(isVisible) {
-        if(isVisible) {
+        if (isVisible) {
+            player.prepare()
             player.play()
-        }
-        else {
+        } else {
             player.stop()
             player.seekTo(0)
-            player.prepare()
         }
     }
 
@@ -42,9 +40,11 @@ actual fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean) {
     }
 
     AndroidView(
-        factory = { PlayerView(context).apply {
-            setUseController(false)
-        } },
+        factory = {
+            PlayerView(context).apply {
+                setUseController(false)
+            }
+        },
         modifier = modifier,
         update = { playerView ->
             playerView.player = player
