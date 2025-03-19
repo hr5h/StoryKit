@@ -31,13 +31,15 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
+import org.hrsh.story_kit.presentation.story.StoryColors
 
 @Composable
 fun PageQuestion(
     itemQuestion: PageItem.Question,
     imageSize: Float,
     selectedStoryItem: StoryItem,
-    onChose: (StoryItem, PageItem, Int) -> Unit
+    onChose: (StoryItem, PageItem, Int) -> Unit,
+    storyColors: StoryColors
 ) {
     Box(
         modifier = Modifier
@@ -72,7 +74,7 @@ fun PageQuestion(
         ) {
             val sumRatio = itemQuestion.listResults.sum().toFloat()
             val currentTime = remember { Animatable(initialValue = 0f) }
-            val maxTime = 1f
+            val maxTime = 2f
 
             if (itemQuestion.indexSelected != -1) {
                 LaunchedEffect(Unit) {
@@ -94,12 +96,12 @@ fun PageQuestion(
                             .fillMaxWidth(),
                         shape = RoundedCornerShape(30.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.White,
+                            backgroundColor = storyColors.buttonAnswer,
                             disabledBackgroundColor =
                             if (index == itemQuestion.indexSelected)
-                                Color.White.copy(alpha = 1.2f)
+                                storyColors.buttonAnswer.copy(alpha = 1.2f)
                             else
-                                Color.White.copy(alpha = 0.7f)
+                                storyColors.buttonAnswer.copy(alpha = 0.7f)
                         ),
                         onClick = { onChose(selectedStoryItem, itemQuestion, index) },
                         enabled = itemQuestion.indexSelected == -1
@@ -110,7 +112,8 @@ fun PageQuestion(
                             if (itemQuestion.indexSelected != -1) {
                                 FillButton(
                                     itemQuestion.listResults[index] / sumRatio,
-                                    currentTime.value / maxTime
+                                    currentTime.value / maxTime,
+                                    storyColors.colorResult
                                 )
                             }
                             Text(
@@ -131,6 +134,7 @@ fun PageQuestion(
 fun FillButton(
     ratio: Float,
     process: Float,
+    colorResult: Color
 ) {
     Canvas(
         modifier = Modifier
@@ -139,7 +143,7 @@ fun FillButton(
     ) {
         val newWidth = size.width * ratio * process
         drawRoundRect(
-            color = Color.Green.copy(alpha = 0.5f),
+            color = colorResult.copy(alpha = 0.5f),
             size = size.copy(
                 height = size.height * 1.5f,
                 width = newWidth * 1.15f
