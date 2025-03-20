@@ -1,11 +1,13 @@
 package org.hrsh.story_kit.di
 
 import android.net.Uri
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
@@ -30,11 +32,10 @@ actual fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean) {
     }
 
     LaunchedEffect(isVisible) {
-        if(isVisible) {
+        if (isVisible) {
             player.prepare()
             player.play()
-        }
-        else {
+        } else {
             player.stop()
             player.seekTo(0)
         }
@@ -63,10 +64,23 @@ actual fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean) {
     }
 
     AndroidView(
-        factory = { PlayerView(context).apply {
-            setUseController(false)
-        } },
-        modifier = modifier,
+        factory = {
+            PlayerView(context).apply {
+                setUseController(false)
+            }
+        },
+        modifier = modifier.then(Modifier.pointerInput(Unit) {
+            detectTapGestures(
+                onLongPress = {
+                    player.pause()
+                },
+                onPress = {
+                    if (tryAwaitRelease()) {
+                        player.play()
+                    }
+                }
+            )
+        }),
         update = { playerView ->
             playerView.player = player
         }
