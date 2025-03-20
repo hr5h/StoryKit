@@ -22,6 +22,7 @@ class PageItemDbToDomainMapper() : (PageItemDb) -> PageItem? {
                 imageUrl = pageItemDb.imageUrl ?: return null,
                 question = pageItemDb.question ?: return null,
                 listAnswers = pageItemDb.listAnswers ?: return null,
+                listResults = pageItemDb.listResults ?: return null,
                 indexSelected = pageItemDb.indexSelected ?: return null,
                 timeShow = pageItemDb.timeShow ?: 5f
             )

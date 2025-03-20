@@ -316,7 +316,8 @@ private fun ColumnScope.Content(
                     pages[index] as PageItem.Question,
                     pageSize,
                     selectStoryItem,
-                    onChose
+                    onChose,
+                    colors
                 )
 
                 is PageItem.Game -> TODO()

@@ -18,4 +18,6 @@ data class StoryColors(
     val isNotFavorited: Color = Color.White,
     val timeLine : Color = Color.Gray,
     val timeLineBackground: Color = Color.White,
+    val buttonAnswer: Color = Color.White,
+    val colorResult: Color = Color.Gray,
 )
