@@ -26,7 +26,7 @@ fun App() {
             favoritesDialog = Color(144, 238, 144),
             isLiked = Color(red = 11, green = 172, blue = 65),
             isFavorited = Color(red = 11, green = 172, blue = 65),
-            timeline = Color(red = 11, green = 172, blue = 65)
+            timeLine = Color(red = 11, green = 172, blue = 65)
         )
         StoryKit(storyColors)
         //PageItemImage
