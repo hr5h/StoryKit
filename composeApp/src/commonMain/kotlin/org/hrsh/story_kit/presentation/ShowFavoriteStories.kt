@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -19,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil3.compose.AsyncImage
+import kotlinx.coroutines.delay
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.presentation.story.StoryColors
 
@@ -29,8 +31,13 @@ fun ShowFavoriteStories(
     showStory: () -> Unit,
     saveShowFavoriteStories: () -> Unit,
     closeFavoriteStories: () -> Unit,
+    updateFavoriteStories: () -> Unit,
     colors: StoryColors
 ) {
+    LaunchedEffect(Unit) {
+        delay(300)
+        updateFavoriteStories()
+    }
     Dialog(onDismissRequest = { closeFavoriteStories() }) {
         Card(
             modifier = Modifier

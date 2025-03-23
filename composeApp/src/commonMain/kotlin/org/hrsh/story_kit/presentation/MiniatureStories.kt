@@ -128,6 +128,7 @@ internal fun MiniatureStories(
                 storyViewModel::showStory,
                 storyViewModel::saveShowFavoriteStories,
                 storyViewModel::closeFavoriteStories,
+                storyViewModel::updateFavoriteStories,
                 colors
             )
         }
