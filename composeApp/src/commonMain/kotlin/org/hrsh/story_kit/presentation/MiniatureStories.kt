@@ -33,7 +33,7 @@ internal fun MiniatureStories(
     storyViewModel: StoryViewModel = Koin.di?.koin?.get<StoryViewModel>()!!
 ) {
     val storyState = storyViewModel.storyState.collectAsState().value
-    val favoriteStoriesList = storyViewModel.favoriteStoriesList
+    val favoriteStoriesList = storyViewModel.favoriteStoriesList.collectAsState().value
     val stories = if(!storyState.showFavoriteStories) storyViewModel.storyFlowList.collectAsState().value else favoriteStoriesList
     LazyRow(
         modifier = Modifier

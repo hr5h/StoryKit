@@ -40,16 +40,16 @@ internal class StoryViewModel(
     private val _storySkip: MutableSharedFlow<Pair<Long, Boolean>> = MutableSharedFlow()
     private val _storyAnswerChose: MutableSharedFlow<Triple<Long, Int, Int>> = MutableSharedFlow()
 
+    private val _favoriteStoriesList: MutableStateFlow<List<StoryItem>> =
+        MutableStateFlow(emptyList())
+    internal val favoriteStoriesList: StateFlow<List<StoryItem>> =
+        _favoriteStoriesList.asStateFlow()
+
     internal val selectStoryItem: StoryItem
         get() = if (!_storyState.value.showFavoriteStories)
             storyFlowList.value[_storyState.value.currentStory]
         else
-            favoriteStoriesList[_storyState.value.currentStory]
-
-    internal val favoriteStoriesList: List<StoryItem>
-        get() = _storyFlowList.value.filter { story ->
-            story.isFavorite
-        }
+            favoriteStoriesList.value[_storyState.value.currentStory]
 
     init {
         subscribeStories()
@@ -60,6 +60,11 @@ internal class StoryViewModel(
         viewModelScope.launch {
             subscribeStoryUseCase().collect { result ->
                 _storyFlowList.update { result }
+                _favoriteStoriesList.update {
+                    _storyFlowList.value.filter { story ->
+                        story.isFavorite
+                    }
+                }
                 //println(result.joinToString("\n"))
                 initFirstStory()
             }
@@ -81,7 +86,7 @@ internal class StoryViewModel(
     override fun deleteStory(id: Long) {
         viewModelScope.launch {
             val storyItem = _storyFlowList.value.firstOrNull { it.id == id }
-            if(storyItem != null) {
+            if (storyItem != null) {
                 deleteStoryUseCase(storyItem)
             }
         }
@@ -113,7 +118,7 @@ internal class StoryViewModel(
     //subscribeStory>
 
     //<storyEvent
-        internal fun storyViewed(storyItem: StoryItem) {
+    internal fun storyViewed(storyItem: StoryItem) {
         updateStory(storyItem.copy(isViewed = true))
 
         viewModelScope.launch {
@@ -176,7 +181,7 @@ internal class StoryViewModel(
         else if (_storyState.value.hasFirstStory)
             closeFirstStory()
         unSelectStory()
-        if(_storyState.value.showFavoriteStories) {
+        if (_storyState.value.showFavoriteStories) {
             showFavoriteStories()
             saveCloseFavoriteStories()
         }
@@ -208,8 +213,8 @@ internal class StoryViewModel(
         } else {
             _storyState.update {
                 it.copy(
-                    currentStory = favoriteStoriesList.indexOf(story),
-                    currentPage = favoriteStoriesList.map { 0 })
+                    currentStory = favoriteStoriesList.value.indexOf(story),
+                    currentPage = favoriteStoriesList.value.map { 0 })
             }
         }
     }
