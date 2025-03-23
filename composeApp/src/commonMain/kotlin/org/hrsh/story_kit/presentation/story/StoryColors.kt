@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.Color
  * @property lowerBlackout Whether to enable darkening (blackout) for the lower part of a story.
  * @property isLiked The color to indicate that the "like" button is pressed.
  * @property isNotLiked The color to indicate that the "like" button is not pressed.
- * @property isFavorited The color to indicate that the "favorite" button is pressed.
- * @property isNotFavorited The color to indicate that the "favorite" button is not pressed.
+ * @property isFavorite The color to indicate that the "favorite" button is pressed.
+ * @property isNotFavorite The color to indicate that the "favorite" button is not pressed.
  * @property timeLine The color of the timeline (progress bar) for stories.
  * @property timeLineBackground The background color of the timeline.
  * @property buttonAnswer The color of the button on the questionnaire page.
@@ -35,8 +35,8 @@ data class StoryColors(
     val lowerBlackout: Boolean = true,
     val isLiked: Color = Color.Red,
     val isNotLiked: Color = Color.White,
-    val isFavorited: Color = Color.Yellow,
-    val isNotFavorited: Color = Color.White,
+    val isFavorite: Color = Color.Yellow,
+    val isNotFavorite: Color = Color.White,
     val timeLine : Color = Color.Gray,
     val timeLineBackground: Color = Color.White,
     val buttonAnswer: Color = Color.White,

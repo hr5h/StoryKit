@@ -407,7 +407,7 @@ internal fun ColumnScope.LikeAndFavorite(
                 modifier = Modifier.size(40.dp),
                 imageVector = Icons.Default.Star,
                 contentDescription = "star",
-                tint = if (selectStoryItem.isFavorite) colors.isFavorited else colors.isNotFavorited
+                tint = if (selectStoryItem.isFavorite) colors.isFavorite else colors.isNotFavorite
             )
         }
     }

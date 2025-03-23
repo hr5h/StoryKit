@@ -25,7 +25,7 @@ fun App() {
             favoritesPreview = Color(144, 238, 144),
             favoritesDialog = Color(144, 238, 144),
             isLiked = Color(red = 11, green = 172, blue = 65),
-            isFavorited = Color(red = 11, green = 172, blue = 65),
+            isFavorite = Color(red = 11, green = 172, blue = 65),
             timeLine = Color(red = 11, green = 172, blue = 65),
             colorResult = Color.Green,
         )
