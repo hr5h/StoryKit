@@ -64,6 +64,12 @@ internal class StoryViewModel(
                     _storyFlowList.value.filter { story ->
                         story.isFavorite
                     }
+                }.run {
+                    if(_storyState.value.showFavoriteStories && _favoriteStoriesList.value.isEmpty()) {
+                        unSelectStory()
+                        closeFavoriteStories()
+                        saveCloseFavoriteStories()
+                    }
                 }
                 //println(result.joinToString("\n"))
                 initFirstStory()
