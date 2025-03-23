@@ -107,7 +107,7 @@ internal class StoryViewModel(
         return _storySkip.asSharedFlow()
     }
 
-    override fun storyAnswerChose(): Flow<Triple<Long, Int, Int>> {
+    override fun subscribeStoryQuestion(): Flow<Triple<Long, Int, Int>> {
         return _storyAnswerChose.asSharedFlow()
     }
     //subscribeStory>

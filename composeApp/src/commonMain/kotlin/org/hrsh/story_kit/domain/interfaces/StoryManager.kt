@@ -56,5 +56,13 @@ interface StoryManager {
      */
     fun subscribeStorySkip(): Flow<Pair<Long, Boolean>>
 
-    fun storyAnswerChose(): Flow<Triple<Long, Int, Int>>
+    /**
+     * Subscribes to changes in the selected answer on a story's questionnaire page.
+     *
+     * @return A [Flow] that emits a [Triple] containing:
+     * - The ID of the story.
+     * - The page number where the questionnaire is located.
+     * - The index of the selected answer.
+     */
+    fun subscribeStoryQuestion(): Flow<Triple<Long, Int, Int>>
 }
