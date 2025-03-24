@@ -1,7 +1,15 @@
 package org.hrsh.story_kit.presentation.story
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -71,38 +79,59 @@ fun Story(
     storyViewed: (StoryItem) -> Unit,
     storyLiked: (StoryItem) -> Unit,
     storyFavorited: (StoryItem) -> Unit,
+    onChose: (StoryItem, PageItem, Int) -> Unit,
     colors: StoryColors,
-    onChose: (StoryItem, PageItem, Int) -> Unit
 ) {
     val pages =
         if (storyState.hasFirstStory) listOf(selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]])
         else stories.mapIndexed { index, storyItem ->
             storyItem.listPages[storyState.currentPage[index]]
         }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        var isAnimate = remember { mutableStateOf(true) }
 
-        //TimeLine
-        TopBar(storyState, stories, selectStoryItem, nextPage, isAnimate, colors)
-        //Content
-        Content(
-            prevPage,
-            nextPage,
-            storyState,
-            pages,
-            setStory,
-            onClose,
-            selectStoryItem,
-            storyViewed,
-            onChose,
-            colors,
-            isAnimate
-        )
-        //LikeAndFavorite
-        LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited, colors)
+    var showAnimatedStory by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        showAnimatedStory = true
+    }
+
+    if (showAnimatedStory) {
+        val isAnimateTimeLine = remember { mutableStateOf(true) }
+        var animateIn by remember { mutableStateOf(false) }
+        LaunchedEffect(Unit) { animateIn = true }
+        AnimatedVisibility(
+            visible = animateIn,
+            enter = fadeIn(spring(stiffness = Spring.StiffnessHigh)) + scaleIn(
+                initialScale = .7f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioLowBouncy,
+                    stiffness = Spring.StiffnessMedium
+                )
+            ),
+            exit = slideOutVertically { it / 8 } + fadeOut() + scaleOut(targetScale = .95f)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                //TimeLine
+                TopBar(storyState, stories, selectStoryItem, nextPage, isAnimateTimeLine, colors)
+                //Content
+                Content(
+                    prevPage,
+                    nextPage,
+                    storyState,
+                    pages,
+                    setStory,
+                    onClose,
+                    selectStoryItem,
+                    storyViewed,
+                    onChose,
+                    colors,
+                    isAnimateTimeLine
+                )
+                //LikeAndFavorite
+                LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited, colors)
+            }
+        }
     }
 }
 
@@ -112,7 +141,7 @@ private fun ColumnScope.TopBar(
     stories: List<StoryItem>,
     selectStoryItem: StoryItem,
     nextPage: () -> Unit,
-    isAnimate: MutableState<Boolean>,
+    isAnimateTimeLine: MutableState<Boolean>,
     colors: StoryColors,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
 ) {
@@ -143,7 +172,7 @@ private fun ColumnScope.TopBar(
             currentTime = 0f
             while (currentTime < selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]].timeShow) {
                 delay(20)
-                if(isAnimate.value) {
+                if (isAnimateTimeLine.value) {
                     currentTime += 0.02f
                 }
             }
@@ -163,9 +192,9 @@ private fun ColumnScope.TopBar(
         DisposableEffect(lifecycleOwner) {
             val observer = LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_START) {
-                    isAnimate.value = true
+                    isAnimateTimeLine.value = true
                 } else if (event == Lifecycle.Event.ON_STOP) {
-                    isAnimate.value = false
+                    isAnimateTimeLine.value = false
                 }
             }
 

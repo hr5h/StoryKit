@@ -34,15 +34,15 @@ internal fun MiniatureStories(
 ) {
     val storyState = storyViewModel.storyState.collectAsState().value
     val favoriteStoriesList = storyViewModel.favoriteStoriesList.collectAsState().value
-    val stories =
-        if (!storyState.showFavoriteStories) storyViewModel.storyFlowList.collectAsState().value else favoriteStoriesList
+    val storiesList = storyViewModel.storyFlowList.collectAsState().value
+    val stories = if (!storyState.showFavoriteStories) storiesList else favoriteStoriesList
     LazyRow(
         modifier = Modifier
             .background(colors.miniature)
             .fillMaxWidth()
             .padding(10.dp)
     ) {
-        items(stories) { story ->
+        items(storiesList) { story ->
             Card(
                 modifier = Modifier
                     .padding(start = 5.dp, end = 5.dp)
@@ -113,8 +113,8 @@ internal fun MiniatureStories(
             storyViewed = storyViewModel::storyViewed,
             storyLiked = storyViewModel::storyLiked,
             storyFavorited = storyViewModel::storyFavorited,
-            colors,
-            storyViewModel::updateSelected
+            onChose = storyViewModel::updateSelected,
+            colors = colors,
         )
     }
     if (storyState.isShowFavoriteStories) {
