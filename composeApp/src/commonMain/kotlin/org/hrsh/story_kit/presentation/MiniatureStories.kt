@@ -34,7 +34,8 @@ internal fun MiniatureStories(
 ) {
     val storyState = storyViewModel.storyState.collectAsState().value
     val favoriteStoriesList = storyViewModel.favoriteStoriesList.collectAsState().value
-    val stories = if(!storyState.showFavoriteStories) storyViewModel.storyFlowList.collectAsState().value else favoriteStoriesList
+    val stories =
+        if (!storyState.showFavoriteStories) storyViewModel.storyFlowList.collectAsState().value else favoriteStoriesList
     LazyRow(
         modifier = Modifier
             .background(colors.miniature)
@@ -64,7 +65,7 @@ internal fun MiniatureStories(
                 )
             }
         }
-        if(favoriteStoriesList.isNotEmpty()) {
+        if (favoriteStoriesList.isNotEmpty()) {
             item {
                 Card(
                     modifier = Modifier
@@ -117,11 +118,11 @@ internal fun MiniatureStories(
         )
     }
     if (storyState.isShowFavoriteStories) {
-        if(favoriteStoriesList.isEmpty()) {
+        //условие для того чтобы диалог пропадал, после того как последняя избранная история была удалена
+        if (favoriteStoriesList.isEmpty()) {
             storyViewModel.closeFavoriteStories()
             storyViewModel.saveCloseFavoriteStories()
-        }
-        else {
+        } else {
             ShowFavoriteStories(
                 favoriteStoriesList,
                 storyViewModel::selectStory,
