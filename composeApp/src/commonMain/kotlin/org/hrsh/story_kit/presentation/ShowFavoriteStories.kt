@@ -13,6 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +51,7 @@ fun ShowFavoriteStories(
     saveShowFavoriteStories: () -> Unit,
     closeFavoriteStories: () -> Unit,
     updateFavoriteStories: () -> Unit,
+    showDialog: Boolean,
     colors: StoryColors
 ) {
     LaunchedEffect(Unit) {
@@ -71,14 +74,14 @@ fun ShowFavoriteStories(
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.75f)
-                    .fillMaxSize(0.5f),
+                    .fillMaxHeight(0.5f),
                 contentAlignment = Alignment.Center
             ) {
                 var animateIn by remember { mutableStateOf(false) }
                 LaunchedEffect(Unit) { animateIn = true }
 
                 AnimatedVisibility(
-                    visible = animateIn,
+                    visible = animateIn && showDialog,
                     enter = fadeIn(),
                     exit = fadeOut(),
                 ) {
@@ -89,7 +92,7 @@ fun ShowFavoriteStories(
                     )
                 }
                 AnimatedVisibility(
-                    visible = animateIn,
+                    visible = animateIn && showDialog,
                     enter = fadeIn(spring(stiffness = Spring.StiffnessHigh)) + scaleIn(
                         initialScale = .8f,
                         animationSpec = spring(
@@ -116,7 +119,12 @@ fun ShowFavoriteStories(
                                     contentDescription = "im4",
                                     modifier = Modifier
                                         .background(Color.Transparent)
-                                        .padding(start = 10.dp, top = 20.dp, end = 10.dp)
+                                        .padding(
+                                            start = 10.dp,
+                                            top = 10.dp,
+                                            end = 10.dp,
+                                            bottom = 10.dp
+                                        )
                                         .aspectRatio(1f)
                                         .clip(RoundedCornerShape(10.dp))
                                         .clickable {
@@ -128,6 +136,12 @@ fun ShowFavoriteStories(
                                     contentScale = ContentScale.Crop
                                 )
                             }
+                        }
+                    }
+
+                    DisposableEffect(Unit) {
+                        onDispose {
+                            showAnimatedDialog = false
                         }
                     }
                 }
