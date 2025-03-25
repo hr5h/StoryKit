@@ -2,6 +2,7 @@ package org.hrsh.story_kit.presentation.story
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -37,6 +38,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +54,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -404,16 +408,26 @@ internal fun ColumnScope.LikeAndFavorite(
             .padding(5.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        IconButton(modifier = Modifier
-            .padding(10.dp),
+        val isPressedLike = remember { mutableStateOf(false) }
+        val sizeLike = AnimatedSize(
+            isPressed = isPressedLike,
+            sizeMin = 40.dp,
+            sizeMax = 48.dp,
+            timeAnimation = 200
+        )
+        IconButton(
+            modifier = Modifier
+                .padding(10.dp),
             onClick = {
                 storyLiked(selectStoryItem)
-            }) {
+                isPressedLike.value = true
+            }
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier.size(sizeLike.value),
                     imageVector = Icons.Default.Favorite,
                     contentDescription = "like",
                     tint = if (selectStoryItem.isLike) colors.isLiked else colors.isNotLiked
@@ -428,16 +442,49 @@ internal fun ColumnScope.LikeAndFavorite(
                 )
             }
         }
-        IconButton(modifier = Modifier
-            .padding(10.dp), onClick = {
-            storyFavorited(selectStoryItem)
-        }) {
+        val isPressedFavorite = remember { mutableStateOf(false) }
+        val sizeFavorite = AnimatedSize(
+            isPressed = isPressedFavorite,
+            sizeMin = 40.dp,
+            sizeMax = 48.dp,
+            timeAnimation = 200
+        )
+        IconButton(
+            modifier = Modifier
+                .padding(10.dp),
+            onClick = {
+                storyFavorited(selectStoryItem)
+                isPressedFavorite.value = true
+            }
+        ) {
             Icon(
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(sizeFavorite.value),
                 imageVector = Icons.Default.Star,
                 contentDescription = "star",
                 tint = if (selectStoryItem.isFavorite) colors.isFavorite else colors.isNotFavorite
             )
         }
     }
+}
+
+@Composable
+fun AnimatedSize(
+    isPressed: MutableState<Boolean>,
+    sizeMin: Dp,
+    sizeMax: Dp,
+    timeAnimation: Int,
+): State<Dp> {
+    val size by animateDpAsState(
+        targetValue = if (isPressed.value) sizeMax else sizeMin,
+        animationSpec = tween(timeAnimation),
+    )
+
+    LaunchedEffect(isPressed.value) {
+        if (isPressed.value) {
+            delay(timeAnimation.toLong())
+            isPressed.value = false
+        }
+    }
+
+    return derivedStateOf { size }
 }
