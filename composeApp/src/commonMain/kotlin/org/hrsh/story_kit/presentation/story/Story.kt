@@ -41,7 +41,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -156,39 +156,37 @@ private fun ColumnScope.TopBar(
             .background(colors.storyTopBar)
             .padding(5.dp),
     ) {
-//        Text(
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//            text = "Текущая история: ${storyState.currentStory + 1}/${stories.size}\n"
-//                    + "Текущая страница: ${storyState.currentPage[storyState.currentStory] + 1}/${selectStoryItem.listPages.size}",
-//            color = Color.White,
-//            fontWeight = FontWeight.Bold,
-//            textAlign = TextAlign.Center,
-//            fontSize = 13.sp,
-//            lineHeight = 14.sp
-//        )
         val currentPage =
             stories[storyState.currentStory].listPages[storyState.currentPage[storyState.currentStory]]
         val indCurrentPage = storyState.currentPage[storyState.currentStory]
-        var currentTime by remember { mutableFloatStateOf(0f) }
+        val currentTime =
+            remember { mutableStateListOf(*selectStoryItem.listPages.map { 0f }.toTypedArray()) }
+
+        LaunchedEffect(storyState.currentStory) {
+            currentTime.indices.forEach { i ->
+                currentTime[i] = 0f
+            }
+        }
 
         LaunchedEffect(indCurrentPage, storyState.currentStory) {
-            currentTime = 0f
-            while (currentTime < selectStoryItem.listPages[storyState.currentPage[storyState.currentStory]].timeShow) {
+            currentTime.indices.forEach { i ->
+                if (i != indCurrentPage) currentTime[i] = 0f
+            }
+
+            while (currentTime[indCurrentPage] < selectStoryItem.listPages[indCurrentPage].timeShow) {
                 delay(20)
                 if (isAnimateTimeLine.value) {
-                    currentTime += 0.02f
+                    currentTime[indCurrentPage] += 0.02f
                 }
             }
 
-            currentTime = 0f
             nextPage()
         }
 
         TimeLine(
             selectStoryItem.listPages.size,
             indCurrentPage,
-            currentTime,
+            currentTime[indCurrentPage],
             currentPage.timeShow,
             colors
         )
