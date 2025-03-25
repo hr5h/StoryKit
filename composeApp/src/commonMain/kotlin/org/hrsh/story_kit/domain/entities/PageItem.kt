@@ -46,7 +46,7 @@ sealed class PageItem(open val timeShow: Float = 5f) {
         val imageUrl: String,
         val question: String,
         val listAnswers: List<String>,
-        val listResults: List<Int>,
+        val listResults: List<Int> = listAnswers.map { 0 },
         val indexSelected: Int = -1,
         override val timeShow: Float = 5f
     ) : PageItem(timeShow)

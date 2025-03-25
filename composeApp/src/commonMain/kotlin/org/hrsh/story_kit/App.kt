@@ -70,6 +70,11 @@ fun App() {
                         imageUrl = "https://avatars.mds.yandex.net/i?id=325bcdf905e6685f354011427095fa3f_l-5233671-images-thumbs&n=13",
                         text = "Страница 2"
                     ),
+                    PageItem.Question(
+                        imageUrl = "https://avatars.yandex.net/get-music-content/5234847/767e884c.a.16290016-1/m1000x1000?webp=false",
+                        question = "Как вы оцениваете наши истории2?",
+                        listAnswers = listOf("1", "2", "3", "4"),
+                    )
                 ),
             )
         )
