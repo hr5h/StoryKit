@@ -114,6 +114,8 @@ internal fun MiniatureStories(
             storyLiked = storyViewModel::storyLiked,
             storyFavorited = storyViewModel::storyFavorited,
             onChose = storyViewModel::updateSelected,
+            onPauseStory = storyViewModel::pauseStory,
+            isPause = storyViewModel.subscribeStoryPause().collectAsState(false).value,
             colors = colors,
         )
     }

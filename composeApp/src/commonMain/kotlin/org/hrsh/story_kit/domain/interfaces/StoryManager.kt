@@ -65,4 +65,6 @@ interface StoryManager {
      * - The index of the selected answer.
      */
     fun subscribeStoryQuestion(): Flow<Triple<Long, Int, Int>>
+
+    fun subscribeStoryPause(): Flow<Boolean>
 }

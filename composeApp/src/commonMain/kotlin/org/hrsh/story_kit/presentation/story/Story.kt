@@ -84,6 +84,8 @@ fun Story(
     storyLiked: (StoryItem) -> Unit,
     storyFavorited: (StoryItem) -> Unit,
     onChose: (StoryItem, PageItem, Int) -> Unit,
+    onPauseStory: (Boolean) -> Unit,
+    isPause: Boolean,
     colors: StoryColors,
 ) {
     val pages =
@@ -98,7 +100,6 @@ fun Story(
     }
 
     if (showAnimatedStory) {
-        val isAnimateTimeLine = remember { mutableStateOf(true) }
         var animateIn by remember { mutableStateOf(false) }
         LaunchedEffect(Unit) { animateIn = true }
         AnimatedVisibility(
@@ -117,7 +118,7 @@ fun Story(
                     .fillMaxSize()
             ) {
                 //TimeLine
-                TopBar(storyState, stories, selectStoryItem, nextPage, isAnimateTimeLine, colors)
+                TopBar(storyState, stories, selectStoryItem, nextPage,onPauseStory, isPause, colors)
                 //Content
                 Content(
                     prevPage,
@@ -129,8 +130,9 @@ fun Story(
                     selectStoryItem,
                     storyViewed,
                     onChose,
+                    onPauseStory,
+                    isPause,
                     colors,
-                    isAnimateTimeLine
                 )
                 //LikeAndFavorite
                 LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited, colors)
@@ -145,7 +147,8 @@ private fun ColumnScope.TopBar(
     stories: List<StoryItem>,
     selectStoryItem: StoryItem,
     nextPage: () -> Unit,
-    isAnimateTimeLine: MutableState<Boolean>,
+    onPauseStory: (Boolean) -> Unit,
+    isPause: Boolean,
     colors: StoryColors,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
 ) {
@@ -175,7 +178,7 @@ private fun ColumnScope.TopBar(
 
             while (currentTime[indCurrentPage] < selectStoryItem.listPages[indCurrentPage].timeShow) {
                 delay(20)
-                if (isAnimateTimeLine.value) {
+                if (!isPause) {
                     currentTime[indCurrentPage] += 0.02f
                 }
             }
@@ -194,9 +197,9 @@ private fun ColumnScope.TopBar(
         DisposableEffect(lifecycleOwner) {
             val observer = LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_START) {
-                    isAnimateTimeLine.value = true
+                    onPauseStory(true)
                 } else if (event == Lifecycle.Event.ON_STOP) {
-                    isAnimateTimeLine.value = false
+                    onPauseStory(false)
                 }
             }
 
@@ -266,8 +269,9 @@ private fun ColumnScope.Content(
     selectStoryItem: StoryItem,
     storyViewed: (StoryItem) -> Unit,
     onChose: (StoryItem, PageItem, Int) -> Unit,
+    onPauseStory: (Boolean) -> Unit,
+    isPause: Boolean,
     colors: StoryColors,
-    isAnimate: MutableState<Boolean>,
 ) {
     Box(
         modifier = Modifier
@@ -277,11 +281,11 @@ private fun ColumnScope.Content(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = {
-                        isAnimate.value = false
+                        onPauseStory(false)
                     },
                     onPress = {
                         if (tryAwaitRelease()) {
-                            isAnimate.value = true
+                            onPauseStory(true)
                         }
                     },
                     onTap = { offset ->
