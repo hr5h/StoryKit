@@ -1,8 +1,19 @@
 package org.hrsh.story_kit
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -18,6 +29,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun App() {
     val storyManager = StoryKit.storyManager
+    var logItems by remember { mutableStateOf(emptyList<String>()) }
     MaterialTheme {
         val storyColors = StoryColors(
             miniature = Color(red = 11, green = 172, blue = 65),
@@ -95,6 +107,16 @@ fun App() {
 //                ),
 //            )
 //        )
+
+        LazyColumn(modifier = Modifier.padding(vertical = 120.dp)) {
+            items(logItems) { item ->
+                Text(
+                    text = item,
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.h6
+                )
+            }
+        }
     }
 
     CoroutineScope(Dispatchers.IO).launch {
@@ -102,6 +124,17 @@ fun App() {
         launch {
             storyManager.subscribeStoryLike().collect { (id, isLike) ->
                 println("Story with id = $id, isLike: $isLike")
+                logItems = logItems + "Story with id = $id, isLike: $isLike"
+            }
+        }
+    }
+
+    CoroutineScope(Dispatchers.IO).launch {
+        delay(2000)
+        launch {
+            storyManager.subscribeStoryFavorite().collect { (id, isFavorite) ->
+                println("Story with id = $id, isFavorite: $isFavorite")
+                logItems = logItems + "Story with id = $id, isFavorite: $isFavorite"
             }
         }
     }
@@ -111,6 +144,7 @@ fun App() {
         launch {
             storyManager.subscribeStoryView().collect { id ->
                 println("Story with id = $id has been viewed")
+                logItems = logItems + "Story with id = $id has been viewed"
             }
         }
     }
@@ -127,6 +161,7 @@ fun App() {
         launch {
             storyManager.subscribeStoryQuestion().collect { (id, pageIndex, index) ->
                 println("In story with id = $id in page with index = $pageIndex: index of chosen answer is $index")
+                logItems = logItems + "In story with id = $id in page with index = $pageIndex: index of chosen answer is $index"
             }
         }
     }

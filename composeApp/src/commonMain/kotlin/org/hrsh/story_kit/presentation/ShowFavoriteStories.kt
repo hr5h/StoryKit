@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.presentation.story.StoryColors
@@ -35,7 +36,8 @@ fun ShowFavoriteStories(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxSize(0.5f),
+                .fillMaxSize(0.5f)
+                .zIndex(1f),
             shape = RoundedCornerShape(12.dp),
             elevation = 8.dp
         ) {

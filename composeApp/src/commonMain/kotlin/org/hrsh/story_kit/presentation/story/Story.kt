@@ -45,6 +45,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -82,6 +83,7 @@ fun Story(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .zIndex(1f)
     ) {
         var isAnimate = remember { mutableStateOf(true) }
 

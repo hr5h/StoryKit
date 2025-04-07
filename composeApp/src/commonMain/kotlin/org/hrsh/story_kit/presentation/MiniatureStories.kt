@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import org.hrsh.story_kit.di.Koin
 import org.hrsh.story_kit.presentation.story.Story
@@ -40,6 +41,7 @@ internal fun MiniatureStories(
             .background(colors.miniature)
             .fillMaxWidth()
             .padding(10.dp)
+            .zIndex(0.5f)
     ) {
         items(stories) { story ->
             Card(
