@@ -340,7 +340,8 @@ private fun ColumnScope.Content(
                 is PageItem.Video -> PageVideo(
                     pages[index] as PageItem.Video,
                     pageSize,
-                    pages[pagerState.currentPage] is PageItem.Video
+                    pages[pagerState.currentPage] is PageItem.Video,
+                    isAnimate
                 )
 
                 is PageItem.Question -> PageQuestion(

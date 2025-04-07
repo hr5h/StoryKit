@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -19,7 +20,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 
 @Composable
-actual fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean) {
+actual fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean, isAnimate: MutableState<Boolean>) {
     val context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 
@@ -39,6 +40,10 @@ actual fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean) {
             player.stop()
             player.seekTo(0)
         }
+    }
+
+    LaunchedEffect(isAnimate.value) {
+        if(isAnimate.value) player.play() else player.pause()
     }
 
     DisposableEffect(Unit) {
@@ -72,11 +77,11 @@ actual fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean) {
         modifier = modifier.then(Modifier.pointerInput(Unit) {
             detectTapGestures(
                 onLongPress = {
-                    player.pause()
+                    isAnimate.value = false
                 },
                 onPress = {
                     if (tryAwaitRelease()) {
-                        player.play()
+                        isAnimate.value = true
                     }
                 }
             )
