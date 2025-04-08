@@ -60,7 +60,9 @@ internal class StoryViewModel(
     private fun subscribeStories() {
         viewModelScope.launch {
             subscribeStoryUseCase().collect { result ->
-                _storyFlowList.update { result }
+                if (!_storyState.value.isShowStory) {
+                    _storyFlowList.update { result.sortedBy { it.isViewed } }
+                }
                 if (!_storyState.value.showFavoriteStories) {
                     _favoriteStoriesList.update {
                         _storyFlowList.value.filter { story ->
@@ -76,6 +78,7 @@ internal class StoryViewModel(
                 }
                 //println(result.joinToString("\n"))
                 initFirstStory()
+                println(_storyState.value)
             }
         }
     }
@@ -132,7 +135,16 @@ internal class StoryViewModel(
 
     //<storyEvent
     internal fun storyViewed(storyItem: StoryItem) {
-        updateStory(storyItem.copy(isViewed = true))
+        if (!_storyState.value.isShowStory && !_storyState.value.showFavoriteStories) {
+            updateStory(storyItem.copy(isViewed = true))
+        } else {
+            updateStoryLocal(
+                storyItem,
+                storyItem.copy(
+                    isViewed = true
+                )
+            )
+        }
 
         viewModelScope.launch {
             _storyView.emit(storyItem.id)
@@ -140,7 +152,7 @@ internal class StoryViewModel(
     }
 
     internal fun storyLiked(storyItem: StoryItem) {
-        if (!_storyState.value.showFavoriteStories) {
+        if (!_storyState.value.isShowStory && !_storyState.value.showFavoriteStories) {
             updateStory(
                 storyItem.copy(
                     isLike = !storyItem.isLike,
@@ -148,21 +160,14 @@ internal class StoryViewModel(
                 )
             )
         } else {
-            _favoriteStoriesList.update {
-                val index = _favoriteStoriesList.value.indexOf(storyItem)
-                val newList = _favoriteStoriesList.value.toMutableList()
-
-                if (index != -1) {
-                    newList[index] = storyItem.copy(
-                        isLike = !storyItem.isLike,
-                        countLike = if (storyItem.isLike) storyItem.countLike - 1 else storyItem.countLike + 1
-                    )
-                }
-
-                newList
-            }
+            updateStoryLocal(
+                storyItem,
+                storyItem.copy(
+                    isLike = !storyItem.isLike,
+                    countLike = if (storyItem.isLike) storyItem.countLike - 1 else storyItem.countLike + 1
+                )
+            )
         }
-
 
         viewModelScope.launch {
             _storyLike.emit(Pair(storyItem.id, !storyItem.isLike))
@@ -170,31 +175,19 @@ internal class StoryViewModel(
     }
 
     internal fun storyFavorited(storyItem: StoryItem) {
-        if (!_storyState.value.showFavoriteStories) {
+        if (!_storyState.value.isShowStory && !_storyState.value.showFavoriteStories) {
             updateStory(
                 storyItem.copy(
                     isFavorite = !storyItem.isFavorite
                 )
             )
         } else {
-            _favoriteStoriesList.update {
-                val index = _favoriteStoriesList.value.indexOf(storyItem)
-                val newList = _favoriteStoriesList.value.toMutableList()
-
-                if (index != -1) {
-                    newList[index] = storyItem.copy(
-                        isFavorite = !storyItem.isFavorite
-                    )
-                }
-
-                newList
-            }
-        }
-    }
-
-    internal fun updateFavoriteStories() {
-        _favoriteStoriesList.value.forEach { item ->
-            updateStory(item)
+            updateStoryLocal(
+                storyItem,
+                storyItem.copy(
+                    isFavorite = !storyItem.isFavorite
+                )
+            )
         }
     }
 
@@ -208,12 +201,48 @@ internal class StoryViewModel(
                 item
             }
         }
-        updateStory(
-            storyItem.copy(listPages = modifiedPagesList)
-        )
+        if (!_storyState.value.isShowStory && !_storyState.value.showFavoriteStories) {
+            updateStory(
+                storyItem.copy(listPages = modifiedPagesList)
+            )
+        } else {
+            updateStoryLocal(
+                storyItem,
+                storyItem.copy(
+                    listPages = modifiedPagesList
+                )
+            )
+        }
 
         viewModelScope.launch {
             _storyAnswerChose.emit(Triple(storyItem.id, pageIndex, value))
+        }
+    }
+
+    private fun updateStoryLocal(oldStoryItem: StoryItem, newStoryItem: StoryItem) {
+        listOf(_storyFlowList, _favoriteStoriesList).forEach { list ->
+            list.update {
+                val index = list.value.indexOf(oldStoryItem)
+                val newList = list.value.toMutableList()
+
+                if (index != -1) {
+                    newList[index] = newStoryItem
+                }
+
+                newList
+            }
+        }
+    }
+
+    internal fun updateStories() {
+        _storyFlowList.value.forEach { item ->
+            updateStory(item)
+        }
+    }
+
+    internal fun updateFavoriteStories() {
+        _favoriteStoriesList.value.forEach { item ->
+            updateStory(item)
         }
     }
 
@@ -272,6 +301,10 @@ internal class StoryViewModel(
                     currentPage = favoriteStoriesList.value.map { 0 })
             }
         }
+        println(favoriteStoriesList.value)
+        println(favoriteStoriesList.value.indexOf(story))
+        println(favoriteStoriesList.value.map { 0 })
+        println(_storyState.value)
     }
 
     internal fun setStory(ind: Int) {

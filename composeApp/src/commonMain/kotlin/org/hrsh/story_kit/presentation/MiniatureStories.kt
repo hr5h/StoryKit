@@ -108,6 +108,7 @@ internal fun MiniatureStories(
             nextPage = storyViewModel::nextPage,
             setStory = storyViewModel::setStory,
             onClose = {
+                storyViewModel.updateStories()
                 storyViewModel.closeAllStory()
             },
             storyViewed = storyViewModel::storyViewed,
