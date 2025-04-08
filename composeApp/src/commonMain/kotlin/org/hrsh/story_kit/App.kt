@@ -1,9 +1,13 @@
 package org.hrsh.story_kit
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +36,6 @@ fun App() {
             timeLine = Color(red = 11, green = 172, blue = 65),
             colorResult = Color.Green,
         )
-        StoryKit(storyColors)
         //PageItemImage
         addStories(storyManager)
 //        //PageItemError
@@ -44,55 +47,61 @@ fun App() {
 //                ),
 //            )
 //        )
-    }
-
-    CoroutineScope(Dispatchers.IO).launch {
-        delay(2000)
-        launch {
-            storyManager.subscribeStoryLike().collect { (id, isLike) ->
-                println("Story with id = $id, isLike: $isLike")
-            }
-        }
-    }
-
-    CoroutineScope(Dispatchers.IO).launch {
-        delay(2000)
-        launch {
-            storyManager.subscribeStoryView().collect { id ->
-                println("Story with id = $id has been viewed")
-            }
-        }
-    }
-
-    Button(onClick = {
         CoroutineScope(Dispatchers.IO).launch {
             delay(2000)
             launch {
-                //storyManager.deleteAllStory()
+                storyManager.subscribeStoryLike().collect { (id, isLike) ->
+                    println("Story with id = $id, isLike: $isLike")
+                }
             }
-            delay(3000)
-            addStories(storyManager)
         }
-    }) {
-        Text(text = "Clear Story Data")
-    }
 
-    CoroutineScope(Dispatchers.IO).launch {
-        delay(2000)
-        launch {
-            storyManager.subscribeStoryQuestion().collect { (id, pageIndex, index) ->
-                println("In story with id = $id in page with index = $pageIndex: index of chosen answer is $index")
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(2000)
+            launch {
+                storyManager.subscribeStoryView().collect { id ->
+                    println("Story with id = $id has been viewed")
+                }
             }
         }
-    }
 
-    CoroutineScope(Dispatchers.IO).launch {
-        delay(2000)
-        launch {
-            storyManager.subscribeStoryPause().collect { item ->
-                println("story paused: $item")
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Button(onClick = {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(100)
+                    launch {
+                        storyManager.deleteAllStory()
+                    }
+                    delay(100)
+                    addStories(storyManager)
+                }
+            }) {
+                Text(text = "Clear Story Data")
             }
         }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(2000)
+            launch {
+                storyManager.subscribeStoryQuestion().collect { (id, pageIndex, index) ->
+                    println("In story with id = $id in page with index = $pageIndex: index of chosen answer is $index")
+                }
+            }
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(2000)
+            launch {
+                storyManager.subscribeStoryPause().collect { item ->
+                    println("story paused: $item")
+                }
+            }
+        }
+
+        StoryKit(storyColors)
     }
 }
 

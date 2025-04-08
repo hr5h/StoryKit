@@ -47,10 +47,13 @@ internal class StoryViewModel(
         _favoriteStoriesList.asStateFlow()
 
     internal val selectStoryItem: StoryItem
-        get() = if (!_storyState.value.showFavoriteStories)
+        get() = if (!_storyState.value.showFavoriteStories) {
+            println("storyFlowList: ${storyFlowList.value}")
             storyFlowList.value[_storyState.value.currentStory]
-        else
+        } else {
+            println("favoriteStoriesList: ${favoriteStoriesList.value}")
             favoriteStoriesList.value[_storyState.value.currentStory]
+        }
 
     init {
         subscribeStories()
@@ -78,7 +81,7 @@ internal class StoryViewModel(
                 }
                 //println(result.joinToString("\n"))
                 initFirstStory()
-                println(_storyState.value)
+                println("storyState: ${_storyState.value}")
             }
         }
     }
@@ -301,10 +304,10 @@ internal class StoryViewModel(
                     currentPage = favoriteStoriesList.value.map { 0 })
             }
         }
-        println(favoriteStoriesList.value)
-        println(favoriteStoriesList.value.indexOf(story))
-        println(favoriteStoriesList.value.map { 0 })
-        println(_storyState.value)
+        println("favoriteStoriesList: ${favoriteStoriesList.value}")
+        println("favoriteStoriesList.value.indexOf(story): ${favoriteStoriesList.value.indexOf(story)}")
+        println("favoriteStoriesList.value.map { 0 }: ${favoriteStoriesList.value.map { 0 }}")
+        println("_storyState.value: ${_storyState.value}")
     }
 
     internal fun setStory(ind: Int) {
@@ -328,7 +331,7 @@ internal class StoryViewModel(
     internal fun nextPage() {
         if (_storyState.value.currentStory == -1) return
 
-        if (_storyState.value.currentPage[_storyState.value.currentStory] < _storyFlowList.value[_storyState.value.currentStory].listPages.size - 1) {
+        if (_storyState.value.currentPage[_storyState.value.currentStory] < (if (!_storyState.value.isShowFavoriteStories) _storyFlowList else favoriteStoriesList).value[_storyState.value.currentStory].listPages.size - 1) {
             val newList = _storyState.value.currentPage.toMutableList()
             newList[_storyState.value.currentStory] += 1
             _storyState.update { state ->
@@ -350,7 +353,7 @@ internal class StoryViewModel(
     private fun nextStory() {
         if (_storyState.value.currentStory == -1) return
 
-        if (_storyState.value.currentStory < _storyFlowList.value.size - 1) {
+        if (_storyState.value.currentStory < (if (!_storyState.value.isShowFavoriteStories) _storyFlowList else favoriteStoriesList).value.size - 1) {
             _storyState.update { it.copy(currentStory = it.currentStory + 1) }
         } else {
             closeAllStory()
