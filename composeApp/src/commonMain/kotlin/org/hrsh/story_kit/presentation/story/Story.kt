@@ -63,6 +63,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import org.hrsh.story_kit.di.BackHandler
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.presentation.page.PageError
@@ -95,6 +96,17 @@ fun Story(
     var showAnimatedStory by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         showAnimatedStory = true
+    }
+
+    val backHandler = remember {
+        BackHandler(enabled = true) {
+            println("NAZAD")
+            onClose()
+        }
+    }
+    backHandler.setup()
+    DisposableEffect(backHandler) {
+        onDispose { backHandler.dispose() }
     }
 
     if (showAnimatedStory) {
