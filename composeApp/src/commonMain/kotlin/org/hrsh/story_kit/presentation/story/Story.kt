@@ -85,6 +85,7 @@ fun Story(
     storyLiked: (StoryItem) -> Unit,
     storyFavorited: (StoryItem) -> Unit,
     onChose: (StoryItem, PageItem, Int) -> Unit,
+    pauseStory: (Boolean) -> Unit,
     colors: StoryColors,
 ) {
     val pages =
@@ -147,6 +148,10 @@ fun Story(
                 //LikeAndFavorite
                 LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited, colors)
             }
+        }
+
+        LaunchedEffect(isAnimateTimeLine.value) {
+            if (isAnimateTimeLine.value) pauseStory(false) else pauseStory(true)
         }
     }
 }

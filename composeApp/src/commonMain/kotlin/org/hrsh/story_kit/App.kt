@@ -135,4 +135,13 @@ fun App() {
             }
         }
     }
+
+    CoroutineScope(Dispatchers.IO).launch {
+        delay(2000)
+        launch {
+            storyManager.subscribeStoryPause().collect { item ->
+                println("story paused: $item")
+            }
+        }
+    }
 }

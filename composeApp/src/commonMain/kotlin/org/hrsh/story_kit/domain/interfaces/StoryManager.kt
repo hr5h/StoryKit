@@ -65,4 +65,13 @@ interface StoryManager {
      * - The index of the selected answer.
      */
     fun subscribeStoryQuestion(): Flow<Triple<Long, Int, Int>>
+
+    /**
+     * Subscribes to changes in the pause state of a story playback.
+     *
+     * @return A [Flow] that emits a Boolean value indicating whether the story is currently paused:
+     * - `true` if story playback is paused
+     * - `false` if story playback is active/resumed
+     */
+    fun subscribeStoryPause(): Flow<Boolean>
 }
