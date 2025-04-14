@@ -1,24 +1,42 @@
-package org.hrsh.story_kit
+package com.example.androidapp
 
-import androidx.compose.material.MaterialTheme
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.androidapp.ui.theme.StoryKitTheme
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.presentation.story.StoryColors
-import org.hrsh.story_kit.presentation.story.StoryKit
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.hrsh.story_kit.storyKit
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            StoryKitTheme {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Box(modifier = Modifier.padding(innerPadding)) {
+                        StoryMiniature()
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Composable
 @Preview
-fun App() {
-    val storyManager = StoryKit.storyManager
-    MaterialTheme {
+fun StoryMiniature() {
         val storyColors = StoryColors(
             miniature = Color(red = 11, green = 172, blue = 65),
             storyStroke = Color.Green,
@@ -29,7 +47,7 @@ fun App() {
             timeLine = Color(red = 11, green = 172, blue = 65),
             colorResult = Color.Green,
         )
-        StoryKit(storyColors)
+        val storyManager = storyKit(storyColors)
         //PageItemImage
         storyManager.addStory(
             StoryItem(
@@ -100,8 +118,8 @@ fun App() {
 //                ),
 //            )
 //        )
-    }
 
+    /*
     CoroutineScope(Dispatchers.IO).launch {
         delay(2000)
         launch {
@@ -144,4 +162,5 @@ fun App() {
             }
         }
     }
+    */
 }

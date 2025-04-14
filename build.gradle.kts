@@ -11,5 +11,6 @@ plugins {
     kotlin("plugin.serialization") version "1.5.0" apply false
     id("org.jetbrains.dokka") version "2.0.0"
     id("dev.testify") version "3.2.0" apply false
+    alias(libs.plugins.kotlinAndroid) apply false
 }
 
