@@ -37,6 +37,7 @@ internal class StoryViewModel(
 
     private val _storyView: MutableSharedFlow<Long> = MutableSharedFlow()
     private val _storyLike: MutableSharedFlow<Pair<Long, Boolean>> = MutableSharedFlow()
+    private val _storyFavorite: MutableSharedFlow<Pair<Long, Boolean>> = MutableSharedFlow()
     private val _storySkip: MutableSharedFlow<Pair<Long, Boolean>> = MutableSharedFlow()
     private val _storyAnswerChose: MutableSharedFlow<Triple<Long, Int, Int>> = MutableSharedFlow()
     private val _isPauseStory: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -117,6 +118,10 @@ internal class StoryViewModel(
         return _storyLike.asSharedFlow()
     }
 
+    override fun subscribeStoryFavorite(): Flow<Pair<Long, Boolean>> {
+        return _storyFavorite.asSharedFlow()
+    }
+
     override fun subscribeStorySkip(): Flow<Pair<Long, Boolean>> {
         return _storySkip.asSharedFlow()
     }
@@ -189,6 +194,10 @@ internal class StoryViewModel(
 
                 newList
             }
+        }
+
+        viewModelScope.launch {
+            _storyFavorite.emit(Pair(storyItem.id, !storyItem.isFavorite))
         }
     }
 
