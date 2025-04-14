@@ -1,4 +1,6 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.compose.internal.utils.localPropertiesFile
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
@@ -18,7 +20,7 @@ plugins {
 
 val libraryGroupId = "dev.hr5h"
 val libraryArtifactId = "story_kit"
-val libraryVersion = "0.5"
+val libraryVersion = "1.0.0"
 
 kotlin {
     androidTarget {
@@ -173,7 +175,7 @@ publishing {
             version = libraryVersion
 
             when (name) {
-                "kotlinMultiplatform" -> artifactId = "$libraryArtifactId-multiplatform"
+                "kotlinMultiplatform" -> artifactId = libraryArtifactId
                 "androidRelease" -> artifactId = "$libraryArtifactId-android"
                 "ios" -> artifactId = "$libraryArtifactId-ios"
             }
@@ -186,6 +188,15 @@ publishing {
         maven {
             name = "BuildDir"
             url = uri(rootProject.layout.buildDirectory.dir("maven-repo"))
+        }
+
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/hr5h/StoryKit")
+            credentials {
+                username = gradleLocalProperties(rootDir, providers).getProperty("gpr.user")
+                password = gradleLocalProperties(rootDir, providers).getProperty("gpr.key")
+            }
         }
     }
 }
