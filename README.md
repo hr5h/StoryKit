@@ -3,8 +3,11 @@
 This project is an implementation of the functionality of adding and deleting stories(similar to stories in well-known social networks)
 
 ## Instalation
+Since JCenter is closing, please use https://jitpack.io/ and release tags as the source of stable artifacts.
 
-Instructions on how to get a copy of the project and running on your local machine.
+```bash
+implementation 'com.github.hr5h:StoryKit:1.0.0'
+```
 
 ## Usage
 
