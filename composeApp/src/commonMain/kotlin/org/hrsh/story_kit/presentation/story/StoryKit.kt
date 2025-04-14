@@ -6,7 +6,7 @@ import org.hrsh.story_kit.domain.interfaces.StoryManager
 import org.hrsh.story_kit.presentation.MiniatureStories
 
 @Composable
-fun StoryKit(colors: StoryColors = StoryColors()) {
+internal fun StoryKit(colors: StoryColors = StoryColors()) {
     MiniatureStories(colors)
 }
 

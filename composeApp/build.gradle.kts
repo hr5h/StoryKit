@@ -5,18 +5,26 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.room)
     //snapshot
-    id("dev.testify")
+    //id("dev.testify")
     id("com.google.devtools.ksp")
     kotlin("plugin.serialization")
+    id("maven-publish")
 }
+
+val libraryGroupId = "dev.hr5h"
+val libraryArtifactId = "story_kit"
+val libraryVersion = "0.3"
 
 kotlin {
     androidTarget {
+        publishLibraryVariants("release")
+        withSourcesJar(publish = true)
+
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -92,16 +100,12 @@ kotlin {
 }
 
 android {
-    namespace = "org.hrsh.story_kit"
+    namespace = "dev.hrsh.story_kit"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        applicationId = "org.hrsh.story_kit"
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
     }
     packaging {
         resources {
@@ -159,4 +163,29 @@ room {
 
 subprojects {
     apply(plugin = "org.jetbrains.dokka")
+}
+
+publishing {
+    publications {
+        withType<MavenPublication> {
+            groupId = libraryGroupId
+            artifactId = libraryArtifactId
+            version = libraryVersion
+
+            when (name) {
+                "kotlinMultiplatform" -> artifactId = "$libraryArtifactId-multiplatform"
+                "androidRelease" -> artifactId = "$libraryArtifactId-android"
+                "ios" -> artifactId = "$libraryArtifactId-ios"
+            }
+        }
+    }
+
+    repositories {
+        mavenLocal()
+
+        maven {
+            name = "BuildDir"
+            url = uri(rootProject.layout.buildDirectory.dir("maven-repo"))
+        }
+    }
 }
