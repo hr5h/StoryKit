@@ -18,7 +18,7 @@ plugins {
 
 val libraryGroupId = "dev.hr5h"
 val libraryArtifactId = "story_kit"
-val libraryVersion = "0.3"
+val libraryVersion = "0.5"
 
 kotlin {
     androidTarget {

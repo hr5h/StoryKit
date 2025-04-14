@@ -73,7 +73,7 @@ import org.hrsh.story_kit.presentation.page.PageVideo
 import kotlin.math.max
 
 @Composable
-fun Story(
+internal fun Story(
     stories: List<StoryItem>,
     selectStoryItem: StoryItem,
     storyState: StoryState,
@@ -101,7 +101,6 @@ fun Story(
 
     val backHandler = remember {
         BackHandler(enabled = true) {
-            println("NAZAD")
             onClose()
         }
     }
@@ -227,7 +226,7 @@ private fun ColumnScope.TopBar(
 }
 
 @Composable
-fun TimeLine(
+private fun TimeLine(
     countTimeLine: Int,
     currentTimeLine: Int,
     currentTime: Float,
@@ -410,7 +409,7 @@ private fun BoxScope.Cross(onClose: () -> Unit) {
 }
 
 @Composable
-internal fun ColumnScope.LikeAndFavorite(
+private fun ColumnScope.LikeAndFavorite(
     selectStoryItem: StoryItem,
     storyLiked: (StoryItem) -> Unit,
     storyFavorited: (StoryItem) -> Unit,
@@ -484,7 +483,7 @@ internal fun ColumnScope.LikeAndFavorite(
 }
 
 @Composable
-fun AnimatedSize(
+private fun AnimatedSize(
     isPressed: MutableState<Boolean>,
     sizeMin: Dp,
     sizeMax: Dp,

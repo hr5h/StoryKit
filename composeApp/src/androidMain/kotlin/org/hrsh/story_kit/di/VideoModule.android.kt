@@ -20,7 +20,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 
 @Composable
-actual fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean, isAnimate: MutableState<Boolean>) {
+internal actual fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean, isAnimate: MutableState<Boolean>) {
     val context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 

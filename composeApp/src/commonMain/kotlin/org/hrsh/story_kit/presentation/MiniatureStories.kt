@@ -25,7 +25,7 @@ import org.hrsh.story_kit.presentation.story.Story
 import org.hrsh.story_kit.presentation.story.StoryColors
 import org.hrsh.story_kit.presentation.story.StoryViewModel
 
-const val COUNT_FAVORITE_STORY = 4
+internal const val COUNT_FAVORITE_STORY = 4
 
 @Composable
 internal fun MiniatureStories(

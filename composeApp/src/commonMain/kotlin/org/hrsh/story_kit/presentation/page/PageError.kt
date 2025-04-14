@@ -1,6 +1,5 @@
 package org.hrsh.story_kit.presentation.page
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun PageError(pageSize: Float) {
+internal fun PageError(pageSize: Float) {
     Box(
         modifier = Modifier
             .fillMaxSize()

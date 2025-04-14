@@ -3,7 +3,7 @@ package org.hrsh.story_kit.domain.interfaces
 import kotlinx.coroutines.flow.Flow
 import org.hrsh.story_kit.domain.entities.StoryItem
 
-interface StoryRepository {
+internal interface StoryRepository {
 
     suspend fun getStories(): Flow<List<StoryItem>>
     suspend fun postStory(storyItem: StoryItem)

@@ -7,7 +7,7 @@ import org.hrsh.story_kit.data.entities.PageItemDb.Companion.STORY_TABLE_NAME
 
 @Entity(tableName = STORY_TABLE_NAME)
 @Serializable
-data class PageItemDb(
+internal data class PageItemDb(
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,
     val type: PageType,
@@ -25,6 +25,6 @@ data class PageItemDb(
     }
 }
 
-enum class PageType {
+internal enum class PageType {
     IMAGE, VIDEO, QUESTION
 }

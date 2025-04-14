@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import org.hrsh.story_kit.data.database.StoryDatabase
 import org.koin.dsl.module
 
-fun getDatabaseBuilder(ctx: Context): RoomDatabase.Builder<StoryDatabase> {
+internal fun getDatabaseBuilder(ctx: Context): RoomDatabase.Builder<StoryDatabase> {
     val appContext = ctx.applicationContext
     val dbFile = appContext.getDatabasePath(StoryDatabase.DATABASE_NAME)
     return Room.databaseBuilder<StoryDatabase>(
@@ -19,10 +19,10 @@ fun getDatabaseBuilder(ctx: Context): RoomDatabase.Builder<StoryDatabase> {
         .setQueryCoroutineContext(Dispatchers.IO)
 }
 
-fun getDatabase(ctx: Context): StoryDatabase {
+internal fun getDatabase(ctx: Context): StoryDatabase {
     return getDatabaseBuilder(ctx).build()
 }
 
-actual fun databaseModule() = module {
+internal actual fun databaseModule() = module {
     single<StoryDatabase> { getDatabase(get()) }
 }

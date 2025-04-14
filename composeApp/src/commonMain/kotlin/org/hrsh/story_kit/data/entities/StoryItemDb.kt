@@ -6,7 +6,7 @@ import org.hrsh.story_kit.data.entities.StoryItemDb.Companion.STORY_TABLE_NAME
 
 
 @Entity(tableName = STORY_TABLE_NAME)
-data class StoryItemDb(
+internal data class StoryItemDb(
     @PrimaryKey
     val id: Long,
     val imagePreview: String,

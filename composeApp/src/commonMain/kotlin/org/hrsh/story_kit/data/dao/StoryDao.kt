@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import org.hrsh.story_kit.data.entities.StoryItemDb
 
 @Dao
-interface StoryDao {
+internal interface StoryDao {
     @Query("SELECT * FROM ${StoryItemDb.STORY_TABLE_NAME}")
     fun getAll(): Flow<List<StoryItemDb>>
 

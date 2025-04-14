@@ -3,11 +3,11 @@ package org.hrsh.story_kit.domain.usecases
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.interfaces.StoryRepository
 
-interface UpdateStoryUseCase {
+internal interface UpdateStoryUseCase {
     suspend operator fun invoke(storyItem: StoryItem)
 }
 
-class UpdateStoryUseCaseImpl(
+internal class UpdateStoryUseCaseImpl(
     private val storyRepository: StoryRepository
 ): UpdateStoryUseCase {
 

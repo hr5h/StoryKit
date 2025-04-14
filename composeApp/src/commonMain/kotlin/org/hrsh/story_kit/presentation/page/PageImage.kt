@@ -21,7 +21,7 @@ import coil3.compose.AsyncImage
 import org.hrsh.story_kit.domain.entities.PageItem
 
 @Composable
-fun PageImage(itemImage: PageItem.Image, imageSize: Float) {
+internal fun PageImage(itemImage: PageItem.Image, imageSize: Float) {
     Box(
         modifier = Modifier
             .fillMaxSize()
