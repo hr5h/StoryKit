@@ -34,7 +34,7 @@ import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.presentation.story.StoryColors
 
 @Composable
-fun PageQuestion(
+internal fun PageQuestion(
     itemQuestion: PageItem.Question,
     imageSize: Float,
     selectedStoryItem: StoryItem,
@@ -131,7 +131,7 @@ fun PageQuestion(
 }
 
 @Composable
-fun FillButton(
+private fun FillButton(
     ratio: Float,
     process: Float,
     colorResult: Color

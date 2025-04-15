@@ -9,7 +9,7 @@ import org.hrsh.story_kit.data.mappers.StoryItemDomainToDbMapper
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.interfaces.StoryRepository
 
-class StoryRepositoryImpl(
+internal class StoryRepositoryImpl(
     private val database: StoryDatabase,
     private val storyItemDbToDomainMapper: StoryItemDbToDomainMapper,
     private val storyItemDomainToDbMapper: StoryItemDomainToDbMapper

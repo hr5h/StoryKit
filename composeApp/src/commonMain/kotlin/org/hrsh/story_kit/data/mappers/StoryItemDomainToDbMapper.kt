@@ -3,7 +3,7 @@ package org.hrsh.story_kit.data.mappers
 import org.hrsh.story_kit.data.entities.StoryItemDb
 import org.hrsh.story_kit.domain.entities.StoryItem
 
-class StoryItemDomainToDbMapper(
+internal class StoryItemDomainToDbMapper(
     private val pageItemDomainToDbMapper: PageItemDomainToDbMapper
 ) : (StoryItem) -> StoryItemDb {
     override fun invoke(storyItem: StoryItem): StoryItemDb {

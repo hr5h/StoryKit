@@ -5,7 +5,7 @@ import org.hrsh.story_kit.domain.interfaces.StoryRepository
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-fun repositoryModule() : Module {
+internal fun repositoryModule() : Module {
     return module {
         single<StoryRepository> { StoryRepositoryImpl(get(), get(), get()) }
     }

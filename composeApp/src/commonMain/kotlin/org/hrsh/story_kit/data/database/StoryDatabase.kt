@@ -13,7 +13,7 @@ import org.hrsh.story_kit.data.utils.PagesConverter
     exportSchema = false,
 )
 @TypeConverters(PagesConverter::class)
-abstract class StoryDatabase: RoomDatabase() {
+internal abstract class StoryDatabase: RoomDatabase() {
     abstract fun storyDao(): StoryDao
 
     companion object {

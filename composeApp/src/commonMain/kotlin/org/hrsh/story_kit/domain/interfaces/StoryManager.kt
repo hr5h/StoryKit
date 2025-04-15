@@ -50,6 +50,13 @@ interface StoryManager {
     fun subscribeStoryLike(): Flow<Pair<Long, Boolean>>
 
     /**
+     * Subscribes to changes in the like state of a story.
+     *
+     * @return A [Flow] that emits a Pair containing the story's ID and a Boolean indicating whether the story is favorite.
+     */
+    fun subscribeStoryFavorite(): Flow<Pair<Long, Boolean>>
+
+    /**
      * Subscribes to changes in the skip state of a story.
      *
      * @return A [Flow] that emits a Pair containing the story's ID and a Boolean indicating whether the story has been skipped.

@@ -4,13 +4,13 @@ import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 
-fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
+internal fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
     startKoin {
         appDeclaration()
         modules(databaseModule(), repositoryModule(), mapperModule(), domainModule(), storyViewModelModule())
     }
 
-object Koin {
+internal object Koin {
     var di: KoinApplication? = null
 
     fun setupKoin(appDeclaration: KoinAppDeclaration = {}) {

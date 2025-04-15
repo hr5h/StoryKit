@@ -4,11 +4,11 @@ import kotlinx.coroutines.flow.Flow
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.interfaces.StoryRepository
 
-interface SubscribeStoryUseCase {
+internal interface SubscribeStoryUseCase {
     suspend operator fun invoke(): Flow<List<StoryItem>>
 }
 
-class SubscribeStoryUseCaseImpl(
+internal class SubscribeStoryUseCaseImpl(
     private val storyRepository: StoryRepository
 ): SubscribeStoryUseCase {
 

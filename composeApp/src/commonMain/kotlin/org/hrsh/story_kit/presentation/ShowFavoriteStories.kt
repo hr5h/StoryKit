@@ -44,7 +44,7 @@ import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.presentation.story.StoryColors
 
 @Composable
-fun ShowFavoriteStories(
+internal fun ShowFavoriteStories(
     favoriteStoriesList: List<StoryItem>,
     selectStory: (StoryItem) -> Unit,
     showStory: () -> Unit,

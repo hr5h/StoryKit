@@ -5,7 +5,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-actual class BackHandler actual constructor(
+internal actual class BackHandler actual constructor(
     private val enabled: Boolean,
     private val onBack: () -> Unit
 ) {

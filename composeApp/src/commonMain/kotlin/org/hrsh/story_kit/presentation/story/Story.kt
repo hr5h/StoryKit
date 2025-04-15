@@ -73,7 +73,7 @@ import org.hrsh.story_kit.presentation.page.PageVideo
 import kotlin.math.max
 
 @Composable
-fun Story(
+internal fun Story(
     stories: List<StoryItem>,
     selectStoryItem: StoryItem,
     storyState: StoryState,
@@ -101,7 +101,6 @@ fun Story(
 
     val backHandler = remember {
         BackHandler(enabled = true) {
-            println("NAZAD")
             onClose()
         }
     }
@@ -227,7 +226,7 @@ private fun ColumnScope.TopBar(
 }
 
 @Composable
-fun TimeLine(
+private fun TimeLine(
     countTimeLine: Int,
     currentTimeLine: Int,
     currentTime: Float,
@@ -352,6 +351,7 @@ private fun ColumnScope.Content(
                 is PageItem.Image -> PageImage(
                     pages[index] as PageItem.Image,
                     pageSize,
+                    colors.lowerBlackout
                 )
 
                 is PageItem.Video -> PageVideo(
@@ -374,23 +374,29 @@ private fun ColumnScope.Content(
             }
         }
         //Cross
-        Cross(onClose)
+        Cross(onClose, colors.upperBlackout)
     }
 }
 
 @Composable
-private fun BoxScope.Cross(onClose: () -> Unit) {
-    val gradient = Brush.verticalGradient(
+private fun BoxScope.Cross(onClose: () -> Unit, upperBlackout: Boolean) {
+    val blackoutGradient = Brush.verticalGradient(
         0.05f to Color(0f, 0f, 0f, 0.5f),
         1.0f to Color.Transparent,
         startY = 0.0f,
         endY = 600.0f
     )
+    val transparentGradient = Brush.verticalGradient(
+        colors = listOf(
+            Color.Transparent,
+            Color.Transparent
+        )
+    )
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(5f)
-            .background(gradient)
+            .background(if(upperBlackout) blackoutGradient else transparentGradient)
             .align(Alignment.TopEnd),
     ) {
         IconButton(
@@ -410,7 +416,7 @@ private fun BoxScope.Cross(onClose: () -> Unit) {
 }
 
 @Composable
-internal fun ColumnScope.LikeAndFavorite(
+private fun ColumnScope.LikeAndFavorite(
     selectStoryItem: StoryItem,
     storyLiked: (StoryItem) -> Unit,
     storyFavorited: (StoryItem) -> Unit,
@@ -484,7 +490,7 @@ internal fun ColumnScope.LikeAndFavorite(
 }
 
 @Composable
-fun AnimatedSize(
+private fun AnimatedSize(
     isPressed: MutableState<Boolean>,
     sizeMin: Dp,
     sizeMax: Dp,

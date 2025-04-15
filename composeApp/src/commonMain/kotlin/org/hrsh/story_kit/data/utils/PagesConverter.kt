@@ -6,7 +6,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.hrsh.story_kit.data.entities.PageItemDb
 
-class PagesConverter {
+internal class PagesConverter {
     private val json = Json { ignoreUnknownKeys = true }
 
     @TypeConverter

@@ -5,4 +5,4 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 
 @Composable
-expect fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean, isAnimate: MutableState<Boolean>)
+internal expect fun VideoPlayer(modifier: Modifier, url: String, isVisible: Boolean, isAnimate: MutableState<Boolean>)

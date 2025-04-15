@@ -10,7 +10,7 @@ import org.hrsh.story_kit.di.VideoPlayer
 import org.hrsh.story_kit.domain.entities.PageItem
 
 @Composable
-fun PageVideo(
+internal fun PageVideo(
     itemVideo: PageItem.Video, pageSize: Float, isVisible: Boolean, isAnimate: MutableState<Boolean>
 ) {
     Box(modifier = Modifier.graphicsLayer {

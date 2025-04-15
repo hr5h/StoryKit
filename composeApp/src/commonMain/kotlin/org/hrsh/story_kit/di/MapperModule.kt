@@ -7,7 +7,7 @@ import org.hrsh.story_kit.data.mappers.StoryItemDomainToDbMapper
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-fun mapperModule(): Module {
+internal fun mapperModule(): Module {
     return module {
         single { PageItemDbToDomainMapper() }
         single { PageItemDomainToDbMapper() }

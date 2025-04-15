@@ -13,7 +13,7 @@ import org.hrsh.story_kit.domain.usecases.UpdateStoryUseCaseImpl
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-fun domainModule(): Module {
+internal fun domainModule(): Module {
     return module {
         single<SubscribeStoryUseCase> { SubscribeStoryUseCaseImpl(get()) }
         single<InsertStoryUseCase> { InsertStoryUseCaseImpl(get()) }

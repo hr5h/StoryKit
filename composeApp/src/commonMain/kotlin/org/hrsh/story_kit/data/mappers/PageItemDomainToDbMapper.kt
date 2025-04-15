@@ -4,7 +4,7 @@ import org.hrsh.story_kit.data.entities.PageItemDb
 import org.hrsh.story_kit.data.entities.PageType
 import org.hrsh.story_kit.domain.entities.PageItem
 
-class PageItemDomainToDbMapper() : (PageItem) -> PageItemDb {
+internal class PageItemDomainToDbMapper() : (PageItem) -> PageItemDb {
     override fun invoke(pageItem: PageItem): PageItemDb {
         return when (pageItem) {
             is PageItem.Image -> PageItemDb(
