@@ -66,7 +66,9 @@ class MainActivity : ComponentActivity() {
                         Column(modifier = Modifier.fillMaxSize()) {
                             LazyColumn(
                                 state = listState,
-                                modifier = Modifier.padding(top = 120.dp).weight(1f)
+                                modifier = Modifier
+                                    .padding(top = 120.dp)
+                                    .weight(1f)
                             ) {
                                 itemsIndexed(logItems) { index, item ->
                                     Text(
@@ -114,18 +116,21 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 @Preview
-fun StoryMiniature(logItems: SnapshotStateList<String> = emptyList<String>() as SnapshotStateList<String>, trigger: MutableIntState = mutableIntStateOf(0)) {
-        val storyColors = StoryColors(
-            miniature = Color(red = 11, green = 172, blue = 65),
-            storyStroke = Color.Green,
-            favoritesPreview = Color(144, 238, 144),
-            favoritesDialog = Color(144, 238, 144),
-            isLiked = Color(red = 11, green = 172, blue = 65),
-            isFavorite = Color(red = 11, green = 172, blue = 65),
-            timeLine = Color(red = 11, green = 172, blue = 65),
-            colorResult = Color.Green,
-        )
-        val storyManager = storyKit(storyColors)
+fun StoryMiniature(
+    logItems: SnapshotStateList<String> = emptyList<String>() as SnapshotStateList<String>,
+    trigger: MutableIntState = mutableIntStateOf(0)
+) {
+    val storyColors = StoryColors(
+        miniature = Color(red = 11, green = 172, blue = 65),
+        storyStroke = Color.Green,
+        favoritesPreview = Color(144, 238, 144),
+        favoritesDialog = Color(144, 238, 144),
+        isLiked = Color(red = 11, green = 172, blue = 65),
+        isFavorite = Color(red = 11, green = 172, blue = 65),
+        timeLine = Color(red = 11, green = 172, blue = 65),
+        colorResult = Color.Green,
+    )
+    val storyManager = storyKit(storyColors)
     LaunchedEffect(trigger.intValue) {
         logItems.add("Refreshing stories")
         storyManager.deleteAllStory()
