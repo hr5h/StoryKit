@@ -136,14 +136,14 @@ internal fun Story(
         visible = showAnimatedStory,
         enter = fadeIn(spring(stiffness = Spring.StiffnessHigh)) +
                 scaleIn(
-                    initialScale = 0.8f, animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                    initialScale = 0.7f, animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioNoBouncy,
                         stiffness = Spring.StiffnessMediumLow
                     )
                 ),
         exit = fadeOut(animationSpec = tween(200)) +
                 scaleOut(
-                    targetScale = 0.8f, animationSpec = spring(
+                    targetScale = 0.7f, animationSpec = spring(
                         dampingRatio = Spring.DampingRatioMediumBouncy,
                         stiffness = Spring.StiffnessMediumLow
                     )
@@ -575,7 +575,7 @@ fun DraggableColumn(
         modifier = modifier.then(
             Modifier
                 .height(height)
-                .width(width)
+                .fillMaxWidth()
                 .pointerInput(Unit) {
                     detectVerticalDragGestures(
                         onDragStart = {
