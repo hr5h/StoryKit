@@ -131,7 +131,6 @@ internal fun MiniatureStories(
                 storyViewModel::saveShowFavoriteStories,
                 storyViewModel::closeFavoriteStories,
                 storyViewModel::updateFavoriteStories,
-                storyState.isShowFavoriteStories,
                 colors
             )
         }
