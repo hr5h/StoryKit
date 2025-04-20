@@ -10,7 +10,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -59,7 +58,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -69,8 +67,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.hrsh.story_kit.di.BackHandler
 import org.hrsh.story_kit.di.getScreenHeightDp
 import org.hrsh.story_kit.di.getScreenWidthDp
@@ -106,14 +107,24 @@ internal fun Story(
             storyItem.listPages[storyState.currentPage[index]]
         }
 
+    val isAnimateTimeLine = remember { mutableStateOf(true) }
+
     var showAnimatedStory by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         showAnimatedStory = true
     }
 
+    fun animatedClose() {
+        CoroutineScope(Dispatchers.Main).launch {
+            showAnimatedStory = false
+            delay(300)
+            onClose()
+        }
+    }
+
     val backHandler = remember {
         BackHandler(enabled = true) {
-            onClose()
+            animatedClose()
         }
     }
     backHandler.setup()
@@ -121,55 +132,56 @@ internal fun Story(
         onDispose { backHandler.dispose() }
     }
 
-    if (showAnimatedStory) {
-        val isAnimateTimeLine = remember { mutableStateOf(true) }
-        var animateIn by remember { mutableStateOf(false) }
-        LaunchedEffect(Unit) { animateIn = true }
-        AnimatedVisibility(
-            visible = animateIn,
-            enter = fadeIn(spring(stiffness = Spring.StiffnessHigh)) + scaleIn(
-                initialScale = .7f,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioLowBouncy,
-                    stiffness = Spring.StiffnessMedium
-                )
-            ),
-            exit = slideOutVertically { it / 8 } + fadeOut() + scaleOut(targetScale = .95f)
-        ) {
-            DraggableColumn(
-                modifier = Modifier,
-                height = getScreenHeightDp(),
-                width = getScreenWidthDp(),
-                ratio = 0.7f,
-                dampingRatio = Spring.DampingRatioLowBouncy,
-                stiffness = Spring.StiffnessLow,
-                onActionTriggered = {
-                    onClose()
-                },
-                content = {
-                    TopBar(storyState, stories, selectStoryItem, nextPage, isAnimateTimeLine, colors)
-                    Content(
-                        prevPage,
-                        nextPage,
-                        storyState,
-                        pages,
-                        setStory,
-                        onClose,
-                        selectStoryItem,
-                        storyViewed,
-                        onChose,
-                        colors,
-                        isAnimateTimeLine
+    AnimatedVisibility(
+        visible = showAnimatedStory,
+        enter = fadeIn(spring(stiffness = Spring.StiffnessHigh)) +
+                scaleIn(
+                    initialScale = 0.8f, animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessMediumLow
                     )
-                    LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited, colors)
-                },
-                backgroundColor = Color.Transparent
-            )
-        }
+                ),
+        exit = fadeOut(animationSpec = tween(200)) +
+                scaleOut(
+                    targetScale = 0.8f, animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessMediumLow
+                    )
+                )
+    ) {
+        DraggableColumn(
+            modifier = Modifier,
+            height = getScreenHeightDp(),
+            width = getScreenWidthDp(),
+            ratio = 0.7f,
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = Spring.StiffnessLow,
+            onActionTriggered = {
+                animatedClose()
+            },
+            content = {
+                TopBar(storyState, stories, selectStoryItem, nextPage, isAnimateTimeLine, colors)
+                Content(
+                    prevPage,
+                    nextPage,
+                    storyState,
+                    pages,
+                    setStory,
+                    { animatedClose() },
+                    selectStoryItem,
+                    storyViewed,
+                    onChose,
+                    colors,
+                    isAnimateTimeLine
+                )
+                LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited, colors)
+            },
+            backgroundColor = Color.Transparent
+        )
+    }
 
-        LaunchedEffect(isAnimateTimeLine.value) {
-            if (isAnimateTimeLine.value) pauseStory(false) else pauseStory(true)
-        }
+    LaunchedEffect(isAnimateTimeLine.value) {
+        if (isAnimateTimeLine.value) pauseStory(false) else pauseStory(true)
     }
 }
 
@@ -414,7 +426,7 @@ private fun BoxScope.Cross(onClose: () -> Unit, upperBlackout: Boolean) {
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(5f)
-            .background(if(upperBlackout) blackoutGradient else transparentGradient)
+            .background(if (upperBlackout) blackoutGradient else transparentGradient)
             .align(Alignment.TopEnd),
     ) {
         IconButton(
