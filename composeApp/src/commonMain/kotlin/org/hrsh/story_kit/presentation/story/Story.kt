@@ -14,6 +14,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -23,8 +24,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Icon
@@ -41,6 +45,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,8 +58,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -64,13 +72,17 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import org.hrsh.story_kit.di.BackHandler
+import org.hrsh.story_kit.di.getScreenHeightDp
+import org.hrsh.story_kit.di.getScreenWidthDp
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.presentation.page.PageError
 import org.hrsh.story_kit.presentation.page.PageImage
 import org.hrsh.story_kit.presentation.page.PageQuestion
 import org.hrsh.story_kit.presentation.page.PageVideo
+import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 @Composable
 internal fun Story(
@@ -124,29 +136,35 @@ internal fun Story(
             ),
             exit = slideOutVertically { it / 8 } + fadeOut() + scaleOut(targetScale = .95f)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                //TimeLine
-                TopBar(storyState, stories, selectStoryItem, nextPage, isAnimateTimeLine, colors)
-                //Content
-                Content(
-                    prevPage,
-                    nextPage,
-                    storyState,
-                    pages,
-                    setStory,
-                    onClose,
-                    selectStoryItem,
-                    storyViewed,
-                    onChose,
-                    colors,
-                    isAnimateTimeLine
-                )
-                //LikeAndFavorite
-                LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited, colors)
-            }
+            DraggableColumn(
+                modifier = Modifier,
+                height = getScreenHeightDp(),
+                width = getScreenWidthDp(),
+                ratio = 0.7f,
+                dampingRatio = Spring.DampingRatioLowBouncy,
+                stiffness = Spring.StiffnessLow,
+                onActionTriggered = {
+                    onClose()
+                },
+                content = {
+                    TopBar(storyState, stories, selectStoryItem, nextPage, isAnimateTimeLine, colors)
+                    Content(
+                        prevPage,
+                        nextPage,
+                        storyState,
+                        pages,
+                        setStory,
+                        onClose,
+                        selectStoryItem,
+                        storyViewed,
+                        onChose,
+                        colors,
+                        isAnimateTimeLine
+                    )
+                    LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited, colors)
+                },
+                backgroundColor = Color.Transparent
+            )
         }
 
         LaunchedEffect(isAnimateTimeLine.value) {
@@ -509,4 +527,78 @@ private fun AnimatedSize(
     }
 
     return derivedStateOf { size }
+}
+
+@Composable
+fun DraggableColumn(
+    modifier: Modifier = Modifier,
+    height: Dp = 300.dp,
+    width: Dp = 300.dp,
+    ratio: Float = 0.5f,
+    dampingRatio: Float = Spring.DampingRatioMediumBouncy,
+    stiffness: Float = Spring.StiffnessLow,
+    onActionTriggered: () -> Unit = {},
+    content: @Composable ColumnScope.() -> Unit = {},
+    backgroundColor: Color = Color.LightGray
+) {
+    var offsetY by remember { mutableFloatStateOf(0f) }
+    var isDragging by remember { mutableStateOf(false) }
+    val wasThresholdCrossed = remember { mutableStateOf(false) }
+
+    val density = LocalDensity.current
+    val triggerThreshold = remember {
+        with(density) { height.toPx() * ratio }
+    }
+
+    val animatedOffset by animateFloatAsState(
+        targetValue = if (isDragging) offsetY else 0f,
+        animationSpec = spring(
+            dampingRatio = dampingRatio,
+            stiffness = stiffness
+        ),
+        label = "offsetAnimation"
+    )
+
+    Box(
+        modifier = modifier.then(
+            Modifier
+                .height(height)
+                .width(width)
+                .pointerInput(Unit) {
+                    detectVerticalDragGestures(
+                        onDragStart = {
+                            isDragging = true
+                            wasThresholdCrossed.value = false
+                        },
+                        onDragEnd = {
+                            isDragging = false
+                            if (wasThresholdCrossed.value) {
+                                onActionTriggered()
+                            }
+                            offsetY = 0f
+                        },
+                        onVerticalDrag = { _, dragAmount ->
+                            offsetY += dragAmount
+                            offsetY = offsetY.coerceAtMost(0f)
+
+                            val crossedThreshold = abs(offsetY) >= triggerThreshold
+                            if (crossedThreshold && !wasThresholdCrossed.value) {
+                                wasThresholdCrossed.value = true
+                            } else if (!crossedThreshold) {
+                                wasThresholdCrossed.value = false
+                            }
+                        }
+                    )
+                }
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset { IntOffset(0, animatedOffset.roundToInt()) }
+                .background(backgroundColor)
+        ) {
+            content()
+        }
+    }
 }
