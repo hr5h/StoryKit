@@ -39,7 +39,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.presentation.story.StoryColors
 
@@ -51,7 +54,6 @@ internal fun ShowFavoriteStories(
     saveShowFavoriteStories: () -> Unit,
     closeFavoriteStories: () -> Unit,
     updateFavoriteStories: () -> Unit,
-    showDialog: Boolean,
     colors: StoryColors
 ) {
     LaunchedEffect(Unit) {
@@ -64,84 +66,79 @@ internal fun ShowFavoriteStories(
         showAnimatedDialog = true
     }
 
-    if (showAnimatedDialog) {
-        Dialog(
-            onDismissRequest = { closeFavoriteStories() },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false
-            )
+    Dialog(
+        onDismissRequest = {
+            CoroutineScope(Dispatchers.Main).launch {
+                showAnimatedDialog = false
+                delay(300)
+                closeFavoriteStories()
+            }
+        },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.75f)
+                .fillMaxHeight(0.5f),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.75f)
-                    .fillMaxHeight(0.5f),
-                contentAlignment = Alignment.Center
+            AnimatedVisibility(
+                visible = showAnimatedDialog,
+                enter = fadeIn(),
+                exit = fadeOut(),
             ) {
-                var animateIn by remember { mutableStateOf(false) }
-                LaunchedEffect(Unit) { animateIn = true }
-
-                AnimatedVisibility(
-                    visible = animateIn && showDialog,
-                    enter = fadeIn(),
-                    exit = fadeOut(),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .pointerInput(Unit) { detectTapGestures { closeFavoriteStories() } }
-                            .fillMaxSize()
+                Box(
+                    modifier = Modifier
+                        .pointerInput(Unit) { detectTapGestures { closeFavoriteStories() } }
+                        .fillMaxSize()
+                )
+            }
+            AnimatedVisibility(
+                visible = showAnimatedDialog,
+                enter = fadeIn(spring(stiffness = Spring.StiffnessHigh)) + scaleIn(
+                    initialScale = .8f,
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessMediumLow
                     )
-                }
-                AnimatedVisibility(
-                    visible = animateIn && showDialog,
-                    enter = fadeIn(spring(stiffness = Spring.StiffnessHigh)) + scaleIn(
-                        initialScale = .8f,
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                            stiffness = Spring.StiffnessMediumLow
-                        )
-                    ),
-                    exit = slideOutVertically { it / 8 } + fadeOut() + scaleOut(targetScale = .95f)
+                ),
+                exit = slideOutVertically { it / 8 } + fadeOut() + scaleOut(targetScale = .95f)
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = 8.dp
                 ) {
-                    Card(
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
                         modifier = Modifier
-                            .fillMaxSize(),
-                        shape = RoundedCornerShape(12.dp),
-                        elevation = 8.dp
+                            .background(colors.favoritesDialog)
                     ) {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            modifier = Modifier
-                                .background(colors.favoritesDialog)
-                        ) {
-                            items(favoriteStoriesList) { story ->
-                                AsyncImage(
-                                    model = story.imagePreview,
-                                    contentDescription = "im4",
-                                    modifier = Modifier
-                                        .background(Color.Transparent)
-                                        .padding(
-                                            start = 10.dp,
-                                            top = 10.dp,
-                                            end = 10.dp,
-                                            bottom = 10.dp
-                                        )
-                                        .aspectRatio(1f)
-                                        .clip(RoundedCornerShape(10.dp))
-                                        .clickable {
-                                            selectStory(story)
-                                            saveShowFavoriteStories()
-                                            showStory()
-                                            closeFavoriteStories()
-                                        },
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
-                        }
-                    }
-
-                    DisposableEffect(Unit) {
-                        onDispose {
-                            showAnimatedDialog = false
+                        items(favoriteStoriesList) { story ->
+                            AsyncImage(
+                                model = story.imagePreview,
+                                contentDescription = "im4",
+                                modifier = Modifier
+                                    .background(Color.Transparent)
+                                    .padding(
+                                        start = 10.dp,
+                                        top = 10.dp,
+                                        end = 10.dp,
+                                        bottom = 10.dp
+                                    )
+                                    .aspectRatio(1f)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .clickable {
+                                        selectStory(story)
+                                        saveShowFavoriteStories()
+                                        showStory()
+                                        closeFavoriteStories()
+                                    },
+                                contentScale = ContentScale.Crop
+                            )
                         }
                     }
                 }
