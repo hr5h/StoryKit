@@ -3,6 +3,8 @@
     <application>
         <activity
             android:name="dev.hrsh.story_kit.StoryActivity"
-            android:exported="true" />
+            android:exported="true"
+            />
+<!--            android:theme="@style/Theme.Transparent"-->
     </application>
 </manifest>

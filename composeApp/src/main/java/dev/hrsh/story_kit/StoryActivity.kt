@@ -12,6 +12,7 @@ class StoryActivity : ComponentActivity() {
             ShowStory(
                 onClose = {
                     finish()
+                    overridePendingTransition(0, 0)
                 }
             )
         }
