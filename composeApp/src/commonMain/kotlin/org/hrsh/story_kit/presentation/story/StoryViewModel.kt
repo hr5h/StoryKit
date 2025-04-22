@@ -355,4 +355,10 @@ internal class StoryViewModel(
     private fun closeFirstStory() {
         _storyState.update { it.copy(hasFirstStory = false) }
     }
+
+    override fun setColors(storyColors: StoryColors) {
+        _storyState.update {
+            it.copy(storyColors = storyColors)
+        }
+    }
 }

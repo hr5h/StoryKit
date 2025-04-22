@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,11 +44,10 @@ import org.hrsh.story_kit.storyKit
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             StoryKitTheme(darkTheme = false) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)) {
+                    Column(modifier = Modifier.padding(innerPadding)) {
                         val logItems = remember { mutableStateListOf<String>() }
                         val trigger = remember { mutableIntStateOf(1) }
                         val listState = rememberLazyListState()
@@ -63,11 +60,11 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
+                        StoryMiniature(logItems, trigger)
                         Column(modifier = Modifier.fillMaxSize()) {
                             LazyColumn(
                                 state = listState,
                                 modifier = Modifier
-                                    .padding(top = 120.dp)
                                     .weight(1f)
                             ) {
                                 itemsIndexed(logItems) { index, item ->
@@ -105,7 +102,6 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
-                        StoryMiniature(logItems, trigger)
                     }
                 }
             }
@@ -120,17 +116,19 @@ fun StoryMiniature(
     logItems: SnapshotStateList<String> = emptyList<String>() as SnapshotStateList<String>,
     trigger: MutableIntState = mutableIntStateOf(0)
 ) {
-    val storyColors = StoryColors(
-        miniature = Color(red = 11, green = 172, blue = 65),
-        storyStroke = Color.Green,
-        favoritesPreview = Color(144, 238, 144),
-        favoritesDialog = Color(144, 238, 144),
-        isLiked = Color(red = 11, green = 172, blue = 65),
-        isFavorite = Color(red = 11, green = 172, blue = 65),
-        timeLine = Color(red = 11, green = 172, blue = 65),
-        colorResult = Color.Green,
+    val storyManager = storyKit()
+    storyManager.setColors(
+        StoryColors(
+            miniature = Color(red = 11, green = 172, blue = 65),
+            storyStroke = Color.Green,
+            favoritesPreview = Color(144, 238, 144),
+            favoritesDialog = Color(144, 238, 144),
+            isLiked = Color(red = 11, green = 172, blue = 65),
+            isFavorite = Color(red = 11, green = 172, blue = 65),
+            timeLine = Color(red = 11, green = 172, blue = 65),
+            colorResult = Color.Green,
+        )
     )
-    val storyManager = storyKit(storyColors)
     LaunchedEffect(trigger.intValue) {
         logItems.add("Refreshing stories")
         storyManager.deleteAllStory()

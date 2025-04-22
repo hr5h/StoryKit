@@ -9,4 +9,5 @@ internal data class StoryState(
     val isShowFavoriteStories: Boolean = false,
     //показываются ли favoriteStories
     val showFavoriteStories: Boolean = false,
+    val storyColors: StoryColors = StoryColors()
 )

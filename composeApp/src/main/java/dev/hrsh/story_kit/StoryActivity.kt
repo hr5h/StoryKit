@@ -9,7 +9,12 @@ class StoryActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ShowStory(onClose = { finish() })
+            ShowStory(
+                onClose = {
+                    finish()
+                    overridePendingTransition(0, 0)
+                }
+            )
         }
     }
 }
