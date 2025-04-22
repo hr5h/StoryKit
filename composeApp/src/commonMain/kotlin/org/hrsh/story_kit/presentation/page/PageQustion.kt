@@ -185,7 +185,7 @@ private fun LazyVerticalGridButtons(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Button(
-                        modifier = Modifier.padding(vertical = 8.dp),
+                        modifier = Modifier.padding(8.dp),
                         shape = RoundedCornerShape(30.dp),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = storyColors.buttonAnswer,
@@ -200,6 +200,7 @@ private fun LazyVerticalGridButtons(
                     ) {
                         Box(
                             contentAlignment = Alignment.Center,
+                            modifier = Modifier.fillMaxSize()
                         ) {
                             if (itemQuestion.indexSelected != -1) {
                                 FillButton(
