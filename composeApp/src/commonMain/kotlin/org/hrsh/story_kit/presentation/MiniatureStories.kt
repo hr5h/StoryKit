@@ -23,20 +23,19 @@ import coil3.compose.AsyncImage
 import org.hrsh.story_kit.di.Koin
 import org.hrsh.story_kit.di.Navigator
 import org.hrsh.story_kit.presentation.story.Story
-import org.hrsh.story_kit.presentation.story.StoryColors
 import org.hrsh.story_kit.presentation.story.StoryViewModel
 
 internal const val COUNT_FAVORITE_STORY = 4
 
 @Composable
 internal fun MiniatureStories(
-    colors: StoryColors,
     storyViewModel: StoryViewModel = Koin.di?.koin?.get<StoryViewModel>()!!
 ) {
     val storyState = storyViewModel.storyState.collectAsState().value
     val favoriteStoriesList = storyViewModel.favoriteStoriesList.collectAsState().value
     val storiesList = storyViewModel.storyFlowList.collectAsState().value
     val navigator = Koin.di?.koin?.get<Navigator>()!!
+    val colors = storyState.storyColors
     LazyRow(
         modifier = Modifier
             .background(colors.miniature)
@@ -125,13 +124,13 @@ internal fun MiniatureStories(
 @Composable
 internal fun ShowStory(
     onClose: () -> Unit,
-    colors: StoryColors = StoryColors(),
     storyViewModel: StoryViewModel = Koin.di?.koin?.get<StoryViewModel>()!!
 ) {
     val storyState = storyViewModel.storyState.collectAsState().value
     val favoriteStoriesList = storyViewModel.favoriteStoriesList.collectAsState().value
     val storiesList = storyViewModel.storyFlowList.collectAsState().value
     val stories = if (!storyState.showFavoriteStories) storiesList else favoriteStoriesList
+    val colors = storyState.storyColors
     if ((storyState.hasFirstStory || storyState.isShowStory) && storyState.currentStory != -1) {
         Story(
             stories = stories,

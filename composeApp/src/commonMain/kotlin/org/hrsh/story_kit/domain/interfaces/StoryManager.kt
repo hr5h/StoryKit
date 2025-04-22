@@ -1,8 +1,8 @@
 package org.hrsh.story_kit.domain.interfaces
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import org.hrsh.story_kit.domain.entities.StoryItem
+import org.hrsh.story_kit.presentation.story.StoryColors
 
 /**
  * Interface that defines the operations for managing story items.
@@ -81,4 +81,11 @@ interface StoryManager {
      * - `false` if story playback is active/resumed
      */
     fun subscribeStoryPause(): Flow<Boolean>
+
+    /**
+     * Sets the color scheme for story-related views.
+     *
+     * @param storyColors The [StoryColors] object containing color values to be applied.
+     */
+    fun setColors(storyColors: StoryColors)
 }

@@ -120,17 +120,19 @@ fun StoryMiniature(
     logItems: SnapshotStateList<String> = emptyList<String>() as SnapshotStateList<String>,
     trigger: MutableIntState = mutableIntStateOf(0)
 ) {
-    val storyColors = StoryColors(
-        miniature = Color(red = 11, green = 172, blue = 65),
-        storyStroke = Color.Green,
-        favoritesPreview = Color(144, 238, 144),
-        favoritesDialog = Color(144, 238, 144),
-        isLiked = Color(red = 11, green = 172, blue = 65),
-        isFavorite = Color(red = 11, green = 172, blue = 65),
-        timeLine = Color(red = 11, green = 172, blue = 65),
-        colorResult = Color.Green,
+    val storyManager = storyKit()
+    storyManager.setColors(
+        StoryColors(
+            miniature = Color(red = 11, green = 172, blue = 65),
+            storyStroke = Color.Green,
+            favoritesPreview = Color(144, 238, 144),
+            favoritesDialog = Color(144, 238, 144),
+            isLiked = Color(red = 11, green = 172, blue = 65),
+            isFavorite = Color(red = 11, green = 172, blue = 65),
+            timeLine = Color(red = 11, green = 172, blue = 65),
+            colorResult = Color.Green,
+        )
     )
-    val storyManager = storyKit(storyColors)
     LaunchedEffect(trigger.intValue) {
         logItems.add("Refreshing stories")
         storyManager.deleteAllStory()
