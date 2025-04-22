@@ -6,10 +6,16 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -32,6 +38,7 @@ import coil3.compose.AsyncImage
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.presentation.story.StoryColors
+import org.hrsh.story_kit.presentation.story.calculateSizeCoefficient
 
 @Composable
 internal fun PageQuestion(
@@ -66,8 +73,21 @@ internal fun PageQuestion(
                 .background(Color.White),
             text = itemQuestion.question,
             textAlign = TextAlign.Center,
-            fontSize = 28.sp
+            fontSize = (28.0 * calculateSizeCoefficient(itemQuestion.question.length)).toInt().sp
         )
+        if (itemQuestion.listAnswers.size < 9) ColumnButtons(itemQuestion, selectedStoryItem, onChose, storyColors)
+        else LazyVerticalGridButtons(itemQuestion, selectedStoryItem, onChose, storyColors)
+    }
+}
+
+@Composable
+private fun ColumnButtons(
+    itemQuestion: PageItem.Question,
+    selectedStoryItem: StoryItem,
+    onChose: (StoryItem, PageItem, Int) -> Unit,
+    storyColors: StoryColors
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -118,7 +138,79 @@ internal fun PageQuestion(
                             }
                             Text(
                                 text = item,
-                                fontSize = 28.sp,
+                                fontSize = (28.0 * calculateSizeCoefficient(item.length)).toInt().sp,
+                                color = Color.Black,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LazyVerticalGridButtons(
+    itemQuestion: PageItem.Question,
+    selectedStoryItem: StoryItem,
+    onChose: (StoryItem, PageItem, Int) -> Unit,
+    storyColors: StoryColors
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        val sumRatio = itemQuestion.listResults.sum().toFloat()
+        val currentTime = remember { Animatable(initialValue = 0f) }
+        val maxTime = 2f
+
+        if (itemQuestion.indexSelected != -1) {
+            LaunchedEffect(Unit) {
+                currentTime.animateTo(
+                    targetValue = maxTime,
+                    animationSpec = tween(durationMillis = maxTime.toInt() * 1000),
+                )
+            }
+        }
+        LazyVerticalGrid(
+            columns =
+            if (itemQuestion.listAnswers.size < 12)
+                GridCells.Fixed(3)
+            else if (itemQuestion.listAnswers.size < 16)
+                GridCells.Fixed(4)
+            else
+                GridCells.Fixed(5),
+            modifier = Modifier.padding(8.dp).align(Alignment.BottomCenter)
+        ) {
+            itemsIndexed(itemQuestion.listAnswers) { index, item ->
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Button(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        shape = RoundedCornerShape(30.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = storyColors.buttonAnswer,
+                            disabledBackgroundColor =
+                            if (index == itemQuestion.indexSelected)
+                                storyColors.buttonAnswer.copy(alpha = 1.2f)
+                            else
+                                storyColors.buttonAnswer.copy(alpha = 0.7f)
+                        ),
+                        onClick = { onChose(selectedStoryItem, itemQuestion, index) },
+                        enabled = itemQuestion.indexSelected == -1
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            if (itemQuestion.indexSelected != -1) {
+                                FillButton(
+                                    itemQuestion.listResults[index] / sumRatio,
+                                    currentTime.value / maxTime,
+                                    storyColors.colorResult
+                                )
+                            }
+                            Text(
+                                text = item,
+                                fontSize = (28.0 * calculateSizeCoefficient(item.length)).toInt().sp,
                                 color = Color.Black,
                                 textAlign = TextAlign.Center
                             )

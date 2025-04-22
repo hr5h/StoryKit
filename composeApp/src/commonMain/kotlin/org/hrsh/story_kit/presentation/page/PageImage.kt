@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import org.hrsh.story_kit.domain.entities.PageItem
+import org.hrsh.story_kit.presentation.story.calculateSizeCoefficient
 
 @Composable
 internal fun PageImage(itemImage: PageItem.Image, imageSize: Float, lowerBlackout: Boolean) {
@@ -63,7 +64,7 @@ internal fun PageImage(itemImage: PageItem.Image, imageSize: Float, lowerBlackou
             Text(
                 text = itemImage.text,
                 color = Color.White,
-                fontSize = 24.sp,
+                fontSize = (28.0 * calculateSizeCoefficient(itemImage.text.length)).toInt().sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .fillMaxWidth()

@@ -142,7 +142,8 @@ fun StoryMiniature(
                 listPages = listOf(
                     PageItem.Image(
                         imageUrl = "https://avatars.mds.yandex.net/get-altay/3569559/2a00000181ec245ac9c1e4872b9c0299be35/orig",
-                        text = "«Премиальный» — вклад для клиентов, которые ценят неограниченные возможности"
+                        //text = "«Премиальный» — вклад для клиентов, которые ценят неограниченные возможности"
+                        text = "*Фактическая доходность — ставка с учетом капитализации (в процентах годовых), рассчитывается от начала срока действия договора вклада до конца каждого периода, указывается справочно."
                     ),
                     PageItem.Image(
                         imageUrl = "https://cbkg.ru/uploads/centr-invest-.jpg",
@@ -177,7 +178,7 @@ fun StoryMiniature(
                     PageItem.Question(
                         imageUrl = "https://avatars.yandex.net/get-music-content/5234847/767e884c.a.16290016-1/m1000x1000?webp=false",
                         question = "Как вы оцениваете наши истории2?",
-                        listAnswers = listOf("1", "2", "3", "4"),
+                        listAnswers = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),
                     )
                 ),
             )
