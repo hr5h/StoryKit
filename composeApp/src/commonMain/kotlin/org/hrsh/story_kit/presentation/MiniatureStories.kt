@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -37,7 +36,7 @@ internal fun MiniatureStories(
     val storyState = storyViewModel.storyState.collectAsState().value
     val favoriteStoriesList = storyViewModel.favoriteStoriesList.collectAsState().value
     val storiesList = storyViewModel.storyFlowList.collectAsState().value
-    val navigator = remember { Navigator() }
+    val navigator = Koin.di?.koin?.get<Navigator>()!!
     LazyRow(
         modifier = Modifier
             .background(colors.miniature)
@@ -102,7 +101,7 @@ internal fun MiniatureStories(
         }
     }
     if ((storyState.hasFirstStory || storyState.isShowStory) && storyState.currentStory != -1) {
-        navigator.navigateToDetail()
+        navigator.navigateToStory()
     }
     if (storyState.isShowFavoriteStories) {
         //условие для того чтобы диалог пропадал, после того как последняя избранная история была удалена
@@ -126,6 +125,7 @@ internal fun MiniatureStories(
 
 @Composable
 internal fun ShowStory(
+    onClose: () -> Unit,
     colors: StoryColors = StoryColors(),
     storyViewModel: StoryViewModel = Koin.di?.koin?.get<StoryViewModel>()!!
 ) {
@@ -133,21 +133,24 @@ internal fun ShowStory(
     val favoriteStoriesList = storyViewModel.favoriteStoriesList.collectAsState().value
     val storiesList = storyViewModel.storyFlowList.collectAsState().value
     val stories = if (!storyState.showFavoriteStories) storiesList else favoriteStoriesList
-    Story(
-        stories = stories,
-        selectStoryItem = storyViewModel.selectStoryItem,
-        storyState = storyState,
-        prevPage = storyViewModel::prevPage,
-        nextPage = storyViewModel::nextPage,
-        setStory = storyViewModel::setStory,
-        onClose = {
-            storyViewModel.closeAllStory()
-        },
-        storyViewed = storyViewModel::storyViewed,
-        storyLiked = storyViewModel::storyLiked,
-        storyFavorited = storyViewModel::storyFavorited,
-        onChose = storyViewModel::updateSelected,
-        pauseStory = storyViewModel::pauseStory,
-        colors = colors,
-    )
+    if ((storyState.hasFirstStory || storyState.isShowStory) && storyState.currentStory != -1) {
+        Story(
+            stories = stories,
+            selectStoryItem = storyViewModel.selectStoryItem,
+            storyState = storyState,
+            prevPage = storyViewModel::prevPage,
+            nextPage = storyViewModel::nextPage,
+            setStory = storyViewModel::setStory,
+            onClose = {
+                onClose()
+                storyViewModel.closeAllStory()
+            },
+            storyViewed = storyViewModel::storyViewed,
+            storyLiked = storyViewModel::storyLiked,
+            storyFavorited = storyViewModel::storyFavorited,
+            onChose = storyViewModel::updateSelected,
+            pauseStory = storyViewModel::pauseStory,
+            colors = colors,
+        )
+    }
 }
