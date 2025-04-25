@@ -12,9 +12,13 @@ class StoryActivity : ComponentActivity() {
             ShowStory(
                 onClose = {
                     finish()
-                    //overridePendingTransition(0, 0)
                 }
             )
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.scale_in, R.anim.scale_out)
     }
 }
