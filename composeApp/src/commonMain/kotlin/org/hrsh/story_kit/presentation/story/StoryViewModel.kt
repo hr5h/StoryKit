@@ -8,8 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.hrsh.story_kit.domain.entities.PageItem
@@ -38,7 +36,7 @@ internal class StoryViewModel(
     private val _storyView: MutableSharedFlow<Long> = MutableSharedFlow()
     private val _storyLike: MutableSharedFlow<Pair<Long, Boolean>> = MutableSharedFlow()
     private val _storyFavorite: MutableSharedFlow<Pair<Long, Boolean>> = MutableSharedFlow()
-    private val _storySkip: MutableSharedFlow<Pair<Long, Boolean>> = MutableSharedFlow()
+    private val _storySkip: MutableSharedFlow<Triple<Long, Int, Float>> = MutableSharedFlow()
     private val _storyAnswerChose: MutableSharedFlow<Triple<Long, Int, Int>> = MutableSharedFlow()
     private val _isPauseStory: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
@@ -122,7 +120,7 @@ internal class StoryViewModel(
         return _storyFavorite.asSharedFlow()
     }
 
-    override fun subscribeStorySkip(): Flow<Pair<Long, Boolean>> {
+    override fun subscribeStorySkip(): Flow<Triple<Long, Int, Float>> {
         return _storySkip.asSharedFlow()
     }
 
@@ -228,6 +226,12 @@ internal class StoryViewModel(
 
     fun pauseStory(flag: Boolean) {
         _isPauseStory.update { flag }
+    }
+
+    fun storySkip(storyId: Long, pageId: Int, time: Float) {
+        viewModelScope.launch {
+            _storySkip.emit(Triple(storyId, pageId, time))
+        }
     }
     //storyEvent>
 

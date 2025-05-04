@@ -195,59 +195,71 @@ fun StoryMiniature(
         )
     }
 
-    CoroutineScope(Dispatchers.IO).launch {
-        delay(2000)
-        launch {
-            storyManager.subscribeStoryLike().collect { (id, isLike) ->
-                println("Story with id = $id, isLike: $isLike")
-                logItems.add("Story with id = $id, isLike: $isLike")
+    LaunchedEffect(Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(2000)
+            launch {
+                storyManager.subscribeStoryLike().collect { (id, isLike) ->
+                    println("Story with id = $id, isLike: $isLike")
+                    logItems.add("Story with id = $id, isLike: $isLike")
+                }
             }
         }
-    }
 
-    CoroutineScope(Dispatchers.IO).launch {
-        delay(2000)
-        launch {
-            storyManager.subscribeStoryFavorite().collect { (id, isFavorite) ->
-                println("Story with id = $id, isFavorite: $isFavorite")
-                logItems.add("Story with id = $id, isFavorite: $isFavorite")
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(2000)
+            launch {
+                storyManager.subscribeStoryFavorite().collect { (id, isFavorite) ->
+                    println("Story with id = $id, isFavorite: $isFavorite")
+                    logItems.add("Story with id = $id, isFavorite: $isFavorite")
+                }
             }
         }
-    }
 
-    CoroutineScope(Dispatchers.IO).launch {
-        delay(2000)
-        launch {
-            storyManager.subscribeStoryView().collect { id ->
-                println("Story with id = $id has been viewed")
-                logItems.add("Story with id = $id has been viewed")
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(2000)
+            launch {
+                storyManager.subscribeStoryView().collect { id ->
+                    println("Story with id = $id has been viewed")
+                    logItems.add("Story with id = $id has been viewed")
+                }
             }
         }
-    }
 
-    CoroutineScope(Dispatchers.IO).launch {
-        delay(2000)
-        launch {
-            //storyManager.deleteAllStory()
-        }
-    }
-
-    CoroutineScope(Dispatchers.IO).launch {
-        delay(2000)
-        launch {
-            storyManager.subscribeStoryQuestion().collect { (id, pageIndex, index) ->
-                println("In story with id = $id in page with index = $pageIndex: index of chosen answer is $index")
-                logItems.add("In story with id = $id in page with index = $pageIndex: index of chosen answer is $index")
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(2000)
+            launch {
+                //storyManager.deleteAllStory()
             }
         }
-    }
 
-    CoroutineScope(Dispatchers.IO).launch {
-        delay(2000)
-        launch {
-            storyManager.subscribeStoryPause().collect { item ->
-                println("story paused: $item")
-                logItems.add("story paused: $item")
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(2000)
+            launch {
+                storyManager.subscribeStoryQuestion().collect { (id, pageIndex, index) ->
+                    println("In story with id = $id in page with index = $pageIndex: index of chosen answer is $index")
+                    logItems.add("In story with id = $id in page with index = $pageIndex: index of chosen answer is $index")
+                }
+            }
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(2000)
+            launch {
+                storyManager.subscribeStorySkip().collect { (id, pageIndex, index) ->
+                    println("In story with id = $id in page with index = $pageIndex: skipTime = $index")
+                    logItems.add("In story with id = $id in page with index = $pageIndex: skipTime = $index")
+                }
+            }
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(2000)
+            launch {
+                storyManager.subscribeStoryPause().collect { item ->
+                    println("story paused: $item")
+                    logItems.add("story paused: $item")
+                }
             }
         }
     }

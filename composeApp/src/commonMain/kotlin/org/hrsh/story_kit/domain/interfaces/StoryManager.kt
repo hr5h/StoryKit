@@ -57,11 +57,14 @@ interface StoryManager {
     fun subscribeStoryFavorite(): Flow<Pair<Long, Boolean>>
 
     /**
-     * Subscribes to changes in the skip state of a story.
+     * Subscribes to story skip events, providing data about skipped story pages.
      *
-     * @return A [Flow] that emits a Pair containing the story's ID and a Boolean indicating whether the story has been skipped.
+     * @return A [Flow] that emits a [Triple] containing:
+     * - The ID of the story that was skipped ([Long])
+     * - The page index that was skipped ([Int])
+     * - The playback progress at the moment of skipping ([Float] between 0f and 1f)
      */
-    fun subscribeStorySkip(): Flow<Pair<Long, Boolean>>
+    fun subscribeStorySkip(): Flow<Triple<Long, Int, Float>>
 
     /**
      * Subscribes to changes in the selected answer on a story's questionnaire page.
