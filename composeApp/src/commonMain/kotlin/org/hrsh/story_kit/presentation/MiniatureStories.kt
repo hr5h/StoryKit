@@ -155,6 +155,7 @@ internal fun ShowStory(
             storyFavorited = storyViewModel::storyFavorited,
             onChose = storyViewModel::updateSelected,
             pauseStory = storyViewModel::pauseStory,
+            storySkip = storyViewModel::storySkip,
             colors = colors,
         )
     }

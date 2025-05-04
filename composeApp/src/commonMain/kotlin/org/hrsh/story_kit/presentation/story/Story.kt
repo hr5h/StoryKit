@@ -1,15 +1,10 @@
 package org.hrsh.story_kit.presentation.story
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -27,7 +22,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Icon
@@ -50,6 +44,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -67,11 +62,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.hrsh.story_kit.di.BackHandler
 import org.hrsh.story_kit.di.getScreenHeightDp
 import org.hrsh.story_kit.di.getScreenWidthDp
@@ -99,6 +91,7 @@ internal fun Story(
     storyFavorited: (StoryItem) -> Unit,
     onChose: (StoryItem, PageItem, Int) -> Unit,
     pauseStory: (Boolean) -> Unit,
+    storySkip: (Long, Int, Float) -> Unit,
     colors: StoryColors,
 ) {
     val pages =
@@ -130,7 +123,40 @@ internal fun Story(
             onClose()
         },
         content = {
-            TopBar(storyState, stories, selectStoryItem, nextPage, isAnimateTimeLine, colors)
+            val currentPage =
+                stories[storyState.currentStory].listPages[storyState.currentPage[storyState.currentStory]]
+
+            val indCurrentPage = storyState.currentPage[storyState.currentStory]
+            val pageIdState = remember {
+                mutableStateOf(0)
+            }
+            if (indCurrentPage != pageIdState.value) {
+                pageIdState.value = indCurrentPage
+            }
+
+            val storyId = selectStoryItem.id
+            val storyIdState = remember {
+                mutableStateOf(0L)
+            }
+            if (storyId != storyIdState.value) {
+                storyIdState.value = storyId
+            }
+
+            val currentTime =
+                remember {
+                    mutableStateListOf(*selectStoryItem.listPages.map { 0f }.toTypedArray())
+                }
+
+            TopBar(
+                storyState,
+                selectStoryItem,
+                nextPage,
+                isAnimateTimeLine,
+                colors,
+                currentPage,
+                indCurrentPage,
+                currentTime
+            )
             Content(
                 prevPage,
                 nextPage,
@@ -142,7 +168,8 @@ internal fun Story(
                 storyViewed,
                 onChose,
                 colors,
-                isAnimateTimeLine
+                isAnimateTimeLine,
+                { storySkip(storyIdState.value, pageIdState.value, currentTime[pageIdState.value]) }
             )
             LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited, colors)
         },
@@ -157,11 +184,13 @@ internal fun Story(
 @Composable
 private fun ColumnScope.TopBar(
     storyState: StoryState,
-    stories: List<StoryItem>,
     selectStoryItem: StoryItem,
     nextPage: () -> Unit,
     isAnimateTimeLine: MutableState<Boolean>,
     colors: StoryColors,
+    currentPage: PageItem,
+    indCurrentPage: Int,
+    currentTime: SnapshotStateList<Float>,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
 ) {
     Box(
@@ -171,12 +200,6 @@ private fun ColumnScope.TopBar(
             .background(colors.storyTopBar)
             .padding(5.dp),
     ) {
-        val currentPage =
-            stories[storyState.currentStory].listPages[storyState.currentPage[storyState.currentStory]]
-        val indCurrentPage = storyState.currentPage[storyState.currentStory]
-        val currentTime =
-            remember { mutableStateListOf(*selectStoryItem.listPages.map { 0f }.toTypedArray()) }
-
         LaunchedEffect(storyState.currentStory) {
             currentTime.indices.forEach { i ->
                 currentTime[i] = 0f
@@ -283,6 +306,7 @@ private fun ColumnScope.Content(
     onChose: (StoryItem, PageItem, Int) -> Unit,
     colors: StoryColors,
     isAnimate: MutableState<Boolean>,
+    storySkip: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -301,8 +325,10 @@ private fun ColumnScope.Content(
                     },
                     onTap = { offset ->
                         if (offset.x < size.width / 2) {
+                            storySkip()
                             prevPage()
                         } else {
+                            storySkip()
                             nextPage()
                         }
                     }
