@@ -1,9 +1,10 @@
 package org.hrsh.story_kit.di
 
-import android.content.Context
+import android.app.ActivityOptions
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import dev.hrsh.story_kit.R
 import dev.hrsh.story_kit.StoryActivity
 
 actual class Navigator actual constructor() {
@@ -12,6 +13,7 @@ actual class Navigator actual constructor() {
     actual fun navigateToStory() {
         val androidContext = LocalContext.current
         val intent = Intent(androidContext, StoryActivity::class.java)
-        androidContext.startActivity(intent)
+        val options = ActivityOptions.makeCustomAnimation(androidContext, R.anim.scale_in, R.anim.scale_out).toBundle()
+        androidContext.startActivity(intent, options)
     }
 }

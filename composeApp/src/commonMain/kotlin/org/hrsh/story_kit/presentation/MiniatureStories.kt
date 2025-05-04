@@ -20,6 +20,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.hrsh.story_kit.di.Koin
 import org.hrsh.story_kit.di.Navigator
 import org.hrsh.story_kit.presentation.story.Story
@@ -140,8 +144,11 @@ internal fun ShowStory(
             nextPage = storyViewModel::nextPage,
             setStory = storyViewModel::setStory,
             onClose = {
-                onClose()
-                storyViewModel.closeAllStory()
+                CoroutineScope(Dispatchers.Main).launch {
+                    onClose()
+                    delay(200)
+                    storyViewModel.closeAllStory()
+                }
             },
             storyViewed = storyViewModel::storyViewed,
             storyLiked = storyViewModel::storyLiked,
