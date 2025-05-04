@@ -4,6 +4,7 @@
         <activity
             android:name="dev.hrsh.story_kit.StoryActivity"
             android:exported="true"
-            android:theme="@style/Theme.Transparent"/>
+            android:theme="@style/Theme.Transparent"
+            android:launchMode="singleTask"/>
     </application>
 </manifest>
