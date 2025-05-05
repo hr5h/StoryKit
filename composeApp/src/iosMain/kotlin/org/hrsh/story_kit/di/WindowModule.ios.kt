@@ -16,3 +16,8 @@ actual fun getScreenWidthDp(): Dp {
     val screenSize = Toolkit.getDefaultToolkit().screenSize
     return (screenSize.width / Toolkit.getDefaultToolkit().screenResolution).dp
 }
+
+@Composable
+actual fun getFontScale(): Float {
+    TODO("Not yet implemented")
+}

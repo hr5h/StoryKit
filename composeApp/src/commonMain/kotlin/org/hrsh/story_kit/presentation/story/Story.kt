@@ -379,16 +379,11 @@ private fun ColumnScope.Content(
                     }
             }
             when (pages[index]) {
-                is PageItem.Image -> {
-                    val pageImage = pages[index] as PageItem.Image
-                    if (pageImage.text.length < 250)
-                        PageImage(
-                            pageImage,
-                            pageSize,
-                            colors.lowerBlackout
-                        )
-                    else PageError(pageSize)
-                }
+                is PageItem.Image -> PageImage(
+                    pages[index] as PageItem.Image,
+                    pageSize,
+                    colors.lowerBlackout
+                )
 
                 is PageItem.Video -> PageVideo(
                     pages[index] as PageItem.Video,
@@ -397,19 +392,13 @@ private fun ColumnScope.Content(
                     isAnimate
                 )
 
-                is PageItem.Question -> {
-                    val pageQuestion = pages[index] as PageItem.Question
-                    if (pageQuestion.listAnswers.size < 20
-                        && pageQuestion.question.length < 250)
-                        PageQuestion(
-                            pageQuestion,
-                            pageSize,
-                            selectStoryItem,
-                            onChose,
-                            colors
-                        )
-                    else PageError(pageSize)
-                }
+                is PageItem.Question -> PageQuestion(
+                    pages[index] as PageItem.Question,
+                    pageSize,
+                    selectStoryItem,
+                    onChose,
+                    colors
+                )
 
                 is PageItem.Game -> TODO()
                 is PageItem.Error -> PageError(pageSize)
@@ -458,7 +447,7 @@ private fun BoxScope.Cross(onClose: () -> Unit, upperBlackout: Boolean) {
 }
 
 @Composable
-private fun ColumnScope.LikeAndFavorite(
+fun ColumnScope.LikeAndFavorite(
     selectStoryItem: StoryItem,
     storyLiked: (StoryItem) -> Unit,
     storyFavorited: (StoryItem) -> Unit,
@@ -625,9 +614,4 @@ fun DraggableColumn(
             content()
         }
     }
-}
-
-internal fun calculateSizeCoefficient(size: Int, maxSymbols: Int = 300, power: Double = 2.0): Double {
-    val normalizedSize = (size.toDouble() / maxSymbols).coerceAtMost(1.0)
-    return 1.0 - normalizedSize.pow(power)
 }
