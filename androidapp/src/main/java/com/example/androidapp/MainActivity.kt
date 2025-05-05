@@ -38,6 +38,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
+import org.hrsh.story_kit.domain.interfaces.StoryManager
 import org.hrsh.story_kit.presentation.story.StoryColors
 import org.hrsh.story_kit.storyKit
 
@@ -60,7 +61,8 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
-                        StoryMiniature(logItems, trigger)
+                        val storyManager = storyKit()
+                        StoryMiniature(logItems, trigger, storyManager)
                         Column(modifier = Modifier.fillMaxSize()) {
                             LazyColumn(
                                 state = listState,
@@ -82,6 +84,14 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 }
+                            }
+                            Button(
+                                onClick = { storyManager.deleteStory(100) },
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(30.dp),
+                                colors = ButtonDefaults.buttonColors(Color.White)
+                            ) {
+                                Text(text = "Delete story", color = Color.Black)
                             }
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Button(
@@ -111,12 +121,11 @@ class MainActivity : ComponentActivity() {
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-@Preview
 fun StoryMiniature(
     logItems: SnapshotStateList<String> = emptyList<String>() as SnapshotStateList<String>,
-    trigger: MutableIntState = mutableIntStateOf(0)
+    trigger: MutableIntState = mutableIntStateOf(0),
+    storyManager: StoryManager
 ) {
-    val storyManager = storyKit()
     storyManager.setColors(
         StoryColors(
             miniature = Color(red = 11, green = 172, blue = 65),

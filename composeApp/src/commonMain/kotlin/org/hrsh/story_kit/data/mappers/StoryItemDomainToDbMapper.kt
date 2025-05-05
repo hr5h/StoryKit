@@ -14,6 +14,7 @@ internal class StoryItemDomainToDbMapper(
             isStartStory = storyItem.isStartStory,
             isLike = storyItem.isLike,
             countLike = storyItem.countLike,
+            isShowInMiniature = storyItem.isShowInMiniature,
             isFavorite = storyItem.isFavorite,
             isViewed = storyItem.isViewed
         )

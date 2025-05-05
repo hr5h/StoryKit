@@ -59,10 +59,14 @@ internal class StoryViewModel(
     private fun subscribeStories() {
         viewModelScope.launch {
             subscribeStoryUseCase().collect { result ->
-                _storyFlowList.update { result }
+                _storyFlowList.update {
+                    result.filter { story ->
+                        story.isShowInMiniature
+                    }
+                }
                 if (!_storyState.value.showFavoriteStories) {
                     _favoriteStoriesList.update {
-                        _storyFlowList.value.filter { story ->
+                        result.filter { story ->
                             story.isFavorite
                         }
                     }.run {
@@ -95,7 +99,11 @@ internal class StoryViewModel(
         viewModelScope.launch {
             val storyItem = _storyFlowList.value.firstOrNull { it.id == id }
             if (storyItem != null) {
-                deleteStoryUseCase(storyItem)
+                if (!storyItem.isFavorite) {
+                    deleteStoryUseCase(storyItem)
+                } else {
+                    updateStory(storyItem.copy(isShowInMiniature = false))
+                }
             }
         }
     }
@@ -202,6 +210,9 @@ internal class StoryViewModel(
     fun updateFavoriteStories() {
         _favoriteStoriesList.value.forEach { item ->
             updateStory(item)
+            if (!item.isShowInMiniature) {
+                deleteStory(item.id)
+            }
         }
     }
 
