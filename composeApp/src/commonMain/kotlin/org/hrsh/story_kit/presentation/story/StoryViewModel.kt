@@ -226,9 +226,23 @@ internal class StoryViewModel(
                 item
             }
         }
-        updateStory(
-            storyItem.copy(listPages = modifiedPagesList)
-        )
+
+        if (!_storyState.value.showFavoriteStories) {
+            updateStory(
+                storyItem.copy(listPages = modifiedPagesList)
+            )
+        } else {
+            _favoriteStoriesList.update {
+                val index = _favoriteStoriesList.value.indexOf(storyItem)
+                val newList = _favoriteStoriesList.value.toMutableList()
+
+                if (index != -1) {
+                    newList[index] = storyItem.copy(listPages = modifiedPagesList)
+                }
+
+                newList
+            }
+        }
 
         viewModelScope.launch {
             _storyAnswerChose.emit(Triple(storyItem.id, pageIndex, value))
