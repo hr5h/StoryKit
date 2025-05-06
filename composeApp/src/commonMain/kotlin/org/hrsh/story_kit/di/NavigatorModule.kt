@@ -8,6 +8,8 @@ expect class Navigator() {
 
     @Composable
     fun navigateToStory()
+
+    fun finishStory()
 }
 
 internal fun navigatorModule(): Module {

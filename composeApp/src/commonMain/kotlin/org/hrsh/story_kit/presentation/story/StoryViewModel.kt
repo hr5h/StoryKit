@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.hrsh.story_kit.di.Navigator
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.interfaces.StoryManager
@@ -24,7 +25,8 @@ internal class StoryViewModel(
     private val insertStoryUseCase: InsertStoryUseCase,
     private val updateStoryUseCase: UpdateStoryUseCase,
     private val deleteStoryUseCase: DeleteStoryUseCase,
-    private val deleteAllStoryUseCase: DeleteAllStoryUseCase
+    private val deleteAllStoryUseCase: DeleteAllStoryUseCase,
+    private val navigator: Navigator
 ) : ViewModel(), StoryManager {
 
     private val _storyFlowList: MutableStateFlow<List<StoryItem>> = MutableStateFlow(emptyList())
@@ -302,14 +304,26 @@ internal class StoryViewModel(
     fun nextPage() {
         if (_storyState.value.currentStory == -1) return
 
-        if (_storyState.value.currentPage[_storyState.value.currentStory] < _storyFlowList.value[_storyState.value.currentStory].listPages.size - 1) {
-            val newList = _storyState.value.currentPage.toMutableList()
-            newList[_storyState.value.currentStory] += 1
-            _storyState.update { state ->
-                state.copy(currentPage = newList)
+        if (!_storyState.value.showFavoriteStories) {
+            if (_storyState.value.currentPage[_storyState.value.currentStory] < _storyFlowList.value[_storyState.value.currentStory].listPages.size - 1) {
+                val newList = _storyState.value.currentPage.toMutableList()
+                newList[_storyState.value.currentStory] += 1
+                _storyState.update { state ->
+                    state.copy(currentPage = newList)
+                }
+            } else if (!_storyState.value.hasFirstStory) {
+                nextStory()
             }
-        } else if (!_storyState.value.hasFirstStory) {
-            nextStory()
+        } else {
+            if (_storyState.value.currentPage[_storyState.value.currentStory] < _favoriteStoriesList.value[_storyState.value.currentStory].listPages.size - 1) {
+                val newList = _storyState.value.currentPage.toMutableList()
+                newList[_storyState.value.currentStory] += 1
+                _storyState.update { state ->
+                    state.copy(currentPage = newList)
+                }
+            } else if (!_storyState.value.hasFirstStory) {
+                nextStory()
+            }
         }
     }
 
@@ -324,10 +338,19 @@ internal class StoryViewModel(
     private fun nextStory() {
         if (_storyState.value.currentStory == -1) return
 
-        if (_storyState.value.currentStory < _storyFlowList.value.size - 1) {
-            _storyState.update { it.copy(currentStory = it.currentStory + 1) }
+        if (!_storyState.value.showFavoriteStories) {
+            if (_storyState.value.currentStory < _storyFlowList.value.size - 1) {
+                _storyState.update { it.copy(currentStory = it.currentStory + 1) }
+            } else {
+                closeAllStory()
+            }
         } else {
-            closeAllStory()
+            if (_storyState.value.currentStory < _favoriteStoriesList.value.size - 1) {
+                _storyState.update { it.copy(currentStory = it.currentStory + 1) }
+            } else {
+                closeAllStory()
+                navigator.finishStory()
+            }
         }
     }
 
