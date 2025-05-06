@@ -14,6 +14,7 @@ internal data class StoryItemDb(
     val isStartStory: Boolean,
     val isLike: Boolean,
     val countLike: Int,
+    val isShowInMiniature: Boolean,
     val isFavorite: Boolean,
     val isViewed: Boolean,
 ) {

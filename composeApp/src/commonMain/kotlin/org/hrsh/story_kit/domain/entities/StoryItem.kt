@@ -24,6 +24,7 @@ data class StoryItem(
     val isStartStory: Boolean = false,
     val isLike: Boolean = false,
     val countLike: Int = 0,
+    val isShowInMiniature: Boolean = true,
     val isFavorite: Boolean = false,
     val isViewed: Boolean = false
 )
