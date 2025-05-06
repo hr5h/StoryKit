@@ -1,10 +1,13 @@
 package dev.hrsh.story_kit
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.ui.platform.LocalContext
 import org.hrsh.story_kit.presentation.ShowStory
 
 class StoryActivity : ComponentActivity() {
@@ -12,6 +15,7 @@ class StoryActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            context = LocalContext.current
             ShowStory(
                 onClose = {
                     finish()
@@ -38,5 +42,10 @@ class StoryActivity : ComponentActivity() {
                 window.isNavigationBarContrastEnforced = false
             }
         }
+    }
+
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        lateinit var context: Context
     }
 }

@@ -6,5 +6,10 @@ actual class Navigator actual constructor() {
 
     @Composable
     actual fun navigateToStory() {
+
+    }
+
+    actual fun finishStory() {
+
     }
 }

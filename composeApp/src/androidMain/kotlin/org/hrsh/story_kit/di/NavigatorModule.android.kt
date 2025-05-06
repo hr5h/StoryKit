@@ -16,4 +16,8 @@ actual class Navigator actual constructor() {
         val options = ActivityOptions.makeCustomAnimation(androidContext, R.anim.scale_in, R.anim.scale_out).toBundle()
         androidContext.startActivity(intent, options)
     }
+
+    actual fun finishStory() {
+        (StoryActivity.context as StoryActivity).finish()
+    }
 }
