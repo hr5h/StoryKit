@@ -75,7 +75,6 @@ import org.hrsh.story_kit.presentation.page.PageQuestion
 import org.hrsh.story_kit.presentation.page.PageVideo
 import kotlin.math.abs
 import kotlin.math.max
-import kotlin.math.pow
 import kotlin.math.roundToInt
 
 @Composable
@@ -163,6 +162,7 @@ internal fun Story(
                 nextPage,
                 storyState,
                 pages,
+                indCurrentPage,
                 setStory,
                 onClose,
                 selectStoryItem,
@@ -300,6 +300,7 @@ private fun ColumnScope.Content(
     nextPage: () -> Unit,
     storyState: StoryState,
     pages: List<PageItem>,
+    indCurrentPage: Int,
     setStory: (Int) -> Unit,
     onClose: () -> Unit,
     selectStoryItem: StoryItem,
@@ -377,6 +378,8 @@ private fun ColumnScope.Content(
                 is PageItem.Image -> PageImage(
                     pages[index] as PageItem.Image,
                     pageSize,
+                    selectStoryItem.listPages.size,
+                    indCurrentPage,
                     colors.lowerBlackout
                 )
 

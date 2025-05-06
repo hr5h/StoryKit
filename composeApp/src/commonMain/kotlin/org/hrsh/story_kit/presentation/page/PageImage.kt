@@ -12,11 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,13 +21,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -39,7 +31,13 @@ import org.hrsh.story_kit.di.getScreenHeightDp
 import org.hrsh.story_kit.domain.entities.PageItem
 
 @Composable
-internal fun PageImage(itemImage: PageItem.Image, imageSize: Float, lowerBlackout: Boolean) {
+internal fun PageImage(
+    itemImage: PageItem.Image,
+    imageSize: Float,
+    pageCount: Int,
+    pageIndex: Int,
+    lowerBlackout: Boolean
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -78,36 +76,28 @@ internal fun PageImage(itemImage: PageItem.Image, imageSize: Float, lowerBlackou
         ) {
             val maxLinesCollapsed: Int = 5
             val screenHeightDp = getScreenHeightDp()
-            var isExpanded by remember { mutableStateOf(false) }
-            var isOverflow by remember { mutableStateOf(false) }
-            val textMeasurer = rememberTextMeasurer()
-            var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-            val availableWidth by remember { mutableStateOf(0) }
-
-            LaunchedEffect(textMeasurer, itemImage.text, isExpanded, textLayoutResult) {
-                textLayoutResult?.let { _ ->
-                    val unlimitedLayout = textMeasurer.measure(
-                        text = AnnotatedString(itemImage.text),
-                        style = TextStyle.Default,
-                        constraints = Constraints(maxWidth = availableWidth)
-                    )
-                    isOverflow = unlimitedLayout.lineCount > maxLinesCollapsed
+            val textVariabilityList =
+                remember {
+                    (0 until pageCount).map { Pair(false, false) }.toMutableStateList()
                 }
-            }
+
+            println("pageCount: $pageCount; pageIndex: $pageIndex; Current pair: ${textVariabilityList[pageIndex]}")
 
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .heightIn(max = if (isExpanded) screenHeightDp * 0.6f else screenHeightDp * 0.25f)
+                    .heightIn(max = if (textVariabilityList[pageIndex].second) screenHeightDp * 0.6f else screenHeightDp * 0.25f)
                     .clickable(
-                        enabled = isOverflow,
+                        enabled = textVariabilityList[pageIndex].second || textVariabilityList[pageIndex].first,
                         onClick = {
-                            isOverflow = !isOverflow
-                            isExpanded = !isExpanded
+                            textVariabilityList[pageIndex] = Pair(
+                                !textVariabilityList[pageIndex].first,
+                                !textVariabilityList[pageIndex].second
+                            )
                         }
                     ),
-                userScrollEnabled = isExpanded
+                userScrollEnabled = textVariabilityList[pageIndex].second
             ) {
                 item {
                     Text(
@@ -115,12 +105,13 @@ internal fun PageImage(itemImage: PageItem.Image, imageSize: Float, lowerBlackou
                         color = Color.White,
                         fontSize = (screenHeightDp.value * 0.25f / maxLinesCollapsed / getFontScale() * 0.6f).sp,
                         fontWeight = FontWeight.Bold,
-                        maxLines = if (isExpanded) Int.MAX_VALUE else maxLinesCollapsed,
+                        maxLines = if (textVariabilityList[pageIndex].second) Int.MAX_VALUE else maxLinesCollapsed,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .padding(start = 16.dp, top = 10.dp, bottom = 10.dp),
                         onTextLayout = {
-                            textLayoutResult = it
+                            textVariabilityList[pageIndex] =
+                                Pair(it.hasVisualOverflow, textVariabilityList[pageIndex].second)
                         }
                     )
                 }
