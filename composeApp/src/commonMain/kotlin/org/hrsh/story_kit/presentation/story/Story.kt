@@ -75,6 +75,7 @@ import org.hrsh.story_kit.presentation.page.PageQuestion
 import org.hrsh.story_kit.presentation.page.PageVideo
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.pow
 import kotlin.math.roundToInt
 
 @Composable
@@ -441,7 +442,7 @@ private fun BoxScope.Cross(onClose: () -> Unit, upperBlackout: Boolean) {
 }
 
 @Composable
-private fun ColumnScope.LikeAndFavorite(
+fun ColumnScope.LikeAndFavorite(
     selectStoryItem: StoryItem,
     storyLiked: (StoryItem) -> Unit,
     storyFavorited: (StoryItem) -> Unit,

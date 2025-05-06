@@ -51,23 +51,23 @@ internal fun PageError(pageSize: Float) {
                 softWrap = true
             )
 
-            Button(
-                onClick = { TODO() },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.White,
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.wrapContentSize()
-            ) {
-                Text(
-                    text = "Повторить",
-                    modifier = Modifier.padding(8.dp),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
+//            Button(
+//                onClick = { TODO() },
+//                colors = ButtonDefaults.buttonColors(
+//                    backgroundColor = Color.White,
+//                    contentColor = Color.Black
+//                ),
+//                shape = RoundedCornerShape(12.dp),
+//                modifier = Modifier.wrapContentSize()
+//            ) {
+//                Text(
+//                    text = "Повторить",
+//                    modifier = Modifier.padding(8.dp),
+//                    fontWeight = FontWeight.Bold,
+//                    fontSize = 20.sp,
+//                    textAlign = TextAlign.Center
+//                )
+//            }
         }
     }
 }

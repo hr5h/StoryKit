@@ -8,3 +8,6 @@ expect fun getScreenHeightDp(): Dp
 
 @Composable
 expect fun getScreenWidthDp(): Dp
+
+@Composable
+expect fun getFontScale(): Float
