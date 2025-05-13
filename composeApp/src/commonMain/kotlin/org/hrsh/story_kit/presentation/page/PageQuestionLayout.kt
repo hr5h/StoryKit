@@ -28,10 +28,10 @@ import kotlinx.serialization.encoding.Encoder
 data class PageQuestionLayout(
     val questionAlignment: SerializableAlignment = SerializableAlignment.TOP_CENTER,
     val answerAlignment: SerializableAlignment = SerializableAlignment.BOTTOM_CENTER,
-    val buttonPaddingStart: Int = 0,
-    val buttonPaddingTop: Int = 0,
-    val buttonPaddingEnd: Int = 0,
-    val buttonPaddingBottom: Int = 0,
+    val buttonPaddingStart: Int = 5,
+    val buttonPaddingTop: Int = 5,
+    val buttonPaddingEnd: Int = 5,
+    val buttonPaddingBottom: Int = 5,
     val buttonsInRow: Int = 1,
     val fixedButtonSize: Boolean = true
 )
