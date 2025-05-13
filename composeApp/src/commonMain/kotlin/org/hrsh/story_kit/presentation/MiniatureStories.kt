@@ -147,6 +147,7 @@ internal fun ShowStory(
                 CoroutineScope(Dispatchers.Main).launch {
                     onClose()
                     delay(200)
+                    if (!storyState.showFavoriteStories) storyViewModel.updateStories() else storyViewModel.updateFavoriteStories()
                     storyViewModel.closeAllStory()
                 }
             },
