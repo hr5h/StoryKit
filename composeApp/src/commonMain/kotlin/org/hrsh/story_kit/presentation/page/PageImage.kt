@@ -81,8 +81,6 @@ internal fun PageImage(
                     (0 until pageCount).map { Pair(false, false) }.toMutableStateList()
                 }
 
-            println("pageCount: $pageCount; pageIndex: $pageIndex; Current pair: ${textVariabilityList[pageIndex]}")
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()

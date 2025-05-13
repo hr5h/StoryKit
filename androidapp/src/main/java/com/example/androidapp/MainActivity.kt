@@ -167,6 +167,7 @@ fun StoryMiniature(
                         listResults = listOf(50, 30, 20, 10, 60),
                     )
                 ),
+                countLike = 100,
             )
         )
         storyManager.addStory(

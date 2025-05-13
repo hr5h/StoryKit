@@ -212,7 +212,7 @@ internal class StoryViewModel(
     }
 
     private fun updateStoryItem(storyItem: StoryItem, newStoryItem: StoryItem) {
-        if (_storyState.value.isShowStory) {
+        if (_storyState.value.hasFirstStory || _storyState.value.isShowStory) {
             _storyFlowList.update {
                 val index = _storyFlowList.value.indexOf(storyItem)
                 val newList = _storyFlowList.value.toMutableList()
@@ -255,6 +255,10 @@ internal class StoryViewModel(
 
     private fun closeStory() {
         _storyState.update { it.copy(isShowStory = false) }
+    }
+
+    private fun closeFirstStory() {
+        _storyState.update { it.copy(hasFirstStory = false) }
     }
 
     fun closeAllStory() {
@@ -380,19 +384,20 @@ internal class StoryViewModel(
 
     private fun initFirstStory() {
         if (_storyState.value.currentStory == -1) {
+            val currentStory = _storyFlowList.value.indexOf(_storyFlowList.value.firstOrNull { first -> first.isStartStory })
             _storyState.update {
                 it.copy(
-                    currentStory = _storyFlowList.value.indexOf(_storyFlowList.value.firstOrNull { first -> first.isStartStory }),
+                    currentStory = currentStory,
                     currentPage = it.currentPage + 0
                 )
+            }
+            if(currentStory != -1) {
+                val storyItem = _storyFlowList.value[currentStory]
+                updateStory(storyItem.copy(isStartStory = false))
             }
             if (_storyState.value.currentStory >= 0)
                 _storyState.update { it.copy(hasFirstStory = true) }
         }
-    }
-
-    private fun closeFirstStory() {
-        _storyState.update { it.copy(hasFirstStory = false) }
     }
 
     override fun setColors(storyColors: StoryColors) {
