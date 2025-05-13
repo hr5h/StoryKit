@@ -61,9 +61,13 @@ internal class StoryViewModel(
     private fun subscribeStories() {
         viewModelScope.launch {
             subscribeStoryUseCase().collect { result ->
-                _storyFlowList.update {
-                    result.filter { story ->
-                        story.isShowInMiniature
+                if (!_storyState.value.isShowStory) {
+                    _storyFlowList.update {
+                        result
+                            .filter { story ->
+                                story.isShowInMiniature
+                            }
+                            .sortedBy { it.isViewed }
                     }
                 }
                 if (!_storyState.value.showFavoriteStories) {
@@ -145,7 +149,7 @@ internal class StoryViewModel(
 
     //<storyEvent
     fun storyViewed(storyItem: StoryItem) {
-        updateStory(storyItem.copy(isViewed = true))
+        updateStoryItem(storyItem, storyItem.copy(isViewed = true))
 
         viewModelScope.launch {
             _storyView.emit(storyItem.id)
@@ -174,15 +178,6 @@ internal class StoryViewModel(
         }
     }
 
-    fun updateFavoriteStories() {
-        _favoriteStoriesList.value.forEach { item ->
-            updateStory(item)
-            if (!item.isShowInMiniature) {
-                deleteStory(item.id)
-            }
-        }
-    }
-
     fun updateSelected(storyItem: StoryItem, pageItem: PageItem, value: Int) {
         var pageIndex: Int = -1
         val modifiedPagesList = storyItem.listPages.mapIndexed { index, item ->
@@ -201,12 +196,35 @@ internal class StoryViewModel(
         }
     }
 
+    fun updateStories() {
+        _storyFlowList.value.forEach { item ->
+            updateStory(item)
+        }
+    }
+
+    fun updateFavoriteStories() {
+        _favoriteStoriesList.value.forEach { item ->
+            updateStory(item)
+            if (!item.isShowInMiniature) {
+                deleteStory(item.id)
+            }
+        }
+    }
+
     private fun updateStoryItem(storyItem: StoryItem, newStoryItem: StoryItem) {
-        if (!_storyState.value.showFavoriteStories) {
-            updateStory(
-                newStoryItem
-            )
-        } else {
+        if (_storyState.value.isShowStory) {
+            _storyFlowList.update {
+                val index = _storyFlowList.value.indexOf(storyItem)
+                val newList = _storyFlowList.value.toMutableList()
+
+                if (index != -1) {
+                    newList[index] = newStoryItem
+                }
+
+                newList
+            }
+        }
+        if (_storyState.value.showFavoriteStories) {
             _favoriteStoriesList.update {
                 val index = _favoriteStoriesList.value.indexOf(storyItem)
                 val newList = _favoriteStoriesList.value.toMutableList()
