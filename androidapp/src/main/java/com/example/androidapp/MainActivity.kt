@@ -30,6 +30,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.androidapp.ui.theme.StoryKitTheme
@@ -41,6 +42,7 @@ import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.interfaces.StoryManager
 import org.hrsh.story_kit.presentation.page.PageQuestionLayout
+import org.hrsh.story_kit.presentation.page.SerializableAlignment
 import org.hrsh.story_kit.presentation.story.StoryColors
 import org.hrsh.story_kit.storyKit
 
@@ -166,7 +168,7 @@ fun StoryMiniature(
                         pageQuestionLayout = PageQuestionLayout(buttonsInRow = 2, fixedButtonSize = false),
                         imageUrl = "https://avatars.yandex.net/get-music-content/5234847/767e884c.a.16290016-1/m1000x1000?webp=false",
                         question = "Как вы оцениваете наши истории?",
-                        listAnswers = listOf("Большой текст", "2", "3", "4", "5+"),
+                        listAnswers = listOf("Большой текст для кнопки", "2", "3", "4", "5+"),
                         listResults = listOf(50, 30, 20, 10, 60),
                     )
                 ),
@@ -186,7 +188,7 @@ fun StoryMiniature(
                         text = "Крупнейший частный банк на Юге России"
                     ),
                     PageItem.Question(
-                        pageQuestionLayout = PageQuestionLayout(buttonsInRow = 5, fixedButtonSize = true),
+                        pageQuestionLayout = PageQuestionLayout(questionAlignment = SerializableAlignment.CENTER,buttonsInRow = 5, fixedButtonSize = true),
                         imageUrl = "https://avatars.yandex.net/get-music-content/5234847/767e884c.a.16290016-1/m1000x1000?webp=false",
                         question = "Как вы оцениваете наши истории2?",
                         listAnswers = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),

@@ -71,7 +71,7 @@ internal fun PageQuestion(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(pageQuestionLayout.questionAlignment)
+                .align(pageQuestionLayout.questionAlignment.toAlignment())
                 .clip(RoundedCornerShape(10.dp))
                 .background(Color.White),
             text = itemQuestion.question,
@@ -103,7 +103,7 @@ internal fun PageQuestion(
             }
         }
         Column(
-            modifier = Modifier.align(pageQuestionLayout.answerAlignment)
+            modifier = Modifier.align(pageQuestionLayout.answerAlignment.toAlignment())
         ) {
             groupedItems.forEach { group ->
                 Row(
@@ -123,7 +123,7 @@ internal fun PageQuestion(
                                 .onSizeChanged { size ->
                                     groupedItemsCanvasSize[item.second] = Pair(size.width / 2, size.height / 2)
                                 },
-                            shape = pageQuestionLayout.buttonShape,
+                            shape = RoundedCornerShape(30.dp),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = storyColors.buttonAnswer,
                                 disabledBackgroundColor =
