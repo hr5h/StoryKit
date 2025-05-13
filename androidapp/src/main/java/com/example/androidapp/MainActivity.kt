@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -39,6 +40,7 @@ import kotlinx.coroutines.launch
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
 import org.hrsh.story_kit.domain.interfaces.StoryManager
+import org.hrsh.story_kit.presentation.page.PageQuestionLayout
 import org.hrsh.story_kit.presentation.story.StoryColors
 import org.hrsh.story_kit.storyKit
 
@@ -161,9 +163,10 @@ fun StoryMiniature(
                         text = "Неограниченные сроком расходные операции без потери процентов до неснижаемого остаткаНеограниченные сроком расходные операции без потери процентов до неснижаемого остаткаНеограниченные сроком расходные операции без потери процентов до неснижаемого остатка"
                     ),
                     PageItem.Question(
+                        pageQuestionLayout = PageQuestionLayout(buttonsInRow = 2, fixedButtonSize = false),
                         imageUrl = "https://avatars.yandex.net/get-music-content/5234847/767e884c.a.16290016-1/m1000x1000?webp=false",
                         question = "Как вы оцениваете наши истории?",
-                        listAnswers = listOf("1", "2", "3", "4", "5+"),
+                        listAnswers = listOf("Большой текст", "2", "3", "4", "5+"),
                         listResults = listOf(50, 30, 20, 10, 60),
                     )
                 ),
@@ -183,6 +186,7 @@ fun StoryMiniature(
                         text = "Крупнейший частный банк на Юге России"
                     ),
                     PageItem.Question(
+                        pageQuestionLayout = PageQuestionLayout(buttonsInRow = 5, fixedButtonSize = true),
                         imageUrl = "https://avatars.yandex.net/get-music-content/5234847/767e884c.a.16290016-1/m1000x1000?webp=false",
                         question = "Как вы оцениваете наши истории2?",
                         listAnswers = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),

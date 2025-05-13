@@ -22,6 +22,7 @@ internal class PageItemDomainToDbMapper() : (PageItem) -> PageItemDb {
 
             is PageItem.Question -> PageItemDb(
                 type = PageType.QUESTION,
+                pageQuestionLayout = pageItem.pageQuestionLayout,
                 imageUrl = pageItem.imageUrl,
                 question = pageItem.question,
                 listAnswers = pageItem.listAnswers,

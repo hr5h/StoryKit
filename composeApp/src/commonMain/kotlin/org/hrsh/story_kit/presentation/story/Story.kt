@@ -390,13 +390,17 @@ private fun ColumnScope.Content(
                     isAnimate
                 )
 
-                is PageItem.Question -> PageQuestion(
-                    pages[index] as PageItem.Question,
-                    pageSize,
-                    selectStoryItem,
-                    onChose,
-                    colors
-                )
+                is PageItem.Question -> {
+                    val pageQuestion = pages[index] as PageItem.Question
+                    PageQuestion(
+                        pageQuestion,
+                        pageSize,
+                        selectStoryItem,
+                        onChose,
+                        colors,
+                        pageQuestion.pageQuestionLayout
+                    )
+                }
 
                 is PageItem.Game -> TODO()
                 is PageItem.Error -> PageError(pageSize)

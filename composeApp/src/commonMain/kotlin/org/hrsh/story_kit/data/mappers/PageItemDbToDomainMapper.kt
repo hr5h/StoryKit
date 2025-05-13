@@ -19,6 +19,7 @@ internal class PageItemDbToDomainMapper() : (PageItemDb) -> PageItem? {
             )
 
             PageType.QUESTION -> PageItem.Question(
+                pageQuestionLayout = pageItemDb.pageQuestionLayout ?: return null,
                 imageUrl = pageItemDb.imageUrl ?: return null,
                 question = pageItemDb.question ?: return null,
                 listAnswers = pageItemDb.listAnswers ?: return null,

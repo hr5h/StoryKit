@@ -1,5 +1,7 @@
 package org.hrsh.story_kit.domain.entities
 
+import org.hrsh.story_kit.presentation.page.PageQuestionLayout
+
 /**
  * Represents a page item that can be part of a story.
  * This sealed class can have different types of page items.
@@ -43,6 +45,7 @@ sealed class PageItem(open val timeShow: Float = 5f) {
      *                    question will be displayed.
      */
     data class Question(
+        val pageQuestionLayout: PageQuestionLayout = PageQuestionLayout(),
         val imageUrl: String,
         val question: String,
         val listAnswers: List<String>,

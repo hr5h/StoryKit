@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 import org.hrsh.story_kit.data.entities.PageItemDb.Companion.STORY_TABLE_NAME
+import org.hrsh.story_kit.presentation.page.PageQuestionLayout
 
 @Entity(tableName = STORY_TABLE_NAME)
 @Serializable
@@ -15,6 +16,7 @@ internal data class PageItemDb(
     val imageUrl: String? = null,
     val text: String? = null,
     val videoUrl: String? = null,
+    val pageQuestionLayout: PageQuestionLayout? = null,
     val question: String? = null,
     val listAnswers: List<String>? = null,
     val listResults: List<Int>? = null,
