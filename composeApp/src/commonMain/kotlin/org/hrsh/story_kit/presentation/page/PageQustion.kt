@@ -121,7 +121,7 @@ internal fun PageQuestion(
                                     bottom = pageQuestionLayout.buttonPaddingBottom.dp
                                 )
                                 .onSizeChanged { size ->
-                                    groupedItemsCanvasSize[item.second] = Pair(size.width / 2, size.height / 2)
+                                    groupedItemsCanvasSize[item.second] = Pair((size.width * 0.8).toInt(), size.height / 2)
                                 },
                             shape = RoundedCornerShape(30.dp),
                             colors = ButtonDefaults.buttonColors(
