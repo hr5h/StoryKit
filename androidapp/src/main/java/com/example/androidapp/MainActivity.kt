@@ -257,9 +257,11 @@ fun StoryMiniature(
         CoroutineScope(Dispatchers.IO).launch {
             delay(2000)
             launch {
-                storyManager.subscribeStorySkip().collect { (id, pageIndex, index) ->
-                    println("In story with id = $id in page with index = $pageIndex: skipTime = $index")
-                    logItems.add("In story with id = $id in page with index = $pageIndex: skipTime = $index")
+                storyManager.subscribeStorySkip().collect { (id, pageIndex, time) ->
+                    println("In story with id = $id in page with index = $pageIndex: skipTime = $time")
+                    if(time < 1.0) {
+                        logItems.add("In story with id = $id in page with index = $pageIndex: skipTime = $time")
+                    }
                 }
             }
         }

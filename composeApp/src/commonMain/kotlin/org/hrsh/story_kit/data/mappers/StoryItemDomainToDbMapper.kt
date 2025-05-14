@@ -11,6 +11,7 @@ internal class StoryItemDomainToDbMapper(
             id = storyItem.id,
             imagePreview = storyItem.imagePreview,
             listPages = storyItem.listPages.map(pageItemDomainToDbMapper),
+            toDate = storyItem.toDate,
             isStartStory = storyItem.isStartStory,
             isLike = storyItem.isLike,
             countLike = storyItem.countLike,

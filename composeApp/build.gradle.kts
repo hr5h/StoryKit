@@ -81,6 +81,8 @@ kotlin {
             //Kotlin Serialization
             implementation(libs.kotlinx.serialization.core)
             implementation(libs.kotlinx.serialization.json)
+            //DateTime
+            implementation(libs.kotlinx.datetime)
 
             implementation(compose.runtime)
             implementation(compose.foundation)

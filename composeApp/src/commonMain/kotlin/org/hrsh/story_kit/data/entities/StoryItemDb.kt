@@ -11,6 +11,7 @@ internal data class StoryItemDb(
     val id: Long,
     val imagePreview: String,
     val listPages: List<PageItemDb>,
+    val toDate: String,
     val isStartStory: Boolean,
     val isLike: Boolean,
     val countLike: Int,

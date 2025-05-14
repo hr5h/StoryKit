@@ -10,6 +10,12 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import org.hrsh.story_kit.di.Navigator
 import org.hrsh.story_kit.domain.entities.PageItem
 import org.hrsh.story_kit.domain.entities.StoryItem
@@ -53,6 +59,8 @@ internal class StoryViewModel(
         else
             favoriteStoriesList.value[_storyState.value.currentStory]
 
+    private val mskTimeZone = TimeZone.of("Europe/Moscow")
+
     init {
         subscribeStories()
     }
@@ -61,20 +69,17 @@ internal class StoryViewModel(
     private fun subscribeStories() {
         viewModelScope.launch {
             subscribeStoryUseCase().collect { result ->
+                val (filterResult, storyToDelete) = result.partition { compareWithDate(it.toDate) == 1 }
                 if (!_storyState.value.isShowStory) {
                     _storyFlowList.update {
-                        result
-                            .filter { story ->
-                                story.isShowInMiniature
-                            }
+                        filterResult
+                            .filter { it.isShowInMiniature }
                             .sortedBy { it.isViewed }
                     }
                 }
                 if (!_storyState.value.showFavoriteStories) {
                     _favoriteStoriesList.update {
-                        result.filter { story ->
-                            story.isFavorite
-                        }
+                        filterResult.filter { it.isFavorite }
                     }.run {
                         if (_storyState.value.showFavoriteStories && _favoriteStoriesList.value.isEmpty()) {
                             unSelectStory()
@@ -83,8 +88,10 @@ internal class StoryViewModel(
                         }
                     }
                 }
-                //println(result.joinToString("\n"))
                 initFirstStory()
+                launch {
+                    storyToDelete.forEach { deleteStoryUseCase(it) }
+                }
             }
         }
     }
@@ -384,14 +391,15 @@ internal class StoryViewModel(
 
     private fun initFirstStory() {
         if (_storyState.value.currentStory == -1) {
-            val currentStory = _storyFlowList.value.indexOf(_storyFlowList.value.firstOrNull { first -> first.isStartStory })
+            val currentStory =
+                _storyFlowList.value.indexOf(_storyFlowList.value.firstOrNull { first -> first.isStartStory })
             _storyState.update {
                 it.copy(
                     currentStory = currentStory,
                     currentPage = it.currentPage + 0
                 )
             }
-            if(currentStory != -1) {
+            if (currentStory != -1) {
                 val storyItem = _storyFlowList.value[currentStory]
                 updateStory(storyItem.copy(isStartStory = false))
             }
@@ -404,5 +412,21 @@ internal class StoryViewModel(
         _storyState.update {
             it.copy(storyColors = storyColors)
         }
+    }
+
+    private fun compareWithDate(mskDateTime: String): Int {
+        val (datePart, timePart) = mskDateTime.split(" ")
+        val (year, month, day) = datePart.split("-").map { it.toInt() }
+        val (hours, minutes) = timePart.split(":").map { it.toInt() }
+
+        val localMskDateTime = LocalDateTime(
+            LocalDate(year, month, day),
+            LocalTime(hours, minutes)
+        )
+
+        val mskInstant = localMskDateTime.toInstant(mskTimeZone)
+        val currentInstant = Clock.System.now()
+
+        return mskInstant.compareTo(currentInstant)
     }
 }

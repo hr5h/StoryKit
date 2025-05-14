@@ -21,6 +21,7 @@ data class StoryItem(
     val id: Long,
     val imagePreview: String,
     val listPages: List<PageItem>,
+    val toDate: String = "2035-01-01 00:00",
     val isStartStory: Boolean = false,
     val isLike: Boolean = false,
     val countLike: Int = 0,
