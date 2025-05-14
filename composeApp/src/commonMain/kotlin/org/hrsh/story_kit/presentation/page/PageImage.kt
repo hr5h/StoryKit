@@ -77,10 +77,9 @@ internal fun PageImage(
             val maxLinesCollapsed: Int = 5
             val screenHeightDp = getScreenHeightDp()
             val textVariabilityList =
-                remember {
+                remember(pageCount) {
                     (0 until pageCount).map { Pair(false, false) }.toMutableStateList()
                 }
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()

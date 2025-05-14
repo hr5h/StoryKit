@@ -141,9 +141,8 @@ internal fun Story(
             if (storyId != storyIdState.value) {
                 storyIdState.value = storyId
             }
-
             val currentTime =
-                remember {
+                remember(storyState.currentStory) {
                     mutableStateListOf(*selectStoryItem.listPages.map { 0f }.toTypedArray())
                 }
 
@@ -170,7 +169,10 @@ internal fun Story(
                 onChose,
                 colors,
                 isAnimateTimeLine,
-                { storySkip(storyIdState.value, pageIdState.value, currentTime[pageIdState.value]) }
+                storySkip,
+                storyIdState,
+                pageIdState,
+                currentTime
             )
             LikeAndFavorite(selectStoryItem, storyLiked, storyFavorited, colors)
         },
@@ -308,14 +310,17 @@ private fun ColumnScope.Content(
     onChose: (StoryItem, PageItem, Int) -> Unit,
     colors: StoryColors,
     isAnimate: MutableState<Boolean>,
-    storySkip: () -> Unit,
+    storySkip: (Long, Int, Float) -> Unit,
+    storyIdState: MutableState<Long>,
+    pageIdState: MutableState<Int>,
+    currentTime: SnapshotStateList<Float>,
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .weight(17f)
             .background(colors.storyBackground)
-            .pointerInput(Unit) {
+            .pointerInput(currentTime) {
                 detectTapGestures(
                     onLongPress = {
                         isAnimate.value = false
@@ -327,10 +332,10 @@ private fun ColumnScope.Content(
                     },
                     onTap = { offset ->
                         if (offset.x < size.width / 2) {
-                            storySkip()
+                            storySkip(storyIdState.value, pageIdState.value, currentTime[pageIdState.value])
                             prevPage()
                         } else {
-                            storySkip()
+                            storySkip(storyIdState.value, pageIdState.value, currentTime[pageIdState.value])
                             nextPage()
                         }
                     }
