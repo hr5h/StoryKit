@@ -33,7 +33,8 @@ data class PageQuestionLayout(
     val buttonPaddingEnd: Int = 5,
     val buttonPaddingBottom: Int = 5,
     val buttonsInRow: Int = 1,
-    val fixedButtonSize: Boolean = true
+    val buttonHeight: Int = 50,
+    val fixedButtonWidth: Boolean = true
 )
 
 @Serializable

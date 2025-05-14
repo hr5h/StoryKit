@@ -165,7 +165,7 @@ fun StoryMiniature(
                         text = "Неограниченные сроком расходные операции без потери процентов до неснижаемого остаткаНеограниченные сроком расходные операции без потери процентов до неснижаемого остаткаНеограниченные сроком расходные операции без потери процентов до неснижаемого остатка"
                     ),
                     PageItem.Question(
-                        pageQuestionLayout = PageQuestionLayout(buttonsInRow = 2, fixedButtonSize = false),
+                        pageQuestionLayout = PageQuestionLayout(buttonsInRow = 2, buttonHeight = 70, fixedButtonWidth = false),
                         imageUrl = "https://avatars.yandex.net/get-music-content/5234847/767e884c.a.16290016-1/m1000x1000?webp=false",
                         question = "Как вы оцениваете наши истории?",
                         listAnswers = listOf("Большой текст для кнопки", "2", "3", "4", "5+"),
@@ -188,7 +188,7 @@ fun StoryMiniature(
                         text = "Крупнейший частный банк на Юге России"
                     ),
                     PageItem.Question(
-                        pageQuestionLayout = PageQuestionLayout(questionAlignment = SerializableAlignment.CENTER, buttonsInRow = 5, fixedButtonSize = true),
+                        pageQuestionLayout = PageQuestionLayout(questionAlignment = SerializableAlignment.CENTER, buttonsInRow = 5, fixedButtonWidth = true),
                         imageUrl = "https://avatars.yandex.net/get-music-content/5234847/767e884c.a.16290016-1/m1000x1000?webp=false",
                         question = "Как вы оцениваете наши истории2?",
                         listAnswers = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),

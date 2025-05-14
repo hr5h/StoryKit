@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -87,12 +88,9 @@ internal fun PageQuestion(
                 Triple(
                     str,
                     index,
-                    if (pageQuestionLayout.fixedButtonSize) 1 else Random.nextInt(3) + 1
+                    if (pageQuestionLayout.fixedButtonWidth) 1 else Random.nextInt(3) + 1
                 )
             }.chunked(pageQuestionLayout.buttonsInRow)
-        }
-        val groupedItemsCanvasSize = remember {
-            (0 until itemQuestion.listAnswers.size).map { Pair(0, 0) }.toMutableList()
         }
         if (itemQuestion.indexSelected != -1) {
             LaunchedEffect(Unit) {
@@ -114,15 +112,13 @@ internal fun PageQuestion(
                         Button(
                             modifier = Modifier
                                 .weight(item.third.toFloat())
+                                .height(pageQuestionLayout.buttonHeight.dp)
                                 .padding(
                                     start = pageQuestionLayout.buttonPaddingStart.dp,
                                     top = pageQuestionLayout.buttonPaddingTop.dp,
                                     end = pageQuestionLayout.buttonPaddingEnd.dp,
                                     bottom = pageQuestionLayout.buttonPaddingBottom.dp
-                                )
-                                .onSizeChanged { size ->
-                                    groupedItemsCanvasSize[item.second] = Pair((size.width * 0.8).toInt(), size.height / 2)
-                                },
+                                ),
                             shape = RoundedCornerShape(30.dp),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = storyColors.buttonAnswer,
@@ -140,13 +136,8 @@ internal fun PageQuestion(
                                     val ratio = itemQuestion.listResults[item.second] / sumRatio
                                     val process = currentTime.value / maxTime
                                     val colorResult = storyColors.colorResult
-                                    val density = LocalDensity.current
-                                    val width = with(density) { groupedItemsCanvasSize[item.second].first.toDp() }
-                                    val height = with(density) { groupedItemsCanvasSize[item.second].second.toDp() }
                                     Canvas(
-                                        modifier = Modifier
-                                            .width(width)
-                                            .height(height)
+                                        modifier = Modifier.fillMaxSize()
                                     ) {
                                         val newWidth = size.width * ratio * process
 
@@ -179,7 +170,9 @@ internal fun PageQuestion(
                                     text = item.first,
                                     fontSize = 20.sp,
                                     color = Color.Black,
-                                    textAlign = TextAlign.Center
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
                         }
