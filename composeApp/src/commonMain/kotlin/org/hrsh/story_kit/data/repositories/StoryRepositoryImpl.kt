@@ -1,9 +1,11 @@
 package org.hrsh.story_kit.data.repositories
 
+import androidx.sqlite.SQLiteException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.hrsh.story_kit.data.dao.StoryDao
 import org.hrsh.story_kit.data.database.StoryDatabase
+import org.hrsh.story_kit.data.exceptions.InsertStoryException
 import org.hrsh.story_kit.data.mappers.StoryItemDbToDomainMapper
 import org.hrsh.story_kit.data.mappers.StoryItemDomainToDbMapper
 import org.hrsh.story_kit.domain.entities.StoryItem
@@ -22,9 +24,16 @@ internal class StoryRepositoryImpl(
         return storyDao.getAll().map { it.map(storyItemDbToDomainMapper) }
     }
 
-    override suspend fun postStory(storyItem: StoryItem) {
+    override suspend fun insertStory(storyItem: StoryItem): Result<Unit> {
         val storyItemDb = storyItemDomainToDbMapper(storyItem)
-        storyDao.insert(storyItemDb)
+        return try {
+            storyDao.insert(storyItemDb)
+            Result.success(Unit)
+        } catch (e: SQLiteException) {
+            Result.failure(InsertStoryException())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun updateStory(storyItem: StoryItem) {

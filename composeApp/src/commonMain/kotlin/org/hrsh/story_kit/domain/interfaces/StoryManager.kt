@@ -14,7 +14,7 @@ interface StoryManager {
      *
      * @param storyItem The story item to be added.
      */
-    fun addStory(storyItem: StoryItem)
+    fun addStory(storyItem: StoryItem, callback: (Result<Unit>) -> Unit = {})
 
     /**
      * Updates an existing story item.

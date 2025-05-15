@@ -13,9 +13,10 @@ class TestStoryRepository : StoryRepository {
         return flow { emit(stories.toList()) }
     }
 
-    override suspend fun postStory(storyItem: StoryItem) {
+    override suspend fun insertStory(storyItem: StoryItem): Result<Unit> {
         postedStory = storyItem
         stories.add(storyItem)
+        return Result.success(Unit)
     }
 
     override suspend fun updateStory(storyItem: StoryItem) {

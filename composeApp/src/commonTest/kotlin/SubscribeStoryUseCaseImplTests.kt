@@ -23,8 +23,8 @@ class SubscribeStoryUseCaseImplTests {
     fun testSubscribeToStories() = runBlocking {
         val storyItem1 = createTestStoryItem(id = 1L)
         val storyItem2 = createTestStoryItem(id = 2L)
-        storyRepository.postStory(storyItem1)
-        storyRepository.postStory(storyItem2)
+        storyRepository.insertStory(storyItem1)
+        storyRepository.insertStory(storyItem2)
         val storiesFlow = subscribeStoryUseCase.invoke()
         val stories = storiesFlow.toList()
 

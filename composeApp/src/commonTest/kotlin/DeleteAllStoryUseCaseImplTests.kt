@@ -25,8 +25,8 @@ class DeleteAllStoryUseCaseImplTests {
         val storyItem1 = createTestStoryItem(1L)
         val storyItem2 = createTestStoryItem(2L)
 
-        storyRepository.postStory(storyItem1)
-        storyRepository.postStory(storyItem2)
+        storyRepository.insertStory(storyItem1)
+        storyRepository.insertStory(storyItem2)
         assertTrue(storyRepository.stories.contains(storyItem1), "StoryItem1 should be in the repository!")
         assertTrue(storyRepository.stories.contains(storyItem2), "StoryItem2 should be in the repository!")
         deleteAllStoryUseCase()

@@ -23,7 +23,7 @@ class DeleteStoryUseCaseImplTests {
     @Test
     fun testDeleteStory() = runBlocking {
         val storyItem = createTestStoryItem()
-        storyRepository.postStory(storyItem)
+        storyRepository.insertStory(storyItem)
         assertTrue(storyRepository.stories.contains(storyItem), "Story should be in the repository before deletion!")
         deleteStoryUseCase(storyItem)
         assertFalse(storyRepository.stories.contains(storyItem), "Story should be removed from the repository!")
@@ -39,7 +39,7 @@ class DeleteStoryUseCaseImplTests {
     @Test
     fun testDeleteStoryMultipleTimes() = runBlocking {
         val storyItem = createTestStoryItem()
-        storyRepository.postStory(storyItem)
+        storyRepository.insertStory(storyItem)
 
         deleteStoryUseCase(storyItem)
         assertFalse(storyRepository.stories.contains(storyItem), "Story should be removed from the repository!")

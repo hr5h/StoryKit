@@ -31,7 +31,7 @@ class InsertStoryUseCaseImplTests {
     @Test
     fun testPostStory() = runBlocking {
         val storyItem = createTestStoryItem()
-        storyRepository.postStory(storyItem)
+        storyRepository.insertStory(storyItem)
 
         assertEquals(storyItem, storyRepository.stories.first(), "Story was not posted correctly!")
         assertEquals(1, storyRepository.stories.size, "Expected 1 story in the repository!")
