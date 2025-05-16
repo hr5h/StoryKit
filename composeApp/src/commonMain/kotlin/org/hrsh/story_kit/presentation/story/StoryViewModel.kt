@@ -96,9 +96,9 @@ internal class StoryViewModel(
         }
     }
 
-    override fun addStory(storyItem: StoryItem) {
+    override fun addStory(storyItem: StoryItem, callback: (Result<Unit>) -> Unit) {
         viewModelScope.launch {
-            insertStoryUseCase(storyItem)
+            callback(insertStoryUseCase(storyItem))
         }
     }
 

@@ -14,7 +14,7 @@ internal interface StoryDao {
     @Query("SELECT * FROM ${StoryItemDb.STORY_TABLE_NAME}")
     fun getAll(): Flow<List<StoryItemDb>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(storyItemDb: StoryItemDb)
 
     @Update

@@ -21,7 +21,7 @@ class UpdateStoryUseCaseImplTests {
     @Test
     fun testUpdateStory() = runBlocking {
         val originalStoryItem = createTestStoryItem()
-        storyRepository.postStory(originalStoryItem)
+        storyRepository.insertStory(originalStoryItem)
         val updatedStoryItem = originalStoryItem.copy(imagePreview = "new_image_url", id = originalStoryItem.id)
         updateStoryUseCase(updatedStoryItem)
         val updatedInRepository = storyRepository.stories.find { it.id == originalStoryItem.id }
@@ -38,7 +38,7 @@ class UpdateStoryUseCaseImplTests {
     @Test
     fun testUpdateStoryWithoutChange() = runBlocking {
         val originalStoryItem = createTestStoryItem()
-        storyRepository.postStory(originalStoryItem)
+        storyRepository.insertStory(originalStoryItem)
         updateStoryUseCase(originalStoryItem)
 
         val updatedInRepository = storyRepository.stories.find { it.id == originalStoryItem.id }
