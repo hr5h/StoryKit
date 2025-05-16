@@ -372,6 +372,7 @@ internal class StoryViewModel(
                 _storyState.update { it.copy(currentStory = it.currentStory + 1) }
             } else {
                 closeAllStory()
+                navigator.finishStory()
             }
         } else {
             if (_storyState.value.currentStory < _favoriteStoriesList.value.size - 1) {

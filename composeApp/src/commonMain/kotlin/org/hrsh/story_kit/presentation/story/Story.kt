@@ -379,6 +379,7 @@ private fun ColumnScope.Content(
                         }
                     }
             }
+            val widthScreen = getScreenWidthDp()
             when (pages[index]) {
                 is PageItem.Image -> PageImage(
                     pages[index] as PageItem.Image,
@@ -392,7 +393,16 @@ private fun ColumnScope.Content(
                     pages[index] as PageItem.Video,
                     pageSize,
                     pages[pagerState.currentPage] is PageItem.Video,
-                    isAnimate
+                    isAnimate,
+                    { offset ->
+                        if (offset.x.dp < widthScreen / 2) {
+                            storySkip(storyIdState.value, pageIdState.value, currentTime[pageIdState.value])
+                            prevPage()
+                        } else {
+                            storySkip(storyIdState.value, pageIdState.value, currentTime[pageIdState.value])
+                            nextPage()
+                        }
+                    }
                 )
 
                 is PageItem.Question -> PageQuestion(
