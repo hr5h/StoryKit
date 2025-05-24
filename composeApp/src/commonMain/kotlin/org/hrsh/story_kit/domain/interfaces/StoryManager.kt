@@ -12,21 +12,25 @@ interface StoryManager {
     /**
      * Adds a new story item.
      *
-     * @param storyItem The story item to be added.
+     * @param storyItem The story item to be added
+     * @param callback Callback that receives the result of the operation
+     * The callback provides a [Result] object containing:
+     * - [Result.success] with [Unit] if the operation completed successfully
+     * - [Result.failure] with an exception if the operation failed
      */
     fun addStory(storyItem: StoryItem, callback: (Result<Unit>) -> Unit = {})
 
     /**
      * Updates an existing story item.
      *
-     * @param storyItem The story item to be updated.
+     * @param storyItem The story item to be updated
      */
     fun updateStory(storyItem: StoryItem)
 
     /**
      * Deletes a story item.
      *
-     * @param id The unique identifier of the story item to be deleted.
+     * @param id The unique identifier of the story item to be deleted
      */
     fun deleteStory(id: Long)
 
@@ -38,21 +42,21 @@ interface StoryManager {
     /**
      * Subscribes to changes in the history view status.
      *
-     * @return A [Flow], which outputs a long history ID when viewing the history.
+     * @return A [Flow], which outputs a long history ID when viewing the history
      */
     fun subscribeStoryView(): Flow<Long>
 
     /**
      * Subscribes to changes in the like state of a story.
      *
-     * @return A [Flow] that emits a Pair containing the story's ID and a Boolean indicating whether the story is liked.
+     * @return A [Flow] that emits a Pair containing the story's ID and a Boolean indicating whether the story is liked
      */
     fun subscribeStoryLike(): Flow<Pair<Long, Boolean>>
 
     /**
      * Subscribes to changes in the like state of a story.
      *
-     * @return A [Flow] that emits a Pair containing the story's ID and a Boolean indicating whether the story is favorite.
+     * @return A [Flow] that emits a Pair containing the story's ID and a Boolean indicating whether the story is favorite
      */
     fun subscribeStoryFavorite(): Flow<Pair<Long, Boolean>>
 
@@ -70,9 +74,9 @@ interface StoryManager {
      * Subscribes to changes in the selected answer on a story's questionnaire page.
      *
      * @return A [Flow] that emits a [Triple] containing:
-     * - The ID of the story.
-     * - The page number where the questionnaire is located.
-     * - The index of the selected answer.
+     * - The ID of the story
+     * - The page number where the questionnaire is located
+     * - The index of the selected answer
      */
     fun subscribeStoryQuestion(): Flow<Triple<Long, Int, Int>>
 
@@ -88,7 +92,7 @@ interface StoryManager {
     /**
      * Sets the color scheme for story-related views.
      *
-     * @param storyColors The [StoryColors] object containing color values to be applied.
+     * @param storyColors The [StoryColors] object containing color values to be applied
      */
     fun setColors(storyColors: StoryColors)
 }

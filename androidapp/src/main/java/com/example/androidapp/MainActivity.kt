@@ -128,7 +128,6 @@ class MainActivity : ComponentActivity() {
                                     Text(
                                         text = "Refresh stories",
                                         color = Color.Black,
-                                        fontStyle = FontStyle.Italic
                                     )
                                 }
                             }
