@@ -4,9 +4,12 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -14,6 +17,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,6 +33,8 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.androidapp.ui.theme.StoryKitTheme
@@ -48,7 +54,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             StoryKitTheme(darkTheme = false) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Column(modifier = Modifier.padding(innerPadding)) {
+                    Column(modifier = Modifier.padding(innerPadding).background(Color.LightGray)) {
                         val logItems = remember { mutableStateListOf<String>() }
                         val trigger = remember { mutableIntStateOf(1) }
                         val listState = rememberLazyListState()
@@ -63,18 +69,26 @@ class MainActivity : ComponentActivity() {
                         }
                         val storyManager = storyKit()
                         StoryMiniature(logItems, trigger, storyManager)
-                        Column(modifier = Modifier.fillMaxSize()) {
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             LazyColumn(
                                 state = listState,
                                 modifier = Modifier
                                     .weight(1f)
+                                    .padding(top = 10.dp)
                             ) {
                                 itemsIndexed(logItems) { index, item ->
-                                    Text(
-                                        text = item,
-                                        modifier = Modifier.padding(16.dp),
-                                        style = MaterialTheme.typography.bodyLarge
-                                    )
+                                    Card(
+                                        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp, top = 5.dp)
+                                    ) {
+                                        Text(
+                                            text = item,
+                                            modifier = Modifier.padding(16.dp),
+                                            style = MaterialTheme.typography.bodyLarge
+                                        )
+                                    }
 
                                     if (index < logItems.lastIndex) {
                                         HorizontalDivider(
@@ -87,16 +101,19 @@ class MainActivity : ComponentActivity() {
                             }
                             Button(
                                 onClick = { storyManager.deleteStory(100) },
-                                modifier = Modifier.weight(1f),
+                                modifier = Modifier.height(100.dp).padding(top = 10.dp),
                                 shape = RoundedCornerShape(30.dp),
-                                colors = ButtonDefaults.buttonColors(Color.White)
+                                colors = ButtonDefaults.buttonColors(Color.White),
                             ) {
-                                Text(text = "Delete story", color = Color.Black)
+                                Text(text = "Delete 1st story", color = Color.Black)
                             }
-                            Row(verticalAlignment = Alignment.Bottom) {
+                            Row(
+                                modifier = Modifier.padding(10.dp),
+                                verticalAlignment = Alignment.Bottom
+                            ) {
                                 Button(
                                     onClick = { logItems.clear() },
-                                    modifier = Modifier.weight(1f),
+                                    modifier = Modifier.weight(1f).padding(end = 5.dp),
                                     shape = RoundedCornerShape(30.dp),
                                     colors = ButtonDefaults.buttonColors(Color.White)
                                 ) {
@@ -104,11 +121,15 @@ class MainActivity : ComponentActivity() {
                                 }
                                 Button(
                                     onClick = { trigger.intValue *= -1; },
-                                    modifier = Modifier.weight(1f),
+                                    modifier = Modifier.weight(1f).padding(start = 5.dp),
                                     shape = RoundedCornerShape(30.dp),
                                     colors = ButtonDefaults.buttonColors(Color.White)
                                 ) {
-                                    Text(text = "Refresh stories", color = Color.Black)
+                                    Text(
+                                        text = "Refresh stories",
+                                        color = Color.Black,
+                                        fontStyle = FontStyle.Italic
+                                    )
                                 }
                             }
                         }
@@ -117,6 +138,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 }
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -150,7 +172,7 @@ fun StoryMiniature(
                     PageItem.Image(
                         imageUrl = "https://avatars.mds.yandex.net/get-altay/3569559/2a00000181ec245ac9c1e4872b9c0299be35/orig",
                         //text = "«Премиальный» — вклад для клиентов, которые ценят неограниченные возможности"
-                        text = "*Фактическая доходность — ставка с учетом капитализации (в процентах годовых), рассчитывается от начала срока действия договора вклада до конца каждого периода, указывается справочно. *Фактическая доходность — ставка с учетом капитализации (в процентах годовых), рассчитывается от начала срока действия договора вклада до конца каждого периода, указывается справочно. *Фактическая доходность — ставка с учетом капитализации (в процентах годовых), рассчитывается от начала срока действия договора вклада до конца каждого периода, указывается справочно."
+                        text = "Фактическая доходность — ставка с учетом капитализации (в процентах годовых), рассчитывается от начала срока действия договора вклада до конца каждого периода, указывается справочно. Фактическая доходность — ставка с учетом капитализации (в процентах годовых), рассчитывается от начала срока действия договора вклада до конца каждого периода, указывается справочно. Фактическая доходность — ставка с учетом капитализации (в процентах годовых), рассчитывается от начала срока действия договора вклада до конца каждого периода, указывается справочно."
                     ),
                     PageItem.Image(
                         imageUrl = "https://cbkg.ru/uploads/centr-invest-.jpg",
@@ -182,13 +204,9 @@ fun StoryMiniature(
                     PageItem.Image(
                         imageUrl = "https://avatars.mds.yandex.net/get-altay/9724410/2a00000189e716723d04ad6df615704bd295/L_height",
                         text = "Крупнейший частный банк на Юге России"
-                    ),
-                    PageItem.Question(
-                        imageUrl = "https://avatars.yandex.net/get-music-content/5234847/767e884c.a.16290016-1/m1000x1000?webp=false",
-                        question = "Как вы оцениваете наши истории2?",
-                        listAnswers = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),
                     )
                 ),
+                countLike = 21,
             )
         )
         //PageItemVideo
@@ -202,6 +220,7 @@ fun StoryMiniature(
                         timeShow = 30f
                     )
                 ),
+                countLike = 52,
             )
         )
     }
@@ -259,7 +278,7 @@ fun StoryMiniature(
             launch {
                 storyManager.subscribeStorySkip().collect { (id, pageIndex, time) ->
                     println("In story with id = $id in page with index = $pageIndex: skipTime = $time")
-                    if(time < 1.0) {
+                    if (time < 1.0) {
                         logItems.add("In story with id = $id in page with index = $pageIndex: skipTime = $time")
                     }
                 }

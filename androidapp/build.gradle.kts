@@ -43,6 +43,13 @@ dependencies {
 
     implementation(project(":composeApp"))
 
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.7")
+
+    //androidTestImplementation "androidx.test:runner:1.5.2"
+    //androidTestImplementation "androidx.test:rules:1.5.2"
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -58,4 +65,18 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("androidx.test.ext:junit:1.1.5")
+        force("androidx.test.espresso:espresso-core:3.5.0")
+        force("androidx.test:runner:1.5.2")
+        force("androidx.test:rules:1.5.2")
+
+        force("androidx.compose.ui:ui:1.7.7")
+        force("androidx.compose.material:material:1.7.7")
+        force("androidx.compose.ui:ui-tooling:1.7.7")
+        force("androidx.compose.ui:ui-test-junit4:1.7.7")
+    }
 }
